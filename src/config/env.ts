@@ -1,9 +1,5 @@
-import { config as configDotenv } from 'dotenv';
-import path from 'path';
-
-configDotenv({
-  path: path.resolve(__dirname, '../../.env'),
-});
+import { configDotenv } from 'dotenv';
+configDotenv();
 
 let isExit = false;
 
