@@ -4,7 +4,7 @@ import type { Knex } from 'knex';
 export async function up(knex: Knex): Promise<void> {
   return knex.schema.createTable('products', (table) => {
     table.increments('id').primary();
-    table.string('shop_id').notNullable();
+    table.integer('shop_id').unsigned().notNullable();
     table.string('name').notNullable();
     table.string('sku').notNullable(); // Stock Keeping Unit
     table.string('category').notNullable().defaultTo(EProductCategory.OTHERS);
