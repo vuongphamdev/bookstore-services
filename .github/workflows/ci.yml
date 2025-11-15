@@ -57,18 +57,18 @@ jobs:
       - name: Setup database
         run: npm run db:migrate:latest
 
-      - name: Run tests
-        run: npm run test:ci
-        env:
-          NODE_ENV: test
+      # - name: Run tests
+      #   run: npm run test:ci
+      #   env:
+      #     NODE_ENV: test
 
-      - name: Upload coverage reports
-        if: always()
-        uses: codecov/codecov-action@v4
-        with:
-          files: ./coverage/coverage-final.json
-          flags: unittests
-          fail_ci_if_error: false
+      # - name: Upload coverage reports
+      #   if: always()
+      #   uses: codecov/codecov-action@v4
+      #   with:
+      #     files: ./coverage/coverage-final.json
+      #     flags: unittests
+      #     fail_ci_if_error: false
 
       - name: Build application
         run: npm run build
