@@ -1,5 +1,9 @@
 import { configDotenv } from 'dotenv';
-configDotenv();
+
+// Only load .env file in local development (not in CI/CD)
+if (process.env.CI !== 'true') {
+  configDotenv();
+}
 
 let isExit = false;
 
