@@ -1,0 +1,51 @@
+{
+  "id": "bookstore-development-env",
+  "name": "Bookstore API - Development",
+  "values": [
+    {
+      "key": "BASE_URL",
+      "value": "https://api-dev.bookstore.com",
+      "description": "Development server URL (use http://localhost:3000 for local dev)",
+      "enabled": true
+    },
+    {
+      "key": "TENANT_ID",
+      "value": "dev001",
+      "description": "Development tenant ID",
+      "enabled": true
+    },
+    {
+      "key": "USER_ID",
+      "value": "1",
+      "description": "Test user ID for development",
+      "enabled": true
+    },
+    {
+      "key": "BOOK_ID",
+      "value": "1",
+      "description": "Test book ID for development",
+      "enabled": true
+    },
+    {
+      "key": "ORDER_ID",
+      "value": "1",
+      "description": "Test order ID for development",
+      "enabled": true
+    },
+    {
+      "key": "ROLE_ID",
+      "value": "1",
+      "description": "Test role ID for development",
+      "enabled": true
+    },
+    {
+      "key": "ITEM_ID",
+      "value": "1",
+      "description": "Test order item ID for development",
+      "enabled": true
+    }
+  ],
+  "_postman_variable_scope": "environment",
+  "_postman_exported_at": "2025-10-05T10:30:00.000Z",
+  "_postman_exported_using": "Postman/10.0.0"
+}

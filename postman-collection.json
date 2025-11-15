@@ -1,0 +1,1321 @@
+{
+  "info": {
+    "_postman_id": "bookstore-api-v2",
+    "name": "Bookstore E-commerce API",
+    "description": "Complete API collection for the Bookstore E-commerce System with multi-tenant support for users, books, orders, and roles management",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "bookstore-project"
+  },
+  "item": [
+    {
+      "name": "Authentication",
+      "item": [
+        {
+          "name": "Register",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "if (pm.response.code === 201) {",
+                  "    const responseJson = pm.response.json();",
+                  "    if (responseJson.data && responseJson.data.accessToken) {",
+                  "        pm.environment.set('ACCESS_TOKEN', responseJson.data.accessToken);",
+                  "        console.log('Access token saved to environment');",
+                  "    }",
+                  "    if (responseJson.data && responseJson.data.user && responseJson.data.user.id) {",
+                  "        pm.environment.set('USER_ID', responseJson.data.user.id);",
+                  "        console.log('User ID saved to environment');",
+                  "    }",
+                  "    // Refresh token is now stored in HTTP-only cookie",
+                  "    console.log('Refresh token stored in HTTP-only cookie');",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"{{$randomFullName}}\",\n  \"email\": \"{{$randomEmail}}\",\n  \"password\": \"password123\",\n  \"tenant_id\": \"{{TENANT_ID}}\"\n}"
+            },
+            "url": {
+              "raw": "{{BASE_URL}}/register",
+              "host": ["{{BASE_URL}}"],
+              "path": ["register"]
+            },
+            "description": "Register a new user account. Returns access token in response and sets refresh token in HTTP-only cookie."
+          }
+        },
+        {
+          "name": "Login",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "if (pm.response.code === 200) {",
+                  "    const responseJson = pm.response.json();",
+                  "    if (responseJson.data && responseJson.data.accessToken) {",
+                  "        pm.environment.set('ACCESS_TOKEN', responseJson.data.accessToken);",
+                  "        console.log('Access token saved to environment');",
+                  "    }",
+                  "    // Refresh token is now stored in HTTP-only cookie",
+                  "    console.log('Refresh token stored in HTTP-only cookie');",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"admin@bookstore.com\",\n  \"password\": \"password123\"\n}"
+            },
+            "url": {
+              "raw": "{{BASE_URL}}/login",
+              "host": ["{{BASE_URL}}"],
+              "path": ["login"]
+            },
+            "description": "Login with email and password. Returns access token in response and sets refresh token in HTTP-only cookie."
+          }
+        },
+        {
+          "name": "Get Current User",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{ACCESS_TOKEN}}",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{BASE_URL}}/users/me",
+              "host": ["{{BASE_URL}}"],
+              "path": ["users", "me"]
+            },
+            "description": "Get current authenticated user profile"
+          }
+        },
+        {
+          "name": "Refresh Token",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "if (pm.response.code === 200) {",
+                  "    const responseJson = pm.response.json();",
+                  "    if (responseJson.data && responseJson.data.accessToken) {",
+                  "        pm.environment.set('ACCESS_TOKEN', responseJson.data.accessToken);",
+                  "        console.log('New access token saved to environment');",
+                  "    }",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{BASE_URL}}/refresh-token",
+              "host": ["{{BASE_URL}}"],
+              "path": ["refresh-token"]
+            },
+            "description": "Refresh access token using refresh token from HTTP-only cookie. No body required."
+          }
+        },
+        {
+          "name": "Logout",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{ACCESS_TOKEN}}",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{BASE_URL}}/logout",
+              "host": ["{{BASE_URL}}"],
+              "path": ["logout"]
+            },
+            "description": "Logout user and clear refresh token cookie"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Health Check",
+      "item": [
+        {
+          "name": "Ping Database",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{BASE_URL}}/ping",
+              "host": ["{{BASE_URL}}"],
+              "path": ["ping"]
+            },
+            "description": "Health check endpoint to test database connectivity"
+          },
+          "response": [
+            {
+              "name": "Ping Success",
+              "originalRequest": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{BASE_URL}}/ping",
+                  "host": ["{{BASE_URL}}"],
+                  "path": ["ping"]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n  \"status\": \"ok\",\n  \"time\": \"2025-10-05T10:30:00.000Z\"\n}"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Tenants",
+      "item": [
+        {
+          "name": "Get All Tenants",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{ACCESS_TOKEN}}",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{BASE_URL}}/tenants",
+              "host": ["{{BASE_URL}}"],
+              "path": ["tenants"]
+            },
+            "description": "Get all available tenants (requires authentication)"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Users",
+      "item": [
+        {
+          "name": "Get All Users",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{ACCESS_TOKEN}}",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "X-Tenant-Id",
+                "value": "{{TENANT_ID}}",
+                "description": "Tenant ID for multi-tenant support"
+              }
+            ],
+            "url": {
+              "raw": "{{BASE_URL}}/users",
+              "host": ["{{BASE_URL}}"],
+              "path": ["users"]
+            },
+            "description": "Retrieve all users for the specified tenant"
+          },
+          "response": [
+            {
+              "name": "Get All Users Success",
+              "originalRequest": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "X-Tenant-Id",
+                    "value": "dev001"
+                  }
+                ],
+                "url": {
+                  "raw": "{{BASE_URL}}/users",
+                  "host": ["{{BASE_URL}}"],
+                  "path": ["users"]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n  \"success\": true,\n  \"message\": \"Users retrieved successfully\",\n  \"data\": [\n    {\n      \"id\": 1,\n      \"tenant_id\": \"dev001\",\n      \"name\": \"John Doe\",\n      \"email\": \"john@example.com\",\n      \"created_at\": \"2025-10-05T10:30:00.000Z\"\n    }\n  ],\n  \"error\": null\n}"
+            }
+          ]
+        },
+        {
+          "name": "Get User By ID",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{ACCESS_TOKEN}}",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "X-Tenant-Id",
+                "value": "{{TENANT_ID}}"
+              }
+            ],
+            "url": {
+              "raw": "{{BASE_URL}}/users/{{USER_ID}}",
+              "host": ["{{BASE_URL}}"],
+              "path": ["users", "{{USER_ID}}"]
+            },
+            "description": "Retrieve a specific user by their ID with roles"
+          },
+          "response": [
+            {
+              "name": "Get User Success",
+              "originalRequest": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "X-Tenant-Id",
+                    "value": "dev001"
+                  }
+                ],
+                "url": {
+                  "raw": "{{BASE_URL}}/users/1",
+                  "host": ["{{BASE_URL}}"],
+                  "path": ["users", "1"]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n  \"success\": true,\n  \"message\": \"User retrieved successfully\",\n  \"data\": {\n    \"id\": 1,\n    \"tenant_id\": \"dev001\",\n    \"name\": \"John Doe\",\n    \"email\": \"john@example.com\",\n    \"created_at\": \"2025-10-05T10:30:00.000Z\",\n    \"roles\": [\"admin\"]\n  },\n  \"error\": null\n}"
+            }
+          ]
+        },
+        {
+          "name": "Create User",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{ACCESS_TOKEN}}",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "X-Tenant-Id",
+                "value": "{{TENANT_ID}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"{{$randomFullName}}\",\n  \"email\": \"{{$randomEmail}}\",\n  \"password\": \"{{$randomPassword}}\"\n}"
+            },
+            "url": {
+              "raw": "{{BASE_URL}}/users",
+              "host": ["{{BASE_URL}}"],
+              "path": ["users"]
+            },
+            "description": "Create a new user. Requires name, email, and password in the request body."
+          },
+          "response": [
+            {
+              "name": "Create User Success",
+              "originalRequest": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  },
+                  {
+                    "key": "X-Tenant-Id",
+                    "value": "dev001"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"name\": \"{{$randomFullName}}\",\n  \"email\": \"{{$randomEmail}}\",\n  \"password\": \"{{$randomPassword}}\"\n}"
+                },
+                "url": {
+                  "raw": "{{BASE_URL}}/users",
+                  "host": ["{{BASE_URL}}"],
+                  "path": ["users"]
+                }
+              },
+              "status": "Created",
+              "code": 201,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n  \"success\": true,\n  \"message\": \"User created successfully\",\n  \"data\": {\n    \"id\": 2,\n    \"tenant_id\": \"dev001\",\n    \"name\": \"Jane Smith\",\n    \"email\": \"jane.smith@example.com\",\n    \"created_at\": \"2025-10-05T10:30:00.000Z\"\n  },\n  \"error\": null\n}"
+            }
+          ]
+        },
+        {
+          "name": "Update User",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{ACCESS_TOKEN}}",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "X-Tenant-Id",
+                "value": "{{TENANT_ID}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"{{$randomFullName}}\",\n  \"email\": \"{{$randomEmail}}\"\n}"
+            },
+            "url": {
+              "raw": "{{BASE_URL}}/users/{{USER_ID}}",
+              "host": ["{{BASE_URL}}"],
+              "path": ["users", "{{USER_ID}}"]
+            },
+            "description": "Update an existing user by ID. Provide updated name, email, and/or password in the request body."
+          }
+        },
+        {
+          "name": "Delete User",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{ACCESS_TOKEN}}",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "X-Tenant-Id",
+                "value": "{{TENANT_ID}}"
+              }
+            ],
+            "url": {
+              "raw": "{{BASE_URL}}/users/{{USER_ID}}",
+              "host": ["{{BASE_URL}}"],
+              "path": ["users", "{{USER_ID}}"]
+            },
+            "description": "Delete a user by ID"
+          }
+        },
+        {
+          "name": "Assign Role to User",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{ACCESS_TOKEN}}",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"userId\": {{USER_ID}},\n  \"roleId\": {{ROLE_ID}}\n}"
+            },
+            "url": {
+              "raw": "{{BASE_URL}}/users/roles/assign",
+              "host": ["{{BASE_URL}}"],
+              "path": ["users", "roles", "assign"]
+            },
+            "description": "Assign a role to a user"
+          }
+        },
+        {
+          "name": "Remove Role from User",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{ACCESS_TOKEN}}",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"userId\": {{USER_ID}},\n  \"roleId\": {{ROLE_ID}}\n}"
+            },
+            "url": {
+              "raw": "{{BASE_URL}}/users/roles/remove",
+              "host": ["{{BASE_URL}}"],
+              "path": ["users", "roles", "remove"]
+            },
+            "description": "Remove a role from a user"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Books",
+      "item": [
+        {
+          "name": "Get All Books",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "X-Tenant-Id",
+                "value": "{{TENANT_ID}}"
+              }
+            ],
+            "url": {
+              "raw": "{{BASE_URL}}/books",
+              "host": ["{{BASE_URL}}"],
+              "path": ["books"],
+              "query": [
+                {
+                  "key": "title",
+                  "value": "",
+                  "description": "Search by book title",
+                  "disabled": true
+                },
+                {
+                  "key": "author",
+                  "value": "",
+                  "description": "Search by author name",
+                  "disabled": true
+                },
+                {
+                  "key": "inStock",
+                  "value": "true",
+                  "description": "Get only books with stock > 0",
+                  "disabled": true
+                }
+              ]
+            },
+            "description": "Retrieve all books. Public endpoint - no authentication required. Supports filtering by title, author, or stock status."
+          }
+        },
+        {
+          "name": "Get Book By ID",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{ACCESS_TOKEN}}",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "X-Tenant-Id",
+                "value": "{{TENANT_ID}}"
+              }
+            ],
+            "url": {
+              "raw": "{{BASE_URL}}/books/{{BOOK_ID}}",
+              "host": ["{{BASE_URL}}"],
+              "path": ["books", "{{BOOK_ID}}"]
+            },
+            "description": "Retrieve a specific book by its ID."
+          }
+        },
+        {
+          "name": "Create Book",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{ACCESS_TOKEN}}",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "X-Tenant-Id",
+                "value": "{{TENANT_ID}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"{{$randomLoremWords}}\",\n  \"author\": \"{{$randomFullName}}\",\n  \"description\": \"{{$randomLoremSentence}}\",\n  \"price\": {{randomBookPrice}},\n  \"stock\": {{randomStock}}\n}"
+            },
+            "url": {
+              "raw": "{{BASE_URL}}/books",
+              "host": ["{{BASE_URL}}"],
+              "path": ["books"]
+            },
+            "description": "Create a new book. Requires authentication. Provide title, author, price, and stock in the request body."
+          }
+        },
+        {
+          "name": "Update Book",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{ACCESS_TOKEN}}",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "X-Tenant-Id",
+                "value": "{{TENANT_ID}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"{{$randomLoremWords}} - Updated Edition\",\n  \"price\": {{randomBookPrice}},\n  \"stock\": {{randomStock}}\n}"
+            },
+            "url": {
+              "raw": "{{BASE_URL}}/books/{{BOOK_ID}}",
+              "host": ["{{BASE_URL}}"],
+              "path": ["books", "{{BOOK_ID}}"]
+            },
+            "description": "Update an existing book by ID. Requires authentication."
+          }
+        },
+        {
+          "name": "Delete Book",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{ACCESS_TOKEN}}",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "X-Tenant-Id",
+                "value": "{{TENANT_ID}}"
+              }
+            ],
+            "url": {
+              "raw": "{{BASE_URL}}/books/{{BOOK_ID}}",
+              "host": ["{{BASE_URL}}"],
+              "path": ["books", "{{BOOK_ID}}"]
+            },
+            "description": "Delete a book by ID. Requires authentication."
+          }
+        },
+        {
+          "name": "Update Book Stock",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{ACCESS_TOKEN}}",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "X-Tenant-Id",
+                "value": "{{TENANT_ID}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"quantity\": {{randomQuantity}},\n  \"operation\": \"{{randomOperation}}\"\n}"
+            },
+            "url": {
+              "raw": "{{BASE_URL}}/books/{{BOOK_ID}}/stock",
+              "host": ["{{BASE_URL}}"],
+              "path": ["books", "{{BOOK_ID}}", "stock"]
+            },
+            "description": "Update book stock. Operation can be 'add' or 'subtract'. Requires authentication."
+          }
+        }
+      ]
+    },
+    {
+      "name": "Orders",
+      "item": [
+        {
+          "name": "Get All Orders",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{ACCESS_TOKEN}}",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "X-Tenant-Id",
+                "value": "{{TENANT_ID}}"
+              }
+            ],
+            "url": {
+              "raw": "{{BASE_URL}}/orders",
+              "host": ["{{BASE_URL}}"],
+              "path": ["orders"],
+              "query": [
+                {
+                  "key": "userId",
+                  "value": "",
+                  "description": "Filter by user ID",
+                  "disabled": true
+                },
+                {
+                  "key": "status",
+                  "value": "",
+                  "description": "Filter by order status",
+                  "disabled": true
+                }
+              ]
+            },
+            "description": "Retrieve all orders for the specified tenant. Requires authentication. Supports filtering by userId or status."
+          }
+        },
+        {
+          "name": "Get Order By ID",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{ACCESS_TOKEN}}",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "X-Tenant-Id",
+                "value": "{{TENANT_ID}}"
+              }
+            ],
+            "url": {
+              "raw": "{{BASE_URL}}/orders/{{ORDER_ID}}",
+              "host": ["{{BASE_URL}}"],
+              "path": ["orders", "{{ORDER_ID}}"]
+            },
+            "description": "Retrieve a specific order by its ID with all order items. Requires authentication."
+          }
+        },
+        {
+          "name": "Create Order",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{ACCESS_TOKEN}}",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "X-Tenant-Id",
+                "value": "{{TENANT_ID}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"user_id\": {{USER_ID}},\n  \"status\": \"{{randomStatus}}\",\n  \"items\": [\n    {\n      \"book_id\": {{BOOK_ID}},\n      \"quantity\": {{randomQuantity}}\n    },\n    {\n      \"book_id\": 2,\n      \"quantity\": {{randomQuantity}}\n    }\n  ]\n}"
+            },
+            "url": {
+              "raw": "{{BASE_URL}}/orders",
+              "host": ["{{BASE_URL}}"],
+              "path": ["orders"]
+            },
+            "description": "Create a new order. Requires authentication. Provide user_id and items array. Automatically calculates total and updates book stock."
+          }
+        },
+        {
+          "name": "Update Order",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{ACCESS_TOKEN}}",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "X-Tenant-Id",
+                "value": "{{TENANT_ID}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"status\": \"{{randomStatus}}\"\n}"
+            },
+            "url": {
+              "raw": "{{BASE_URL}}/orders/{{ORDER_ID}}",
+              "host": ["{{BASE_URL}}"],
+              "path": ["orders", "{{ORDER_ID}}"]
+            },
+            "description": "Update an existing order (typically status updates). Requires authentication."
+          }
+        },
+        {
+          "name": "Delete Order",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{ACCESS_TOKEN}}",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "X-Tenant-Id",
+                "value": "{{TENANT_ID}}"
+              }
+            ],
+            "url": {
+              "raw": "{{BASE_URL}}/orders/{{ORDER_ID}}",
+              "host": ["{{BASE_URL}}"],
+              "path": ["orders", "{{ORDER_ID}}"]
+            },
+            "description": "Delete an order by ID. Requires authentication. Automatically restores book stock."
+          }
+        },
+        {
+          "name": "Get Order Items",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{ACCESS_TOKEN}}",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{BASE_URL}}/orders/{{ORDER_ID}}/items",
+              "host": ["{{BASE_URL}}"],
+              "path": ["orders", "{{ORDER_ID}}", "items"]
+            },
+            "description": "Get all items for a specific order. Requires authentication."
+          }
+        },
+        {
+          "name": "Add Order Item",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{ACCESS_TOKEN}}",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"book_id\": {{BOOK_ID}},\n  \"quantity\": {{randomQuantity}}\n}"
+            },
+            "url": {
+              "raw": "{{BASE_URL}}/orders/{{ORDER_ID}}/items",
+              "host": ["{{BASE_URL}}"],
+              "path": ["orders", "{{ORDER_ID}}", "items"]
+            },
+            "description": "Add an item to an existing order. Requires authentication."
+          }
+        },
+        {
+          "name": "Remove Order Item",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{ACCESS_TOKEN}}",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{BASE_URL}}/orders/{{ORDER_ID}}/items/{{ITEM_ID}}",
+              "host": ["{{BASE_URL}}"],
+              "path": ["orders", "{{ORDER_ID}}", "items", "{{ITEM_ID}}"]
+            },
+            "description": "Remove an item from an order. Requires authentication."
+          }
+        }
+      ]
+    },
+    {
+      "name": "Roles",
+      "item": [
+        {
+          "name": "Get All Roles",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{ACCESS_TOKEN}}",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{BASE_URL}}/roles",
+              "host": ["{{BASE_URL}}"],
+              "path": ["roles"]
+            },
+            "description": "Retrieve all available roles. Requires authentication."
+          }
+        },
+        {
+          "name": "Get Role By ID",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{ACCESS_TOKEN}}",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{BASE_URL}}/roles/{{ROLE_ID}}",
+              "host": ["{{BASE_URL}}"],
+              "path": ["roles", "{{ROLE_ID}}"]
+            },
+            "description": "Retrieve a specific role by its ID. Requires authentication."
+          }
+        },
+        {
+          "name": "Create Role",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{ACCESS_TOKEN}}",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"manager\",\n  \"description\": \"Store manager with elevated permissions\"\n}"
+            },
+            "url": {
+              "raw": "{{BASE_URL}}/roles",
+              "host": ["{{BASE_URL}}"],
+              "path": ["roles"]
+            },
+            "description": "Create a new role. Requires authentication. Provide name and optional description."
+          }
+        },
+        {
+          "name": "Update Role",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{ACCESS_TOKEN}}",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"senior_manager\",\n  \"description\": \"Senior store manager with full permissions\"\n}"
+            },
+            "url": {
+              "raw": "{{BASE_URL}}/roles/{{ROLE_ID}}",
+              "host": ["{{BASE_URL}}"],
+              "path": ["roles", "{{ROLE_ID}}"]
+            },
+            "description": "Update an existing role by ID. Requires authentication."
+          }
+        },
+        {
+          "name": "Delete Role",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{ACCESS_TOKEN}}",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{BASE_URL}}/roles/{{ROLE_ID}}",
+              "host": ["{{BASE_URL}}"],
+              "path": ["roles", "{{ROLE_ID}}"]
+            },
+            "description": "Delete a role by ID. Cannot delete roles that have users assigned. Requires authentication."
+          }
+        },
+        {
+          "name": "Get Users with Role",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{ACCESS_TOKEN}}",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{BASE_URL}}/roles/{{ROLE_ID}}/users",
+              "host": ["{{BASE_URL}}"],
+              "path": ["roles", "{{ROLE_ID}}", "users"]
+            },
+            "description": "Get all users assigned to a specific role. Requires authentication."
+          }
+        },
+        {
+          "name": "Get User Roles",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{ACCESS_TOKEN}}",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{BASE_URL}}/roles/users/{{USER_ID}}",
+              "host": ["{{BASE_URL}}"],
+              "path": ["roles", "users", "{{USER_ID}}"]
+            },
+            "description": "Get all roles assigned to a specific user. Requires authentication."
+          }
+        }
+      ]
+    },
+    {
+      "name": "Reports",
+      "item": [
+        {
+          "name": "Top Selling Books",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{ACCESS_TOKEN}}",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "X-Tenant-Id",
+                "value": "{{TENANT_ID}}"
+              }
+            ],
+            "url": {
+              "raw": "{{BASE_URL}}/reports/top-selling-books",
+              "host": ["{{BASE_URL}}"],
+              "path": ["reports", "top-selling-books"],
+              "query": [
+                {
+                  "key": "limit",
+                  "value": "10",
+                  "description": "Number of top books to return",
+                  "disabled": true
+                },
+                {
+                  "key": "startDate",
+                  "value": "2024-01-01",
+                  "description": "Start date for the report (YYYY-MM-DD)",
+                  "disabled": true
+                },
+                {
+                  "key": "endDate",
+                  "value": "2024-12-31",
+                  "description": "End date for the report (YYYY-MM-DD)",
+                  "disabled": true
+                }
+              ]
+            },
+            "description": "Get top selling books report for the specified tenant. Requires authentication. Supports filtering by date range and limiting results."
+          }
+        }
+      ]
+    }
+  ],
+  "event": [
+    {
+      "listen": "prerequest",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          "// Generate dynamic test data",
+          "",
+          "// Generate random stock operation",
+          "const operations = ['add', 'subtract'];",
+          "pm.globals.set('randomOperation', operations[Math.floor(Math.random() * operations.length)]);",
+          "",
+          "// Generate random order status",
+          "const statuses = ['pending', 'processing', 'shipped', 'delivered', 'cancelled'];",
+          "pm.globals.set('randomStatus', statuses[Math.floor(Math.random() * statuses.length)]);",
+          "",
+          "// Generate random quantity between 1-10",
+          "pm.globals.set('randomQuantity', Math.floor(Math.random() * 10) + 1);",
+          "",
+          "// Generate random price between 5.00 - 99.99",
+          "pm.globals.set('randomBookPrice', (Math.random() * 95 + 5).toFixed(2));",
+          "",
+          "// Generate random stock between 0-100",
+          "pm.globals.set('randomStock', Math.floor(Math.random() * 101));"
+        ]
+      }
+    },
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          "// Common test scripts",
+          "pm.test('Status code should be successful', function () {",
+          "    pm.expect(pm.response.code).to.be.oneOf([200, 201, 204]);",
+          "});",
+          "",
+          "pm.test('Response should have success field', function () {",
+          "    const jsonData = pm.response.json();",
+          "    pm.expect(jsonData).to.have.property('success');",
+          "});",
+          "",
+          "pm.test('Response should have message field', function () {",
+          "    const jsonData = pm.response.json();",
+          "    pm.expect(jsonData).to.have.property('message');",
+          "});"
+        ]
+      }
+    }
+  ],
+  "variable": [
+    {
+      "key": "BASE_URL",
+      "value": "http://localhost:3000",
+      "type": "string",
+      "description": "Base URL for the API server"
+    },
+    {
+      "key": "TENANT_ID",
+      "value": "dev001",
+      "type": "string",
+      "description": "Default tenant ID for multi-tenant requests"
+    },
+    {
+      "key": "ACCESS_TOKEN",
+      "value": "",
+      "type": "string",
+      "description": "JWT access token for authenticated requests (auto-populated from login)"
+    },
+    {
+      "key": "REFRESH_TOKEN",
+      "value": "",
+      "type": "string",
+      "description": "JWT refresh token for token renewal (auto-populated from login)"
+    },
+    {
+      "key": "USER_ID",
+      "value": "1",
+      "type": "string",
+      "description": "Sample user ID for testing (auto-populated from login/register)"
+    },
+    {
+      "key": "BOOK_ID",
+      "value": "1",
+      "type": "string",
+      "description": "Sample book ID for testing"
+    },
+    {
+      "key": "ORDER_ID",
+      "value": "1",
+      "type": "string",
+      "description": "Sample order ID for testing"
+    },
+    {
+      "key": "ROLE_ID",
+      "value": "1",
+      "type": "string",
+      "description": "Sample role ID for testing"
+    },
+    {
+      "key": "ITEM_ID",
+      "value": "1",
+      "type": "string",
+      "description": "Sample order item ID for testing"
+    }
+  ]
+}

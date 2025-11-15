@@ -1,0 +1,1535 @@
+openapi: 3.0.3
+info:
+  title: Bookstore E-commerce API
+  version: 1.0.0
+  description: Node.js/Express/MySQL API for bookstore e-commerce system with multi-tenant support.
+servers:
+  - url: '{SERVER_URL}'
+    description: API server (set dynamically)
+paths:
+  /ping:
+    get:
+      summary: Ping database
+      description: Health check endpoint to test database connectivity.
+      responses:
+        '200':
+          description: Ping success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: ok
+                  time:
+                    type: string
+                    format: date-time
+        '500':
+          description: Internal server error
+  /register:
+    post:
+      summary: Register a new user
+      description: Create a new user account with authentication
+      tags:
+        - Authentication
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - name
+                - email
+                - password
+                - tenant_id
+              properties:
+                name:
+                  type: string
+                  example: 'John Doe'
+                email:
+                  type: string
+                  format: email
+                  example: 'john@example.com'
+                password:
+                  type: string
+                  example: 'password123'
+                tenant_id:
+                  type: string
+                  example: 'dev001'
+      responses:
+        '201':
+          description: User registered successfully
+          headers:
+            Set-Cookie:
+              schema:
+                type: string
+                example: refreshToken=<token>; HttpOnly; Secure; SameSite=Strict
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: 'User registered successfully'
+                  data:
+                    type: object
+                    properties:
+                      user:
+                        $ref: '#/components/schemas/User'
+                      accessToken:
+                        type: string
+                        example: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...'
+        '409':
+          description: Email already in use
+        '500':
+          description: Registration failed
+  /login:
+    post:
+      summary: Login user
+      description: Authenticate user with email and password
+      tags:
+        - Authentication
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - email
+                - password
+              properties:
+                email:
+                  type: string
+                  format: email
+                  example: 'admin@bookstore.com'
+                password:
+                  type: string
+                  example: 'password123'
+      responses:
+        '200':
+          description: Login successful
+          headers:
+            Set-Cookie:
+              schema:
+                type: string
+                example: refreshToken=<token>; HttpOnly; Secure; SameSite=Strict
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: 'Login successful'
+                  data:
+                    type: object
+                    properties:
+                      accessToken:
+                        type: string
+                        example: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...'
+        '401':
+          description: Invalid credentials
+        '500':
+          description: Login failed
+  /refresh-token:
+    post:
+      summary: Refresh access token
+      description: Get a new access token using the refresh token stored in HTTP-only cookie
+      tags:
+        - Authentication
+      parameters:
+        - name: Cookie
+          in: header
+          description: Refresh token cookie
+          required: true
+          schema:
+            type: string
+            example: 'refreshToken=<token>'
+      responses:
+        '200':
+          description: Token refreshed successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: 'Token refreshed successfully'
+                  data:
+                    type: object
+                    properties:
+                      accessToken:
+                        type: string
+                        example: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...'
+        '401':
+          description: Invalid or missing refresh token
+        '500':
+          description: Token refresh failed
+  /logout:
+    post:
+      summary: Logout user
+      description: Clear refresh token cookie and logout user
+      tags:
+        - Authentication
+      security:
+        - BearerAuth: []
+      responses:
+        '200':
+          description: Logged out successfully
+          headers:
+            Set-Cookie:
+              schema:
+                type: string
+                example: refreshToken=; HttpOnly; Secure; SameSite=Strict; Max-Age=0
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: 'Logged out successfully'
+                  data:
+                    type: object
+                    nullable: true
+        '401':
+          description: Unauthorized
+        '500':
+          description: Logout failed
+  /users/me:
+    get:
+      summary: Get current user
+      description: Get the profile of the currently authenticated user
+      tags:
+        - Users
+      security:
+        - BearerAuth: []
+      responses:
+        '200':
+          description: User profile retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: 'User data retrieved successfully'
+                  data:
+                    type: object
+                    properties:
+                      user:
+                        $ref: '#/components/schemas/User'
+        '401':
+          description: Unauthorized
+        '404':
+          description: User not found
+  /users:
+    get:
+      summary: Get all users
+      description: Retrieve all users for the specified tenant
+      tags:
+        - Users
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: X-Tenant-Id
+          in: header
+          required: true
+          schema:
+            type: string
+          description: Tenant ID for multi-tenant support
+      responses:
+        '200':
+          description: List of users
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiResponseUsers'
+        '400':
+          description: Tenant ID is required
+    post:
+      summary: Create a new user
+      description: Create a new user account
+      tags:
+        - Users
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: X-Tenant-Id
+          in: header
+          required: true
+          schema:
+            type: string
+          description: Tenant ID for multi-tenant support
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserCreate'
+      responses:
+        '201':
+          description: User created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiResponseUser'
+        '400':
+          description: Missing required fields or tenant ID
+        '409':
+          description: User with email already exists
+  /users/{id}:
+    get:
+      summary: Get user by ID
+      description: Retrieve a specific user with their roles
+      tags:
+        - Users
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+        - name: X-Tenant-Id
+          in: header
+          required: true
+          schema:
+            type: string
+          description: Tenant ID for multi-tenant support
+      responses:
+        '200':
+          description: User found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiResponseUserWithRoles'
+        '404':
+          description: User not found
+        '400':
+          description: Tenant ID is required
+    put:
+      summary: Update user
+      description: Update user information
+      tags:
+        - Users
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+        - name: X-Tenant-Id
+          in: header
+          required: true
+          schema:
+            type: string
+          description: Tenant ID for multi-tenant support
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserUpdate'
+      responses:
+        '200':
+          description: User updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiResponseSuccess'
+        '404':
+          description: User not found
+        '400':
+          description: Invalid input or tenant ID required
+    delete:
+      summary: Delete user
+      description: Delete a user account
+      tags:
+        - Users
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+        - name: X-Tenant-Id
+          in: header
+          required: true
+          schema:
+            type: string
+          description: Tenant ID for multi-tenant support
+      responses:
+        '200':
+          description: User deleted successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiResponseSuccess'
+        '404':
+          description: User not found
+        '400':
+          description: Tenant ID is required
+  /tenants:
+    get:
+      summary: Get all tenants
+      description: Retrieve all available tenants
+      tags:
+        - Tenants
+      security:
+        - BearerAuth: []
+      responses:
+        '200':
+          description: List of tenants
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: 'Tenants retrieved successfully'
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Tenant'
+        '500':
+          description: Failed to fetch tenants
+  /users/roles/assign:
+    post:
+      summary: Assign role to user
+      description: Assign a role to a user
+      tags:
+        - Roles
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserRoleAssignment'
+      responses:
+        '200':
+          description: Role assigned successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiResponseSuccess'
+        '400':
+          description: Missing required fields
+        '404':
+          description: User or role not found
+  /users/roles/remove:
+    delete:
+      summary: Remove role from user
+      description: Remove a role from a user
+      tags:
+        - Roles
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserRoleAssignment'
+      responses:
+        '200':
+          description: Role removed successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiResponseSuccess'
+        '400':
+          description: Missing required fields
+        '404':
+          description: User or role not found
+  /books:
+    get:
+      summary: Get all books
+      description: Retrieve all books for the specified tenant with optional filtering
+      tags:
+        - Books
+      parameters:
+        - name: X-Tenant-Id
+          in: header
+          required: true
+          schema:
+            type: string
+          description: Tenant ID for multi-tenant support
+        - name: title
+          in: query
+          required: false
+          schema:
+            type: string
+          description: Search by book title
+        - name: author
+          in: query
+          required: false
+          schema:
+            type: string
+          description: Search by author name
+        - name: inStock
+          in: query
+          required: false
+          schema:
+            type: boolean
+          description: Filter books with stock > 0
+      responses:
+        '200':
+          description: List of books
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiResponseBooks'
+        '400':
+          description: Tenant ID is required
+    post:
+      summary: Create a new book
+      description: Add a new book to the catalog
+      tags:
+        - Books
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: X-Tenant-Id
+          in: header
+          required: true
+          schema:
+            type: string
+          description: Tenant ID for multi-tenant support
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BookCreate'
+      responses:
+        '201':
+          description: Book created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiResponseBook'
+        '400':
+          description: Missing required fields or tenant ID
+  /books/{id}:
+    get:
+      summary: Get book by ID
+      description: Retrieve a specific book
+      tags:
+        - Books
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+        - name: X-Tenant-Id
+          in: header
+          required: true
+          schema:
+            type: string
+          description: Tenant ID for multi-tenant support
+      responses:
+        '200':
+          description: Book found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiResponseBook'
+        '404':
+          description: Book not found
+        '400':
+          description: Tenant ID is required
+    put:
+      summary: Update book
+      description: Update book information
+      tags:
+        - Books
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+        - name: X-Tenant-Id
+          in: header
+          required: true
+          schema:
+            type: string
+          description: Tenant ID for multi-tenant support
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BookUpdate'
+      responses:
+        '200':
+          description: Book updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiResponseSuccess'
+        '404':
+          description: Book not found
+        '400':
+          description: Invalid input or tenant ID required
+    delete:
+      summary: Delete book
+      description: Remove a book from the catalog
+      tags:
+        - Books
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+        - name: X-Tenant-Id
+          in: header
+          required: true
+          schema:
+            type: string
+          description: Tenant ID for multi-tenant support
+      responses:
+        '200':
+          description: Book deleted successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiResponseSuccess'
+        '404':
+          description: Book not found
+        '400':
+          description: Tenant ID is required
+  /books/{id}/stock:
+    patch:
+      summary: Update book stock
+      description: Add or subtract from book inventory
+      tags:
+        - Books
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+        - name: X-Tenant-Id
+          in: header
+          required: true
+          schema:
+            type: string
+          description: Tenant ID for multi-tenant support
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/StockUpdate'
+      responses:
+        '200':
+          description: Stock updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiResponseSuccess'
+        '404':
+          description: Book not found
+        '400':
+          description: Invalid operation or tenant ID required
+  /orders:
+    get:
+      summary: Get all orders
+      description: Retrieve all orders for the specified tenant with optional filtering
+      tags:
+        - Orders
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: X-Tenant-Id
+          in: header
+          required: true
+          schema:
+            type: string
+          description: Tenant ID for multi-tenant support
+        - name: userId
+          in: query
+          required: false
+          schema:
+            type: integer
+          description: Filter by user ID
+        - name: status
+          in: query
+          required: false
+          schema:
+            type: string
+          description: Filter by order status
+      responses:
+        '200':
+          description: List of orders
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiResponseOrders'
+        '400':
+          description: Tenant ID is required
+    post:
+      summary: Create a new order
+      description: Create a new order with items
+      tags:
+        - Orders
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: X-Tenant-Id
+          in: header
+          required: true
+          schema:
+            type: string
+          description: Tenant ID for multi-tenant support
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/OrderCreate'
+      responses:
+        '201':
+          description: Order created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiResponseOrder'
+        '400':
+          description: Missing required fields, insufficient stock, or tenant ID required
+  /orders/{id}:
+    get:
+      summary: Get order by ID
+      description: Retrieve a specific order with all items
+      tags:
+        - Orders
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+        - name: X-Tenant-Id
+          in: header
+          required: true
+          schema:
+            type: string
+          description: Tenant ID for multi-tenant support
+      responses:
+        '200':
+          description: Order found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiResponseOrderWithItems'
+        '404':
+          description: Order not found
+        '400':
+          description: Tenant ID is required
+    put:
+      summary: Update order
+      description: Update order status
+      tags:
+        - Orders
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+        - name: X-Tenant-Id
+          in: header
+          required: true
+          schema:
+            type: string
+          description: Tenant ID for multi-tenant support
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/OrderUpdate'
+      responses:
+        '200':
+          description: Order updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiResponseSuccess'
+        '404':
+          description: Order not found
+        '400':
+          description: Invalid input or tenant ID required
+    delete:
+      summary: Delete order
+      description: Cancel and delete an order (restores stock)
+      tags:
+        - Orders
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+        - name: X-Tenant-Id
+          in: header
+          required: true
+          schema:
+            type: string
+          description: Tenant ID for multi-tenant support
+      responses:
+        '200':
+          description: Order deleted successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiResponseSuccess'
+        '404':
+          description: Order not found
+        '400':
+          description: Tenant ID is required
+  /orders/{id}/items:
+    get:
+      summary: Get order items
+      description: Retrieve all items for a specific order
+      tags:
+        - Orders
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Order items retrieved
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiResponseOrderItems'
+        '404':
+          description: Order not found
+    post:
+      summary: Add item to order
+      description: Add a new item to an existing order
+      tags:
+        - Orders
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/OrderItemCreate'
+      responses:
+        '201':
+          description: Item added to order
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiResponseSuccess'
+        '400':
+          description: Missing required fields or insufficient stock
+        '404':
+          description: Order or book not found
+  /orders/{orderId}/items/{itemId}:
+    delete:
+      summary: Remove item from order
+      description: Remove a specific item from an order
+      tags:
+        - Orders
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: orderId
+          in: path
+          required: true
+          schema:
+            type: integer
+        - name: itemId
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Item removed from order
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiResponseSuccess'
+        '404':
+          description: Order or item not found
+  /roles:
+    get:
+      summary: Get all roles
+      description: Retrieve all available roles
+      tags:
+        - Roles
+      security:
+        - BearerAuth: []
+      responses:
+        '200':
+          description: List of roles
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiResponseRoles'
+    post:
+      summary: Create a new role
+      description: Create a new user role
+      tags:
+        - Roles
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RoleCreate'
+      responses:
+        '201':
+          description: Role created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiResponseRole'
+        '400':
+          description: Missing required fields
+        '409':
+          description: Role with name already exists
+  /roles/{id}:
+    get:
+      summary: Get role by ID
+      description: Retrieve a specific role
+      tags:
+        - Roles
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Role found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiResponseRole'
+        '404':
+          description: Role not found
+    put:
+      summary: Update role
+      description: Update role information
+      tags:
+        - Roles
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RoleUpdate'
+      responses:
+        '200':
+          description: Role updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiResponseSuccess'
+        '404':
+          description: Role not found
+        '400':
+          description: Invalid input
+    delete:
+      summary: Delete role
+      description: Delete a role (only if no users assigned)
+      tags:
+        - Roles
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Role deleted successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiResponseSuccess'
+        '404':
+          description: Role not found
+        '400':
+          description: Cannot delete role with assigned users
+  /roles/{id}/users:
+    get:
+      summary: Get users with role
+      description: Get all users assigned to a specific role
+      tags:
+        - Roles
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Users with role retrieved
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiResponseUsers'
+        '404':
+          description: Role not found
+  /roles/users/{userId}:
+    get:
+      summary: Get user roles
+      description: Get all roles assigned to a specific user
+      tags:
+        - Roles
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: userId
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: User roles retrieved
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiResponseRoles'
+        '404':
+          description: User not found
+components:
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: JWT access token for authentication
+  schemas:
+    Tenant:
+      type: object
+      properties:
+        id:
+          type: string
+          example: 'dev001'
+        name:
+          type: string
+          example: 'Development Tenant'
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+    User:
+      type: object
+      properties:
+        id:
+          type: integer
+        tenant_id:
+          type: string
+        name:
+          type: string
+        email:
+          type: string
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+    UserCreate:
+      type: object
+      required:
+        - name
+        - email
+        - password
+      properties:
+        name:
+          type: string
+          example: 'John Doe'
+        email:
+          type: string
+          format: email
+          example: 'john@example.com'
+        password:
+          type: string
+          example: 'securePassword123'
+    UserUpdate:
+      type: object
+      properties:
+        name:
+          type: string
+        email:
+          type: string
+          format: email
+        password:
+          type: string
+    UserWithRoles:
+      allOf:
+        - $ref: '#/components/schemas/User'
+        - type: object
+          properties:
+            roles:
+              type: array
+              items:
+                type: string
+              example: ['admin', 'customer']
+    UserRoleAssignment:
+      type: object
+      required:
+        - userId
+        - roleId
+      properties:
+        userId:
+          type: integer
+          example: 1
+        roleId:
+          type: integer
+          example: 2
+    Book:
+      type: object
+      properties:
+        id:
+          type: integer
+        tenant_id:
+          type: string
+        title:
+          type: string
+        author:
+          type: string
+        description:
+          type: string
+        price:
+          type: number
+          format: float
+        stock:
+          type: integer
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+    BookCreate:
+      type: object
+      required:
+        - title
+        - author
+        - price
+        - stock
+      properties:
+        title:
+          type: string
+          example: 'The Great Gatsby'
+        author:
+          type: string
+          example: 'F. Scott Fitzgerald'
+        description:
+          type: string
+          example: 'A classic American novel'
+        price:
+          type: number
+          format: float
+          example: 12.99
+        stock:
+          type: integer
+          example: 50
+    BookUpdate:
+      type: object
+      properties:
+        title:
+          type: string
+        author:
+          type: string
+        description:
+          type: string
+        price:
+          type: number
+          format: float
+        stock:
+          type: integer
+    StockUpdate:
+      type: object
+      required:
+        - quantity
+        - operation
+      properties:
+        quantity:
+          type: integer
+          example: 10
+        operation:
+          type: string
+          enum: ['add', 'subtract']
+          example: 'add'
+    Order:
+      type: object
+      properties:
+        id:
+          type: integer
+        tenant_id:
+          type: string
+        user_id:
+          type: integer
+        status:
+          type: string
+          enum: ['pending', 'processing', 'shipped', 'delivered', 'cancelled']
+        total_amount:
+          type: number
+          format: float
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+    OrderWithItems:
+      allOf:
+        - $ref: '#/components/schemas/Order'
+        - type: object
+          properties:
+            items:
+              type: array
+              items:
+                $ref: '#/components/schemas/OrderItem'
+    OrderCreate:
+      type: object
+      required:
+        - user_id
+        - status
+        - items
+      properties:
+        user_id:
+          type: integer
+          example: 1
+        status:
+          type: string
+          enum: ['pending', 'processing', 'shipped', 'delivered', 'cancelled']
+          example: 'pending'
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/OrderItemCreate'
+    OrderUpdate:
+      type: object
+      properties:
+        status:
+          type: string
+          enum: ['pending', 'processing', 'shipped', 'delivered', 'cancelled']
+        total_amount:
+          type: number
+          format: float
+    OrderItem:
+      type: object
+      properties:
+        id:
+          type: integer
+        order_id:
+          type: integer
+        book_id:
+          type: integer
+        quantity:
+          type: integer
+        price:
+          type: number
+          format: float
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+        book_title:
+          type: string
+        book_author:
+          type: string
+    OrderItemCreate:
+      type: object
+      required:
+        - book_id
+        - quantity
+      properties:
+        book_id:
+          type: integer
+          example: 1
+        quantity:
+          type: integer
+          example: 2
+    Role:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        description:
+          type: string
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+    RoleCreate:
+      type: object
+      required:
+        - name
+      properties:
+        name:
+          type: string
+          example: 'manager'
+        description:
+          type: string
+          example: 'Store manager with elevated permissions'
+    RoleUpdate:
+      type: object
+      properties:
+        name:
+          type: string
+        description:
+          type: string
+    ApiResponseSuccess:
+      type: object
+      properties:
+        success:
+          type: boolean
+          example: true
+        message:
+          type: string
+          example: 'Operation completed successfully'
+        data:
+          type: object
+          nullable: true
+        error:
+          type: string
+          nullable: true
+    ApiResponseUser:
+      type: object
+      properties:
+        success:
+          type: boolean
+          example: true
+        message:
+          type: string
+          example: 'User retrieved successfully'
+        data:
+          $ref: '#/components/schemas/User'
+        error:
+          type: string
+          nullable: true
+    ApiResponseUserWithRoles:
+      type: object
+      properties:
+        success:
+          type: boolean
+          example: true
+        message:
+          type: string
+          example: 'User retrieved successfully'
+        data:
+          $ref: '#/components/schemas/UserWithRoles'
+        error:
+          type: string
+          nullable: true
+    ApiResponseUsers:
+      type: object
+      properties:
+        success:
+          type: boolean
+          example: true
+        message:
+          type: string
+          example: 'Users retrieved successfully'
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/User'
+        error:
+          type: string
+          nullable: true
+    ApiResponseBook:
+      type: object
+      properties:
+        success:
+          type: boolean
+          example: true
+        message:
+          type: string
+          example: 'Book retrieved successfully'
+        data:
+          $ref: '#/components/schemas/Book'
+        error:
+          type: string
+          nullable: true
+    ApiResponseBooks:
+      type: object
+      properties:
+        success:
+          type: boolean
+          example: true
+        message:
+          type: string
+          example: 'Books retrieved successfully'
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/Book'
+        error:
+          type: string
+          nullable: true
+    ApiResponseOrder:
+      type: object
+      properties:
+        success:
+          type: boolean
+          example: true
+        message:
+          type: string
+          example: 'Order retrieved successfully'
+        data:
+          $ref: '#/components/schemas/Order'
+        error:
+          type: string
+          nullable: true
+    ApiResponseOrderWithItems:
+      type: object
+      properties:
+        success:
+          type: boolean
+          example: true
+        message:
+          type: string
+          example: 'Order retrieved successfully'
+        data:
+          $ref: '#/components/schemas/OrderWithItems'
+        error:
+          type: string
+          nullable: true
+    ApiResponseOrders:
+      type: object
+      properties:
+        success:
+          type: boolean
+          example: true
+        message:
+          type: string
+          example: 'Orders retrieved successfully'
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/Order'
+        error:
+          type: string
+          nullable: true
+    ApiResponseOrderItems:
+      type: object
+      properties:
+        success:
+          type: boolean
+          example: true
+        message:
+          type: string
+          example: 'Order items retrieved successfully'
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/OrderItem'
+        error:
+          type: string
+          nullable: true
+    ApiResponseRole:
+      type: object
+      properties:
+        success:
+          type: boolean
+          example: true
+        message:
+          type: string
+          example: 'Role retrieved successfully'
+        data:
+          $ref: '#/components/schemas/Role'
+        error:
+          type: string
+          nullable: true
+    ApiResponseRoles:
+      type: object
+      properties:
+        success:
+          type: boolean
+          example: true
+        message:
+          type: string
+          example: 'Roles retrieved successfully'
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/Role'
+        error:
+          type: string
+          nullable: true

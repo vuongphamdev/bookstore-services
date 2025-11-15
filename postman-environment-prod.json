@@ -1,0 +1,63 @@
+{
+  "id": "bookstore-production-env",
+  "name": "Bookstore API - Production",
+  "values": [
+    {
+      "key": "BASE_URL",
+      "value": "https://api.bookstore.com",
+      "description": "Production API server URL",
+      "enabled": true
+    },
+    {
+      "key": "TENANT_ID",
+      "value": "prod001",
+      "description": "Production tenant ID",
+      "enabled": true
+    },
+    {
+      "key": "USER_ID",
+      "value": "",
+      "description": "User ID for production testing (use with caution)",
+      "enabled": false
+    },
+    {
+      "key": "BOOK_ID",
+      "value": "",
+      "description": "Book ID for production testing (use with caution)",
+      "enabled": false
+    },
+    {
+      "key": "ORDER_ID",
+      "value": "",
+      "description": "Order ID for production testing (use with caution)",
+      "enabled": false
+    },
+    {
+      "key": "ROLE_ID",
+      "value": "",
+      "description": "Role ID for production testing (use with caution)",
+      "enabled": false
+    },
+    {
+      "key": "ITEM_ID",
+      "value": "",
+      "description": "Order item ID for production testing (use with caution)",
+      "enabled": false
+    },
+    {
+      "key": "API_KEY",
+      "value": "",
+      "description": "API key for production environment",
+      "enabled": false
+    },
+    {
+      "key": "AUTH_TOKEN",
+      "value": "",
+      "description": "Authentication token for production",
+      "enabled": false
+    }
+  ],
+  "_postman_variable_scope": "environment",
+  "_postman_exported_at": "2025-10-05T10:30:00.000Z",
+  "_postman_exported_using": "Postman/10.0.0"
+}
