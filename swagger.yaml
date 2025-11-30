@@ -2,7 +2,7 @@ openapi: 3.0.3
 info:
   title: Bookstore E-commerce API
   version: 1.0.0
-  description: Node.js/Express/MySQL API for bookstore e-commerce system with multi-tenant support.
+  description: Node.js/Express/MySQL API for bookstore e-commerce system.
 servers:
   - url: '{SERVER_URL}'
     description: API server (set dynamically)
@@ -43,7 +43,6 @@ paths:
                 - name
                 - email
                 - password
-                - tenant_id
               properties:
                 name:
                   type: string
@@ -55,9 +54,6 @@ paths:
                 password:
                   type: string
                   example: 'password123'
-                tenant_id:
-                  type: string
-                  example: 'dev001'
       responses:
         '201':
           description: User registered successfully
@@ -232,18 +228,11 @@ paths:
   /users:
     get:
       summary: Get all users
-      description: Retrieve all users for the specified tenant
+      description: Retrieve all users
       tags:
         - Users
       security:
         - BearerAuth: []
-      parameters:
-        - name: X-Tenant-Id
-          in: header
-          required: true
-          schema:
-            type: string
-          description: Tenant ID for multi-tenant support
       responses:
         '200':
           description: List of users
@@ -252,7 +241,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/ApiResponseUsers'
         '400':
-          description: Tenant ID is required
+          description: Invalid input
     post:
       summary: Create a new user
       description: Create a new user account
@@ -260,13 +249,6 @@ paths:
         - Users
       security:
         - BearerAuth: []
-      parameters:
-        - name: X-Tenant-Id
-          in: header
-          required: true
-          schema:
-            type: string
-          description: Tenant ID for multi-tenant support
       requestBody:
         required: true
         content:
@@ -281,7 +263,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/ApiResponseUser'
         '400':
-          description: Missing required fields or tenant ID
+          description: Missing required fields
         '409':
           description: User with email already exists
   /users/{id}:
@@ -298,12 +280,6 @@ paths:
           required: true
           schema:
             type: integer
-        - name: X-Tenant-Id
-          in: header
-          required: true
-          schema:
-            type: string
-          description: Tenant ID for multi-tenant support
       responses:
         '200':
           description: User found
@@ -314,7 +290,7 @@ paths:
         '404':
           description: User not found
         '400':
-          description: Tenant ID is required
+          description: Invalid input
     put:
       summary: Update user
       description: Update user information
@@ -328,12 +304,7 @@ paths:
           required: true
           schema:
             type: integer
-        - name: X-Tenant-Id
-          in: header
-          required: true
-          schema:
-            type: string
-          description: Tenant ID for multi-tenant support
+
       requestBody:
         required: true
         content:
@@ -350,7 +321,7 @@ paths:
         '404':
           description: User not found
         '400':
-          description: Invalid input or tenant ID required
+          description: Invalid input
     delete:
       summary: Delete user
       description: Delete a user account
@@ -364,12 +335,7 @@ paths:
           required: true
           schema:
             type: integer
-        - name: X-Tenant-Id
-          in: header
-          required: true
-          schema:
-            type: string
-          description: Tenant ID for multi-tenant support
+
       responses:
         '200':
           description: User deleted successfully
@@ -380,32 +346,182 @@ paths:
         '404':
           description: User not found
         '400':
-          description: Tenant ID is required
-  /tenants:
+          description: Invalid input
+
+  /shops:
     get:
-      summary: Get all tenants
-      description: Retrieve all available tenants
+      summary: Get all shops
+      description: Retrieve all shops
       tags:
-        - Tenants
+        - Shops
       security:
         - BearerAuth: []
       responses:
         '200':
-          description: List of tenants
+          description: List of shops
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiResponseShops'
+        '500':
+          description: Failed to fetch shops
+    post:
+      summary: Create a new shop
+      description: Create a new shop
+      tags:
+        - Shops
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ShopCreate'
+      responses:
+        '201':
+          description: Shop created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiResponseShop'
+        '400':
+          description: Missing required fields
+  /shops/{id}:
+    get:
+      summary: Get shop by ID
+      description: Retrieve a specific shop
+      tags:
+        - Shops
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Shop found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiResponseShop'
+        '404':
+          description: Shop not found
+    put:
+      summary: Update shop
+      description: Update shop information
+      tags:
+        - Shops
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ShopUpdate'
+      responses:
+        '200':
+          description: Shop updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiResponseShop'
+        '404':
+          description: Shop not found
+        '403':
+          description: Forbidden
+    delete:
+      summary: Delete shop
+      description: Delete a shop
+      tags:
+        - Shops
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Shop deleted successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiResponseSuccess'
+        '404':
+          description: Shop not found
+        '403':
+          description: Forbidden
+  /shops/my-shops:
+    get:
+      summary: Get my shops
+      description: Retrieve all shops owned by the current user
+      tags:
+        - Shops
+      security:
+        - BearerAuth: []
+      responses:
+        '200':
+          description: List of my shops
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiResponseShops'
+  /reports/top-selling-products:
+    get:
+      summary: Get top selling products
+      description: Retrieve top selling products
+      tags:
+        - Reports
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                top:
+                  type: integer
+                  example: 10
+      responses:
+        '200':
+          description: Top selling products retrieved
           content:
             application/json:
               schema:
                 type: object
                 properties:
+                  success:
+                    type: boolean
+                    example: true
                   message:
                     type: string
-                    example: 'Tenants retrieved successfully'
+                    example: 'Top 10 best-selling products retrieved successfully'
                   data:
                     type: array
                     items:
-                      $ref: '#/components/schemas/Tenant'
-        '500':
-          description: Failed to fetch tenants
+                      type: object
+                      properties:
+                        product_id:
+                          type: integer
+                        product_name:
+                          type: string
+                        total_sold:
+                          type: integer
   /users/roles/assign:
     post:
       summary: Assign role to user
@@ -456,81 +572,68 @@ paths:
           description: Missing required fields
         '404':
           description: User or role not found
-  /books:
+  /products:
     get:
-      summary: Get all books
-      description: Retrieve all books for the specified tenant with optional filtering
+      summary: Get all products
+      description: Retrieve all products with optional filtering
       tags:
-        - Books
+        - Products
       parameters:
-        - name: X-Tenant-Id
-          in: header
-          required: true
-          schema:
-            type: string
-          description: Tenant ID for multi-tenant support
-        - name: title
+        - name: keyword
           in: query
           required: false
           schema:
             type: string
-          description: Search by book title
-        - name: author
+          description: Search by keyword
+        - name: category
           in: query
           required: false
           schema:
             type: string
-          description: Search by author name
-        - name: inStock
+          description: Filter by category
+        - name: shop_id
           in: query
           required: false
           schema:
-            type: boolean
-          description: Filter books with stock > 0
+            type: integer
+          description: Filter by shop ID
       responses:
         '200':
-          description: List of books
+          description: List of products
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ApiResponseBooks'
+                $ref: '#/components/schemas/ApiResponseProducts'
         '400':
-          description: Tenant ID is required
+          description: Invalid input
     post:
-      summary: Create a new book
-      description: Add a new book to the catalog
+      summary: Create a new product
+      description: Add a new product to the catalog
       tags:
-        - Books
+        - Products
       security:
         - BearerAuth: []
-      parameters:
-        - name: X-Tenant-Id
-          in: header
-          required: true
-          schema:
-            type: string
-          description: Tenant ID for multi-tenant support
       requestBody:
         required: true
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/BookCreate'
+              $ref: '#/components/schemas/ProductCreate'
       responses:
         '201':
-          description: Book created successfully
+          description: Product created successfully
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ApiResponseBook'
+                $ref: '#/components/schemas/ApiResponseProduct'
         '400':
-          description: Missing required fields or tenant ID
-  /books/{id}:
+          description: Missing required fields
+  /products/{id}:
     get:
-      summary: Get book by ID
-      description: Retrieve a specific book
+      summary: Get product by ID
+      description: Retrieve a specific product
       tags:
-        - Books
+        - Products
       security:
         - BearerAuth: []
       parameters:
@@ -539,28 +642,22 @@ paths:
           required: true
           schema:
             type: integer
-        - name: X-Tenant-Id
-          in: header
-          required: true
-          schema:
-            type: string
-          description: Tenant ID for multi-tenant support
       responses:
         '200':
-          description: Book found
+          description: Product found
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ApiResponseBook'
+                $ref: '#/components/schemas/ApiResponseProduct'
         '404':
-          description: Book not found
+          description: Product not found
         '400':
-          description: Tenant ID is required
+          description: Invalid input
     put:
-      summary: Update book
-      description: Update book information
+      summary: Update product
+      description: Update product information
       tags:
-        - Books
+        - Products
       security:
         - BearerAuth: []
       parameters:
@@ -569,34 +666,29 @@ paths:
           required: true
           schema:
             type: integer
-        - name: X-Tenant-Id
-          in: header
-          required: true
-          schema:
-            type: string
-          description: Tenant ID for multi-tenant support
+
       requestBody:
         required: true
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/BookUpdate'
+              $ref: '#/components/schemas/ProductUpdate'
       responses:
         '200':
-          description: Book updated successfully
+          description: Product updated successfully
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/ApiResponseSuccess'
         '404':
-          description: Book not found
+          description: Product not found
         '400':
-          description: Invalid input or tenant ID required
+          description: Invalid input
     delete:
-      summary: Delete book
-      description: Remove a book from the catalog
+      summary: Delete product
+      description: Remove a product from the catalog
       tags:
-        - Books
+        - Products
       security:
         - BearerAuth: []
       parameters:
@@ -605,29 +697,24 @@ paths:
           required: true
           schema:
             type: integer
-        - name: X-Tenant-Id
-          in: header
-          required: true
-          schema:
-            type: string
-          description: Tenant ID for multi-tenant support
+
       responses:
         '200':
-          description: Book deleted successfully
+          description: Product deleted successfully
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/ApiResponseSuccess'
         '404':
-          description: Book not found
+          description: Product not found
         '400':
-          description: Tenant ID is required
-  /books/{id}/stock:
+          description: Invalid input
+  /products/{id}/stock:
     patch:
-      summary: Update book stock
-      description: Add or subtract from book inventory
+      summary: Update product stock
+      description: Add or subtract from product inventory
       tags:
-        - Books
+        - Products
       security:
         - BearerAuth: []
       parameters:
@@ -636,12 +723,7 @@ paths:
           required: true
           schema:
             type: integer
-        - name: X-Tenant-Id
-          in: header
-          required: true
-          schema:
-            type: string
-          description: Tenant ID for multi-tenant support
+
       requestBody:
         required: true
         content:
@@ -656,24 +738,18 @@ paths:
               schema:
                 $ref: '#/components/schemas/ApiResponseSuccess'
         '404':
-          description: Book not found
+          description: Product not found
         '400':
-          description: Invalid operation or tenant ID required
+          description: Invalid operation
   /orders:
     get:
       summary: Get all orders
-      description: Retrieve all orders for the specified tenant with optional filtering
+      description: Retrieve all orders with optional filtering
       tags:
         - Orders
       security:
         - BearerAuth: []
       parameters:
-        - name: X-Tenant-Id
-          in: header
-          required: true
-          schema:
-            type: string
-          description: Tenant ID for multi-tenant support
         - name: userId
           in: query
           required: false
@@ -694,7 +770,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/ApiResponseOrders'
         '400':
-          description: Tenant ID is required
+          description: Invalid input
     post:
       summary: Create a new order
       description: Create a new order with items
@@ -702,13 +778,6 @@ paths:
         - Orders
       security:
         - BearerAuth: []
-      parameters:
-        - name: X-Tenant-Id
-          in: header
-          required: true
-          schema:
-            type: string
-          description: Tenant ID for multi-tenant support
       requestBody:
         required: true
         content:
@@ -723,7 +792,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/ApiResponseOrder'
         '400':
-          description: Missing required fields, insufficient stock, or tenant ID required
+          description: Missing required fields or insufficient stock
   /orders/{id}:
     get:
       summary: Get order by ID
@@ -738,12 +807,7 @@ paths:
           required: true
           schema:
             type: integer
-        - name: X-Tenant-Id
-          in: header
-          required: true
-          schema:
-            type: string
-          description: Tenant ID for multi-tenant support
+
       responses:
         '200':
           description: Order found
@@ -754,7 +818,7 @@ paths:
         '404':
           description: Order not found
         '400':
-          description: Tenant ID is required
+          description: Invalid input
     put:
       summary: Update order
       description: Update order status
@@ -768,12 +832,7 @@ paths:
           required: true
           schema:
             type: integer
-        - name: X-Tenant-Id
-          in: header
-          required: true
-          schema:
-            type: string
-          description: Tenant ID for multi-tenant support
+
       requestBody:
         required: true
         content:
@@ -790,7 +849,7 @@ paths:
         '404':
           description: Order not found
         '400':
-          description: Invalid input or tenant ID required
+          description: Invalid input
     delete:
       summary: Delete order
       description: Cancel and delete an order (restores stock)
@@ -804,12 +863,7 @@ paths:
           required: true
           schema:
             type: integer
-        - name: X-Tenant-Id
-          in: header
-          required: true
-          schema:
-            type: string
-          description: Tenant ID for multi-tenant support
+
       responses:
         '200':
           description: Order deleted successfully
@@ -820,7 +874,7 @@ paths:
         '404':
           description: Order not found
         '400':
-          description: Tenant ID is required
+          description: Invalid input
   /orders/{id}/items:
     get:
       summary: Get order items
@@ -873,7 +927,7 @@ paths:
         '400':
           description: Missing required fields or insufficient stock
         '404':
-          description: Order or book not found
+          description: Order or product not found
   /orders/{orderId}/items/{itemId}:
     delete:
       summary: Remove item from order
@@ -1072,28 +1126,55 @@ components:
       bearerFormat: JWT
       description: JWT access token for authentication
   schemas:
-    Tenant:
+    Shop:
       type: object
       properties:
         id:
-          type: string
-          example: 'dev001'
+          type: integer
+        user_id:
+          type: integer
         name:
           type: string
-          example: 'Development Tenant'
+        description:
+          type: string
+        status:
+          type: string
+          enum: ['active', 'inactive', 'banned']
         created_at:
           type: string
           format: date-time
         updated_at:
           type: string
           format: date-time
+    ShopCreate:
+      type: object
+      required:
+        - name
+      properties:
+        name:
+          type: string
+          example: 'My Awesome Bookshop'
+        description:
+          type: string
+          example: 'Best books in town'
+    ShopUpdate:
+      type: object
+      properties:
+        name:
+          type: string
+        description:
+          type: string
+        status:
+          type: string
+          enum: ['active', 'inactive', 'banned']
+    User:
+      type: object
+      properties:
     User:
       type: object
       properties:
         id:
           type: integer
-        tenant_id:
-          type: string
         name:
           type: string
         email:
@@ -1121,15 +1202,27 @@ components:
         password:
           type: string
           example: 'securePassword123'
+        dob:
+          type: string
+          format: date
+          example: '1990-01-01'
+        phone_number:
+          type: string
+          example: '+1234567890'
+        address:
+          type: string
+          example: '123 Main St'
     UserUpdate:
       type: object
       properties:
         name:
           type: string
-        email:
+        dob:
           type: string
-          format: email
-        password:
+          format: date
+        phone_number:
+          type: string
+        address:
           type: string
     UserWithRoles:
       allOf:
@@ -1153,16 +1246,18 @@ components:
         roleId:
           type: integer
           example: 2
-    Book:
+    Product:
       type: object
       properties:
         id:
           type: integer
-        tenant_id:
+        shop_id:
+          type: integer
+        name:
           type: string
-        title:
+        sku:
           type: string
-        author:
+        category:
           type: string
         description:
           type: string
@@ -1171,26 +1266,40 @@ components:
           format: float
         stock:
           type: integer
+        status:
+          type: string
+          enum: ['active', 'inactive', 'draft', 'archived']
+        metadata:
+          type: string
         created_at:
           type: string
           format: date-time
         updated_at:
           type: string
           format: date-time
-    BookCreate:
+    ProductCreate:
       type: object
       required:
-        - title
-        - author
+        - name
+        - sku
+        - category
         - price
         - stock
+        - status
+        - shop_id
       properties:
-        title:
+        shop_id:
+          type: integer
+          example: 1
+        name:
           type: string
           example: 'The Great Gatsby'
-        author:
+        sku:
           type: string
-          example: 'F. Scott Fitzgerald'
+          example: 'BOOK-001'
+        category:
+          type: string
+          example: 'Books'
         description:
           type: string
           example: 'A classic American novel'
@@ -1201,12 +1310,21 @@ components:
         stock:
           type: integer
           example: 50
-    BookUpdate:
+        status:
+          type: string
+          enum: ['active', 'inactive', 'draft', 'archived']
+          example: 'active'
+        metadata:
+          type: string
+          example: '{"isbn": "978-3-16-148410-0"}'
+    ProductUpdate:
       type: object
       properties:
-        title:
+        name:
           type: string
-        author:
+        sku:
+          type: string
+        category:
           type: string
         description:
           type: string
@@ -1215,6 +1333,11 @@ components:
           format: float
         stock:
           type: integer
+        status:
+          type: string
+          enum: ['active', 'inactive', 'draft', 'archived']
+        metadata:
+          type: string
     StockUpdate:
       type: object
       required:
@@ -1231,15 +1354,16 @@ components:
     Order:
       type: object
       properties:
+    Order:
+      type: object
+      properties:
         id:
           type: integer
-        tenant_id:
-          type: string
         user_id:
           type: integer
         status:
           type: string
-          enum: ['pending', 'processing', 'shipped', 'delivered', 'cancelled']
+          enum: ['pending', 'processing', 'shipped', 'delivered', 'cancelled', 'returned', 'refunded']
         total_amount:
           type: number
           format: float
@@ -1270,7 +1394,7 @@ components:
           example: 1
         status:
           type: string
-          enum: ['pending', 'processing', 'shipped', 'delivered', 'cancelled']
+          enum: ['pending', 'processing', 'shipped', 'delivered', 'cancelled', 'returned', 'refunded']
           example: 'pending'
         items:
           type: array
@@ -1281,7 +1405,7 @@ components:
       properties:
         status:
           type: string
-          enum: ['pending', 'processing', 'shipped', 'delivered', 'cancelled']
+          enum: ['pending', 'processing', 'shipped', 'delivered', 'cancelled', 'returned', 'refunded']
         total_amount:
           type: number
           format: float
@@ -1292,7 +1416,7 @@ components:
           type: integer
         order_id:
           type: integer
-        book_id:
+        product_id:
           type: integer
         quantity:
           type: integer
@@ -1305,17 +1429,17 @@ components:
         updated_at:
           type: string
           format: date-time
-        book_title:
+        product_name:
           type: string
-        book_author:
+        product_sku:
           type: string
     OrderItemCreate:
       type: object
       required:
-        - book_id
+        - product_id
         - quantity
       properties:
-        book_id:
+        product_id:
           type: integer
           example: 1
         quantity:
@@ -1330,6 +1454,9 @@ components:
           type: string
         description:
           type: string
+        code:
+          type: string
+          enum: ['admin', 'user', 'shop_owner', 'driver']
         created_at:
           type: string
           format: date-time
@@ -1347,6 +1474,10 @@ components:
         description:
           type: string
           example: 'Store manager with elevated permissions'
+        code:
+          type: string
+          enum: ['admin', 'user', 'shop_owner', 'driver']
+          example: 'shop_owner'
     RoleUpdate:
       type: object
       properties:
@@ -1413,7 +1544,7 @@ components:
         error:
           type: string
           nullable: true
-    ApiResponseBook:
+    ApiResponseProduct:
       type: object
       properties:
         success:
@@ -1421,13 +1552,13 @@ components:
           example: true
         message:
           type: string
-          example: 'Book retrieved successfully'
+          example: 'Product retrieved successfully'
         data:
-          $ref: '#/components/schemas/Book'
+          $ref: '#/components/schemas/Product'
         error:
           type: string
           nullable: true
-    ApiResponseBooks:
+    ApiResponseProducts:
       type: object
       properties:
         success:
@@ -1435,11 +1566,41 @@ components:
           example: true
         message:
           type: string
-          example: 'Books retrieved successfully'
+          example: 'Products retrieved successfully'
         data:
           type: array
           items:
-            $ref: '#/components/schemas/Book'
+            $ref: '#/components/schemas/Product'
+        error:
+          type: string
+          nullable: true
+    ApiResponseShop:
+      type: object
+      properties:
+        success:
+          type: boolean
+          example: true
+        message:
+          type: string
+          example: 'Shop retrieved successfully'
+        data:
+          $ref: '#/components/schemas/Shop'
+        error:
+          type: string
+          nullable: true
+    ApiResponseShops:
+      type: object
+      properties:
+        success:
+          type: boolean
+          example: true
+        message:
+          type: string
+          example: 'Shops retrieved successfully'
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/Shop'
         error:
           type: string
           nullable: true

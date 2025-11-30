@@ -70,8 +70,6 @@ export const AUTH_MESSAGES = {
   REFRESH_TOKEN_IS_REQUIRED: 'Refresh token is required',
   REFRESH_TOKEN_IS_INVALID: 'Refresh token is invalid',
   REFRESH_TOKEN_IS_NOT_EXIST: 'Refresh token is not exist',
-  //Tenant messages
-  TENANT_ID_IS_REQUIRED: 'Tenant ID is required',
 } as const;
 
 export const USER_MESSAGES = {
