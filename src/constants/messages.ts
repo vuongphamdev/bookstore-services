@@ -29,6 +29,10 @@ export const AUTH_MESSAGES = {
   VERIFY_EMAIL_SUCCESSFUL: 'Verify email successful',
   ALREADY_VERIFIED_EMAIL_BEFORE: 'Already verified email before',
   RESEND_VERIFY_EMAIL_SUCCESSFUL: 'Resend verify email successful',
+  ADDRESS_IS_REQUIRED: 'Address is required',
+  PHONE_NUMBER_IS_REQUIRED: 'Phone number is required',
+  DOB_IS_REQUIRED: 'Date of birth is required',
+  DOB_MUST_BE_VALID_DATE: 'Date of birth must be a valid date',
   // Name messages
   NAME_IS_REQUIRED: 'Name is required',
   NAME_INVALID: 'Name must not contain special characters or numbers only',

@@ -1,4 +1,5 @@
 import { ENV } from '@config';
+import { ERole } from '@constants';
 import { signToken, verifyToken } from '@utils';
 
 enum TokenType {
@@ -11,6 +12,7 @@ enum TokenType {
 interface signTokenProps {
   user_id: number;
   email: string;
+  role: ERole;
 }
 
 export class AuthService {

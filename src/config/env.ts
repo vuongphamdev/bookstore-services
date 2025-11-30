@@ -1,8 +1,9 @@
 import { configDotenv } from 'dotenv';
+import path from 'path';
 
 // Only load .env file in local development (not in CI/CD)
 if (process.env.CI !== 'true') {
-  configDotenv();
+  configDotenv({ path: path.resolve(__dirname, '../../.env') });
 }
 
 let isExit = false;

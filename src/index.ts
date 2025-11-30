@@ -23,12 +23,12 @@ app.use(cookieParser());
 app.use(express.json({ limit: '10mb' }));
 
 // test DB
-app.get('/ping', async (_req: Request, res: Response) => {
+app.get('/ping', async (req: Request, res: Response, next) => {
   try {
     const [rows] = await db.raw('SELECT NOW() as now');
     res.json({ status: 'ok', time: (rows as any)[0].now });
-  } catch (err: any) {
-    res.status(500).json({ error: err.message });
+  } catch (err) {
+    next(err);
   }
 });
 app.use('/docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));

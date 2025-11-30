@@ -1,26 +1,53 @@
 import { db } from '@config';
-import { EOrderStatus, TABLE_NAMES } from '@constants';
+import { EOrderStatus } from '@constants';
 import {
-  Order,
-  OrderItem,
-  CreateOrderData,
-  CreateOrderItemData,
-  UpdateOrderData,
-  OrderItemWithProduct,
+  TCreateOrderData,
+  TCreateOrderItemData,
+  TUpdateOrderData,
+  TOrderWithDetails,
+  TOrderItemWithProduct,
+  TUpdateOrderItemData,
+  TOrder,
+  TOrderItem,
 } from '@models/schemas';
 
 class OrderService {
-  async getOrdersItems(orderIds: number[]) {
-    const items = await db<OrderItem>('order_items as oi')
-      .select('oi.*', 'p.name as product_name', 'p.sku as product_sku')
-      .join('products as p', 'oi.product_id', 'p.id')
-      .whereIn('oi.order_id', orderIds);
+  // =========== Orders ===========
+  async getOrdersItems(orderIds: number[]): Promise<TOrderItemWithProduct[]> {
+    try {
+      const items = await db<TOrderItemWithProduct>('order_items as oi')
+        .select('oi.*', 'p.name as product_name', 'p.sku as product_sku')
+        .join('products as p', 'oi.product_id', 'p.id')
+        .whereIn('oi.order_id', orderIds);
 
-    return items.map((row: any) => OrderItemWithProduct.fromRow(row));
+      return items;
+    } catch (error) {
+      console.error('Error when querying or parsing orders items items from database:', error);
+      throw error;
+    }
   }
 
-  async getOrders(userId: number, status: EOrderStatus[] = []) {
-    const orders = (await db<Order>('orders as o')
+  async getOrderById(orderId: number): Promise<TOrderWithDetails | null> {
+    const order = await db('orders as o')
+      .select('o.*', 's.name as shop_name', 'order_items = []')
+      .join('shops as s', 'o.shop_id', 's.id')
+      .where('o.id', orderId)
+      .first<TOrderWithDetails>();
+
+    if (!order) {
+      return null;
+    }
+
+    const orderItems = await this.getOrdersItems([order.id!]);
+
+    return {
+      ...order,
+      order_items: orderItems,
+    };
+  }
+
+  async searchOrders(userId: number, status: EOrderStatus[] = []): Promise<TOrderWithDetails[]> {
+    const orders = (await db<Omit<TOrderWithDetails, 'order_items'>>('orders as o')
       .select('o.*', 's.name as shop_name')
       .where({ buyer_id: userId })
       .modify((queryBuilder) => {
@@ -28,18 +55,13 @@ class OrderService {
           queryBuilder.whereIn('status', status);
         }
       })
-      .leftJoin('shops as s', 'orders.shop_id', 's.id')) as (Order & { shop_name: string })[];
+      .leftJoin('shops as s', 'o.shop_id', 's.id')) as Omit<TOrderWithDetails, 'order_items'>[];
 
-    if (orders.length === 0) {
-      return [];
-    }
-    const orderIds = orders.map((order) => order.id);
+    const orderIds = orders.map((order) => order.id!);
+    const ordersItems = await this.getOrdersItems(orderIds);
 
-    const items = await this.getOrdersItems(orderIds);
-
-    // Map items to their respective orders
-    const orderMap: { [key: number]: OrderItemWithProduct[] } = {};
-    items.forEach((item) => {
+    const orderMap: { [key: number]: TOrderItemWithProduct[] } = {};
+    ordersItems.forEach((item) => {
       if (!orderMap[item.order_id]) {
         orderMap[item.order_id] = [];
       }
@@ -49,50 +71,46 @@ class OrderService {
     return orders.map((order) => {
       return {
         ...order,
-        orderItems: orderMap[order.id] || [],
+        order_items: orderMap[order.id!] || [],
       };
     });
   }
 
-  async createOrder(orderData: CreateOrderData): Promise<number[]> {
-    return await db<Order>(TABLE_NAMES.ORDERS)
-      .insert({ ...orderData })
-      .returning('id');
+  async createOrder(createData: TCreateOrderData): Promise<number> {
+    const [id] = await db<TOrder>('orders').insert(createData);
+    return id;
   }
 
-  async updateOrder(id: number, orderData: UpdateOrderData): Promise<number> {
-    return await db<Order>(TABLE_NAMES.ORDERS).where({ id }).update(orderData);
+  async updateOrder(id: number, updateData: TUpdateOrderData): Promise<number> {
+    return await db<TOrder>('orders')
+      .where({ id })
+      .update({ ...updateData, updated_at: db.fn.now() });
   }
 
   async deleteOrder(id: number): Promise<number> {
-    return await db<Order>(TABLE_NAMES.ORDERS).where({ id }).del();
+    return await db<TOrder>('orders').where({ id }).update({ status: EOrderStatus.CANCELLED, updated_at: db.fn.now() });
   }
 
-  async getOrderItems(orderId: number): Promise<OrderItem[]> {
-    const rows = await db('order_items')
-      .join('books', 'order_items.book_id', 'books.id')
-      .select('order_items.*', 'books.title as book_title', 'books.author as book_author')
-      .where('order_items.order_id', orderId);
+  // =========== Order Items ===========
 
-    return rows.map((row) => OrderItem.fromRow(row));
+  async addOrderItem(createData: TCreateOrderItemData): Promise<number> {
+    const [id] = await db<TOrderItem>('order_items').insert(createData);
+    return id;
   }
 
-  async addOrderItem(orderItemData: CreateOrderItemData): Promise<number[]> {
-    return await db('order_items').insert(orderItemData);
-  }
-
-  async updateOrderItem(id: number, itemData: Partial<CreateOrderItemData>): Promise<number> {
-    return await db('order_items').where({ id }).update(itemData);
+  async updateOrderItem(id: number, updateData: TUpdateOrderItemData): Promise<number> {
+    return await db<TOrderItem>('order_items')
+      .where({ id })
+      .update({ ...updateData, updated_at: db.fn.now() });
   }
 
   async deleteOrderItem(itemId: number): Promise<number> {
-    return await db('order_items').where({ id: itemId }).del();
+    return await db<TOrderItem>('order_items').where({ id: itemId }).del();
   }
 
   async calculateOrderTotal(orderId: number): Promise<number> {
-    const result = await db('order_items').sum('price as total').where('order_id', orderId).first();
-
-    return result?.total || 0;
+    const row = await db('order_items').where('order_id', orderId).sum('price as total').first();
+    return Number(row?.total ?? 0);
   }
 }
 

@@ -1,14 +1,28 @@
 import { Request, Response } from 'express';
 import { productService, orderService } from '@services';
-import { CreateOrderData, CreateOrderItemData, UpdateOrderData } from '@models/schemas';
-import { Responses, InternalServerError, NotFoundError, EntityError } from '@models';
+import { TCreateOrderData, TCreateOrderItemData, TUpdateOrderData } from '@models/schemas';
+import {
+  Responses,
+  InternalServerError,
+  NotFoundError,
+  EntityError,
+  TGetOrderRequestParams,
+  TCreateOrderRequestBody,
+  TUpdateOrderRequestParams,
+  TUpdateOrderRequestBody,
+  TDeleteOrderRequestParams,
+  TGetOrderItemsRequestParams,
+  TAddOrderItemRequestParams,
+  TAddOrderItemRequestBody,
+  TRemoveOrderItemRequestParams,
+} from '@models';
 import { GENERAL_MESSAGE } from '@constants';
 import { EOrderStatus } from '@constants/enums';
 
-export const getOrders = async (req: Request, res: Response): Promise<Response> => {
+export const searchOrders = async (req: Request, res: Response) => {
   try {
     const { user_id } = req.user;
-    const orders = await orderService.getOrders(user_id);
+    const orders = await orderService.searchOrders(user_id);
     return Responses.success(res, 'Orders retrieved successfully', orders);
   } catch (error) {
     console.error(error);
@@ -16,11 +30,10 @@ export const getOrders = async (req: Request, res: Response): Promise<Response> 
   }
 };
 
-export const getOrder = async (req: Request, res: Response): Promise<Response> => {
+export const getOrder = async (req: Request<TGetOrderRequestParams>, res: Response) => {
   try {
     const { id } = req.params;
-
-    const order = await orderService.getOrders(Number(id));
+    const order = await orderService.getOrderById(Number(id));
 
     if (!order) {
       throw new NotFoundError('Order not found');
@@ -33,17 +46,12 @@ export const getOrder = async (req: Request, res: Response): Promise<Response> =
   }
 };
 
-export const createOrder = async (req: Request, res: Response): Promise<Response> => {
+export const createOrder = async (
+  req: Request<any, any, TCreateOrderRequestBody>,
+  res: Response
+): Promise<Response> => {
   try {
-    const {
-      user_id,
-      buyer_id,
-
-      shop_id,
-      items,
-      status = EOrderStatus.PENDING,
-      notes,
-    } = req.body;
+    const { user_id, buyer_id, shop_id, items, status = EOrderStatus.PENDING, notes } = req.body;
 
     // Validate all items for stock before proceeding
     const validatedItems = [];
@@ -86,18 +94,18 @@ export const createOrder = async (req: Request, res: Response): Promise<Response
     }
 
     // Create order
-    const orderData: CreateOrderData = {
-      buyer_id: buyer_id || user_id,
-      shop_id: shop_id || null,
+    const orderData: TCreateOrderData = {
+      buyer_id: (buyer_id || user_id)!,
+      shop_id: shop_id!,
       status,
       notes: notes || null,
     };
 
-    const [orderId] = await orderService.createOrder(orderData);
+    const orderId = await orderService.createOrder(orderData);
 
     // Add order items and update product stock
     for (const item of validatedItems) {
-      const orderItemData: CreateOrderItemData = {
+      const orderItemData: TCreateOrderItemData = {
         order_id: orderId,
         product_id: item.product_id,
         quantity: item.quantity,
@@ -109,7 +117,7 @@ export const createOrder = async (req: Request, res: Response): Promise<Response
     }
 
     // Get the created order with items
-    const newOrder = await orderService.getOrders(orderId);
+    const newOrder = await orderService.searchOrders(orderId);
 
     return Responses.created(res, 'Order created successfully', newOrder);
   } catch (error) {
@@ -118,12 +126,15 @@ export const createOrder = async (req: Request, res: Response): Promise<Response
   }
 };
 
-export const updateOrder = async (req: Request, res: Response): Promise<Response> => {
+export const updateOrder = async (
+  req: Request<TUpdateOrderRequestParams, any, TUpdateOrderRequestBody>,
+  res: Response
+): Promise<Response> => {
   try {
     const { id } = req.params;
     const { status, notes } = req.body;
 
-    const updateData: UpdateOrderData = {};
+    const updateData: TUpdateOrderData = {};
     if (status) updateData.status = status;
     if (notes !== undefined) updateData.notes = notes;
 
@@ -133,7 +144,7 @@ export const updateOrder = async (req: Request, res: Response): Promise<Response
       throw new NotFoundError('Order not found');
     }
 
-    const updatedOrder = await orderService.getOrders(Number(id));
+    const updatedOrder = await orderService.searchOrders(Number(id));
 
     return Responses.success(res, 'Order updated successfully', updatedOrder);
   } catch (error) {
@@ -142,16 +153,13 @@ export const updateOrder = async (req: Request, res: Response): Promise<Response
   }
 };
 
-export const deleteOrder = async (req: Request, res: Response): Promise<Response> => {
+export const deleteOrder = async (req: Request<TDeleteOrderRequestParams>, res: Response): Promise<Response> => {
   try {
     const { id } = req.params;
+    const orderItems = await orderService.getOrdersItems([Number(id)]);
 
-    // Get order items before deleting to restore stock
-    const orderItems = await orderService.getOrderItems(Number(id));
-
-    // Restore product stock
     for (const item of orderItems) {
-      await productService.updateProductStock(item.product_id, item.quantity);
+      await productService.incrementProductStock(item.product_id, item.quantity);
     }
     const deletedRows = await orderService.deleteOrder(Number(id));
 
@@ -166,20 +174,22 @@ export const deleteOrder = async (req: Request, res: Response): Promise<Response
   }
 };
 
-export const getOrderItems = async (req: Request, res: Response): Promise<Response> => {
+export const getOrderItems = async (req: Request<TGetOrderItemsRequestParams>, res: Response): Promise<Response> => {
   try {
     const { orderId } = req.params;
+    const orderItems = await orderService.getOrdersItems([Number(orderId)]);
 
-    const items = await orderService.getOrderItems(Number(orderId));
-
-    return Responses.success(res, 'Order items retrieved successfully', items);
+    return Responses.success(res, 'Order items retrieved successfully', orderItems);
   } catch (error) {
     console.error(error);
     throw new InternalServerError('Failed to fetch order items');
   }
 };
 
-export const addOrderItem = async (req: Request, res: Response): Promise<Response> => {
+export const addOrderItem = async (
+  req: Request<TAddOrderItemRequestParams, any, TAddOrderItemRequestBody>,
+  res: Response
+): Promise<Response> => {
   try {
     const { orderId } = req.params;
     const { product_id, quantity } = req.body;
@@ -192,7 +202,7 @@ export const addOrderItem = async (req: Request, res: Response): Promise<Respons
 
     const price = product.price * quantity;
 
-    const orderItemData: CreateOrderItemData = {
+    const orderItemData: TCreateOrderItemData = {
       order_id: Number(orderId),
       product_id,
       quantity,
@@ -207,7 +217,10 @@ export const addOrderItem = async (req: Request, res: Response): Promise<Respons
   }
 };
 
-export const removeOrderItem = async (req: Request, res: Response): Promise<Response> => {
+export const removeOrderItem = async (
+  req: Request<TRemoveOrderItemRequestParams>,
+  res: Response
+): Promise<Response> => {
   try {
     const { itemId } = req.params;
 

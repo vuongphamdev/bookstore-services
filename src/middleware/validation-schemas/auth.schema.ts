@@ -6,7 +6,9 @@ import { ParamSchema } from 'express-validator';
 import { Request } from 'express-validator/lib/base';
 import { JsonWebTokenError } from 'jsonwebtoken';
 
-const verifyAuthorization = async ({ value, req }: { value: any; req?: Request }) => {
+type TVerifyParams = { value: string; req?: Request };
+
+const verifyAuthorization = async ({ value, req }: TVerifyParams) => {
   try {
     if (!value) {
       throw new ErrorWithStatus({
@@ -37,7 +39,7 @@ const verifyAuthorization = async ({ value, req }: { value: any; req?: Request }
   }
 };
 
-const verifyRefreshTokenFromCookie = async ({ value, req }: { value: any; req?: Request }) => {
+const verifyRefreshTokenFromCookie = async ({ value, req }: TVerifyParams) => {
   try {
     if (!value) {
       throw new ErrorWithStatus({

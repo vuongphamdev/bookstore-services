@@ -1,7 +1,8 @@
-import { checkSchema } from 'express-validator';
+import { checkSchema, ParamSchema, Schema } from 'express-validator';
 import { validate } from '@utils';
 import { AuthorizationSchema, refreshTokenCookieSchema } from './validation-schemas';
 import { AUTH_MESSAGES } from '@constants';
+import { TLoginRequestBody, TRegisterRequestBody } from '@models';
 
 export const accessTokenValidator = validate(
   checkSchema(
@@ -37,7 +38,7 @@ export const loginValidator = validate(
           errorMessage: AUTH_MESSAGES.PASSWORD_IS_REQUIRED,
         },
       },
-    },
+    } as Record<keyof TLoginRequestBody, ParamSchema>,
     ['body']
   )
 );
@@ -67,12 +68,25 @@ export const registerValidator = validate(
           errorMessage: AUTH_MESSAGES.PASSWORD_MUST_BE_FROM_6_TO_50_CHARACTERS,
         },
       },
-      tenant_id: {
+      address: {
         notEmpty: {
-          errorMessage: AUTH_MESSAGES.TENANT_ID_IS_REQUIRED,
+          errorMessage: AUTH_MESSAGES.ADDRESS_IS_REQUIRED,
         },
       },
-    },
+      phone_number: {
+        notEmpty: {
+          errorMessage: AUTH_MESSAGES.PHONE_NUMBER_IS_REQUIRED,
+        },
+      },
+      dob: {
+        notEmpty: {
+          errorMessage: AUTH_MESSAGES.DOB_IS_REQUIRED,
+        },
+        isISO8601: {
+          errorMessage: AUTH_MESSAGES.DOB_MUST_BE_VALID_DATE,
+        },
+      },
+    } as Record<keyof TRegisterRequestBody, ParamSchema>,
     ['body']
   )
 );

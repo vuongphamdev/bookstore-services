@@ -1,157 +1,95 @@
 import { Request, Response } from 'express';
 import { shopService } from '@services';
-import { Responses, InternalServerError, NotFoundError, ForbiddenError } from '@models';
-import { CreateShopData, UpdateShopData } from '@models/schemas';
+import {
+  Responses,
+  InternalServerError,
+  NotFoundError,
+  ForbiddenError,
+  TGetShopRequestParams,
+  TCreateShopRequestBody,
+  TUpdateShopRequestParams,
+  TUpdateShopRequestBody,
+  TDeleteShopRequestParams,
+} from '@models';
+import { TCreateShopData, TUpdateShopData } from '@models/schemas';
 import { EShopStatus } from '@constants';
 
-/**
- * Get all shops
- */
-export const getShops = async (req: Request, res: Response): Promise<Response> => {
-  try {
-    const shops = await shopService.getShops();
-    return Responses.success(res, 'Shops retrieved successfully', shops);
-  } catch (error) {
-    console.error(error);
-    throw new InternalServerError('Failed to fetch shops');
+export const getShop = async (req: Request<TGetShopRequestParams>, res: Response): Promise<Response> => {
+  const shop_id = Number(req.params.id);
+  const shop = await shopService.getShop(shop_id);
+  if (!shop) {
+    throw new NotFoundError('Shop not found');
   }
+  return Responses.success(res, 'Shop retrieved successfully', shop);
 };
 
-/**
- * Get shops by seller (requires authentication)
- */
-export const getMyShops = async (req: Request, res: Response): Promise<Response> => {
-  try {
-    const seller_id = req.user?.id;
-
-    if (!seller_id) {
-      throw new ForbiddenError('User not authenticated');
-    }
-
-    const shops = await shopService.getShopsBySeller(seller_id);
-    return Responses.success(res, 'Your shops retrieved successfully', shops);
-  } catch (error) {
-    console.error(error);
-    throw new InternalServerError('Failed to fetch your shops');
-  }
+export const getMyShop = async (req: Request, res: Response): Promise<Response> => {
+  const user_id = req.user?.user_id;
+  const shops = await shopService.getShopsByUserId(user_id);
+  return Responses.success(res, 'Your shops retrieved successfully', shops);
 };
 
-/**
- * Get single shop by ID
- */
-export const getShop = async (req: Request, res: Response): Promise<Response> => {
-  try {
-    const { id } = req.params;
+export const createShop = async (req: Request<any, any, TCreateShopRequestBody>, res: Response): Promise<Response> => {
+  const { name, description } = req.body;
+  const user_id = req.user.user_id;
 
-    const shop = await shopService.getShop(Number(id));
+  const shopData: TCreateShopData = {
+    name,
+    user_id,
+    description: description || null,
+    status: EShopStatus.INACTIVE,
+  };
 
-    if (!shop) {
-      throw new NotFoundError('Shop not found');
-    }
+  const shopId = await shopService.createShop(shopData);
+  const newShop = await shopService.getShop(shopId);
 
-    return Responses.success(res, 'Shop retrieved successfully', shop);
-  } catch (error) {
-    console.error(error);
-    throw new InternalServerError('Failed to fetch shop');
-  }
+  return Responses.created(res, 'Shop created successfully', newShop);
 };
 
-/**
- * Create a new shop (seller only)
- */
-export const createShop = async (req: Request, res: Response): Promise<Response> => {
-  try {
-    const { name, description } = req.body;
-    const user_id = req.user?.id;
+export const updateShop = async (
+  req: Request<TUpdateShopRequestParams, any, TUpdateShopRequestBody>,
+  res: Response
+): Promise<Response> => {
+  const user_id = req.user.user_id;
+  const shop_id = Number(req.params.id);
+  const updateData = req.body;
 
-    if (!user_id) {
-      throw new ForbiddenError('User not authenticated');
-    }
-
-    const shopData: CreateShopData = {
-      name,
-      user_id,
-      description: description || null,
-      status: EShopStatus.INACTIVE,
-    };
-
-    const shopId = await shopService.createShop(shopData);
-
-    // Get the created shop
-    const newShop = await shopService.getShop(shopId);
-
-    return Responses.created(res, 'Shop created successfully', newShop);
-  } catch (error) {
-    console.error(error);
-    throw new InternalServerError('Failed to create shop');
+  // Verify ownership
+  const shop = await shopService.getShopsByUserId(Number(user_id));
+  if (!shop) {
+    throw new NotFoundError('Shop not found');
   }
+  if (shop.user_id !== user_id) {
+    throw new ForbiddenError('You do not have permission to update this shop');
+  }
+
+  const updatedRows = await shopService.updateShop(shop_id, updateData);
+  if (updatedRows === 0) {
+    throw new NotFoundError('Shop not found');
+  }
+
+  const updatedShop = await shopService.getShop(shop_id);
+  return Responses.success(res, 'Shop updated successfully', updatedShop);
 };
 
-/**
- * Update shop (owner only)
- */
-export const updateShop = async (req: Request, res: Response): Promise<Response> => {
-  try {
-    const { id } = req.params;
-    const { name, description } = req.body;
-    const seller_id = req.user?.id;
+export const deleteShop = async (req: Request<TDeleteShopRequestParams>, res: Response): Promise<Response> => {
+  const user_id = req.user.user_id;
+  const shop_id = Number(req.params.id);
 
-    // Verify ownership
-    const shop = await shopService.getShop(Number(id));
-    if (!shop) {
-      throw new NotFoundError('Shop not found');
-    }
-
-    if (shop.user_id !== seller_id) {
-      throw new ForbiddenError('You do not have permission to update this shop');
-    }
-
-    const updateData: UpdateShopData = {};
-    if (name !== undefined) updateData.name = name;
-    if (description !== undefined) updateData.description = description;
-
-    const updatedRows = await shopService.updateShop(Number(id), updateData);
-
-    if (updatedRows === 0) {
-      throw new NotFoundError('Shop not found');
-    }
-
-    const updatedShop = await shopService.getShop(Number(id));
-
-    return Responses.success(res, 'Shop updated successfully', updatedShop);
-  } catch (error) {
-    console.error(error);
-    throw new InternalServerError('Failed to update shop');
+  // Verify ownership
+  const shop = await shopService.getShop(shop_id);
+  if (!shop) {
+    throw new NotFoundError('Shop not found');
   }
-};
 
-/**
- * Delete shop (owner only)
- */
-export const deleteShop = async (req: Request, res: Response): Promise<Response> => {
-  try {
-    const { id } = req.params;
-    const seller_id = req.user?.id;
+  if (shop.user_id !== user_id) {
+    throw new ForbiddenError('You do not have permission to delete this shop');
+  }
 
-    // Verify ownership
-    const shop = await shopService.getShop(Number(id));
-    if (!shop) {
-      throw new NotFoundError('Shop not found');
-    }
-
-    if (shop.user_id !== seller_id) {
-      throw new ForbiddenError('You do not have permission to delete this shop');
-    }
-
-    const deletedRows = await shopService.deleteShop(Number(id));
-
-    if (deletedRows === 0) {
-      throw new NotFoundError('Shop not found');
-    }
-
-    return Responses.success(res, 'Shop deleted successfully');
-  } catch (error) {
-    console.error(error);
+  const deletedRows = await shopService.deleteShop(shop_id);
+  if (deletedRows === 0) {
     throw new InternalServerError('Failed to delete shop');
   }
+
+  return Responses.success(res, 'Shop deleted successfully');
 };

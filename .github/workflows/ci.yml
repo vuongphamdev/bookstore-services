@@ -36,19 +36,6 @@ jobs:
       - name: Type checking
         run: npm run type-check
 
-      # - name: Run tests
-      #   run: npm run test:ci
-      #   env:
-      #     NODE_ENV: test
-
-      # - name: Upload coverage reports
-      #   if: always()
-      #   uses: codecov/codecov-action@v4
-      #   with:
-      #     files: ./coverage/coverage-final.json
-      #     flags: unittests
-      #     fail_ci_if_error: false
-
       - name: Build application
         run: npm run build
 

@@ -1,27 +1,25 @@
 import { Request, Response } from 'express';
 import { userService } from '@services';
-import { InternalServerError, UnauthorizedError, NotFoundError, Responses } from '@models';
-import { User } from '@models/schemas';
-import { hashPassword } from '@utils';
+import {
+  InternalServerError,
+  NotFoundError,
+  Responses,
+  TUpdateUserRequestBody,
+  TUpdateUserRequestParams,
+} from '@models';
 
 /**
  * Get current user
  */
 export const me = async (req: Request, res: Response): Promise<Response> => {
   try {
-    const user = req.user;
+    const user = await userService.getUserById(req.user.user_id);
     if (!user) {
-      throw new UnauthorizedError();
-    }
-
-    // Get fresh user data from database
-    const currentUser = await userService.getUserById(user.id);
-    if (!currentUser) {
       throw new NotFoundError('User not found');
     }
 
     return Responses.success(res, 'User data retrieved successfully', {
-      user: currentUser,
+      user: user,
     });
   } catch (error) {
     console.error(error);
@@ -29,27 +27,20 @@ export const me = async (req: Request, res: Response): Promise<Response> => {
   }
 };
 
-export const updateUser = async (req: Request, res: Response): Promise<Response> => {
-  try {
-    const { id } = req.params;
-    const { name, email, password } = req.body;
-
-    const updateData: User = new User({});
-    if (name) updateData.name = name;
-    if (email) updateData.email = email;
-    if (password) updateData.password = hashPassword(password);
-
-    const updatedRows = await userService.updateUser(Number(id), updateData);
-
-    if (updatedRows === 0) {
-      throw new NotFoundError('User not found');
-    }
-
-    const updatedUser = await userService.getUserById(Number(id));
-
-    return Responses.success(res, 'User updated successfully', updatedUser);
-  } catch (error) {
-    console.error(error);
-    throw new InternalServerError('Failed to update user');
+/**
+ * Update user information
+ */
+export const updateUser = async (
+  req: Request<TUpdateUserRequestParams, any, TUpdateUserRequestBody>,
+  res: Response
+): Promise<Response> => {
+  const userId = Number(req.params.id);
+  const { address, dob, name, phone_number } = req.body;
+  const updatedRows = await userService.updateUser(userId, { address, dob, name, phone_number });
+  if (updatedRows === 0) {
+    throw new NotFoundError('User not found');
   }
+
+  const updatedUser = await userService.getUserById(userId);
+  return Responses.success(res, 'User updated successfully', updatedUser);
 };

@@ -8,7 +8,7 @@ export enum EUserStatus {
 }
 
 //=================== ROLES ====================
-export enum EUserRole {
+export enum ERole {
   ADMIN = 'A',
   USER = 'U',
   GUEST = 'G',

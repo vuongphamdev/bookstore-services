@@ -1,7 +1,16 @@
 import { Request, Response } from 'express';
 import { roleService, userService } from '@services';
-import { CreateRoleData, UpdateRoleData } from '@models/schemas';
-import { ConflictError, InternalServerError, NotFoundError, Responses } from '@models';
+import { TCreateRoleData, TUpdateRoleData } from '@models/schemas';
+import {
+  ConflictError,
+  InternalServerError,
+  NotFoundError,
+  Responses,
+  TGetRoleRequestParams,
+  TCreateRoleRequestBody,
+  TUpdateRoleRequestParams,
+  TUpdateRoleRequestBody,
+} from '@models';
 
 export const getAllRoles = async (req: Request, res: Response): Promise<Response> => {
   try {
@@ -13,7 +22,7 @@ export const getAllRoles = async (req: Request, res: Response): Promise<Response
   }
 };
 
-export const getRole = async (req: Request, res: Response): Promise<Response> => {
+export const getRole = async (req: Request<TGetRoleRequestParams>, res: Response): Promise<Response> => {
   try {
     const { id } = req.params;
 
@@ -30,7 +39,7 @@ export const getRole = async (req: Request, res: Response): Promise<Response> =>
   }
 };
 
-export const createRole = async (req: Request, res: Response): Promise<Response> => {
+export const createRole = async (req: Request<any, any, TCreateRoleRequestBody>, res: Response): Promise<Response> => {
   try {
     const { name, description, code } = req.body;
 
@@ -39,13 +48,13 @@ export const createRole = async (req: Request, res: Response): Promise<Response>
       throw new ConflictError('Role with this name already exists');
     }
 
-    const roleData: CreateRoleData = {
+    const roleData: TCreateRoleData = {
       name,
       code,
       description: description,
     };
 
-    const [roleId] = await roleService.createRole(roleData);
+    const roleId = await roleService.createRole(roleData);
     const newRole = await roleService.getRole(roleId);
 
     return Responses.created(res, 'Role created successfully', newRole);
@@ -55,23 +64,14 @@ export const createRole = async (req: Request, res: Response): Promise<Response>
   }
 };
 
-export const updateRole = async (req: Request, res: Response): Promise<Response> => {
+export const updateRole = async (
+  req: Request<TUpdateRoleRequestParams, any, TUpdateRoleRequestBody>,
+  res: Response
+): Promise<Response> => {
   try {
     const { id } = req.params;
     const { name, description } = req.body;
-
-    const updateData: UpdateRoleData = {};
-    if (name) updateData.name = name;
-    if (description !== undefined) updateData.description = description;
-
-    if (name) {
-      const existingRole = await roleService.getRoleByName(name);
-      if (existingRole && existingRole.id !== Number(id)) {
-        throw new ConflictError('Role with this name already exists');
-      }
-    }
-
-    const updatedRows = await roleService.updateRole(Number(id), updateData);
+    const updatedRows = await roleService.updateRole(Number(id), { name, description });
 
     if (updatedRows === 0) {
       throw new NotFoundError('Role not found');
@@ -83,68 +83,5 @@ export const updateRole = async (req: Request, res: Response): Promise<Response>
   } catch (error) {
     console.error(error);
     throw new InternalServerError('Failed to update role');
-  }
-};
-
-export const deleteRole = async (req: Request, res: Response): Promise<Response> => {
-  try {
-    const { id } = req.params;
-
-    // Check if role has users assigned
-    const usersWithRole = await roleService.getUsersWithRole(Number(id));
-    if (usersWithRole.length > 0) {
-      throw new ConflictError('Cannot delete role assigned to users');
-    }
-
-    const deletedRows = await roleService.deleteRole(Number(id));
-
-    if (deletedRows === 0) {
-      throw new NotFoundError('Role not found');
-    }
-
-    return Responses.success(res, 'Role deleted successfully');
-  } catch (error) {
-    console.error(error);
-    throw new InternalServerError('Failed to delete role');
-  }
-};
-
-export const assignUserRole = async (req: Request, res: Response): Promise<Response> => {
-  try {
-    const { userId, roleId } = req.body;
-
-    const role = await roleService.getRole(roleId);
-    if (!role) {
-      throw new NotFoundError('Role not found');
-    }
-
-    const hasRole = await userService.hasRole(userId, roleId);
-    if (hasRole) {
-      throw new ConflictError('User already has this role');
-    }
-
-    await userService.assignRole(userId, roleId);
-
-    return Responses.success(res, 'Role assigned successfully');
-  } catch (error) {
-    console.error(error);
-    throw new InternalServerError('Failed to assign role');
-  }
-};
-
-export const removeUserRole = async (req: Request, res: Response): Promise<Response> => {
-  try {
-    const { userId, roleId } = req.body;
-
-    const removedRows = await userService.removeRole(userId, roleId);
-
-    if (removedRows === 0) {
-      throw new NotFoundError('User role assignment not found');
-    }
-
-    return Responses.success(res, 'Role removed successfully');
-  } catch (error) {
-    console.error(error);
-    throw new InternalServerError('Failed to remove role');
   }
 };

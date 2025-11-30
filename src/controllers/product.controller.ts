@@ -1,30 +1,43 @@
 import { Request, Response } from 'express';
 import { productService } from '@services';
-import { Responses, InternalServerError, NotFoundError, EntityError } from '@models';
-import { Product, UpdateProductData } from '@models/schemas';
+import {
+  Responses,
+  InternalServerError,
+  NotFoundError,
+  EntityError,
+  TSearchProductsRequestBody,
+  TGetProductRequestParams,
+  TCreateProductRequestBody,
+  TUpdateProductRequestParams,
+  TUpdateProductRequestBody,
+  TDeleteProductRequestParams,
+  TUpdateProductStockRequestParams,
+  TUpdateProductStockRequestBody,
+} from '@models';
+import { Product, TCreateProductData, TUpdateProductData } from '@models/schemas';
 
-export const searchProducts = async (req: Request, res: Response): Promise<Response> => {
+export const searchProducts = async (
+  req: Request<any, any, TSearchProductsRequestBody>,
+  res: Response
+): Promise<Response> => {
   try {
-    let products;
+    const { keyword, category, shop_id, offset, limit } = req.body;
+    const result = await productService.searchProducts({
+      keyword,
+      category,
+      shop_id,
+      offset,
+      limit,
+    });
 
-    // if (name) {
-    //   products = await productService.searchProductsByName(name as string, tenant_id);
-    // } else if (category) {
-    //   products = await productService.searchProductsByCategory(category as string, tenant_id);
-    // } else if (inStock === 'true') {
-    //   products = await productService.getProductsInStock(tenant_id);
-    // } else {
-    //   products = await productService.searchProducts(tenant_id);
-    // }
-
-    return Responses.success(res, 'Products retrieved successfully', products);
+    return Responses.success(res, 'Products retrieved successfully', result);
   } catch (error) {
     console.error(error);
     throw new InternalServerError('Failed to fetch products');
   }
 };
 
-export const getProduct = async (req: Request, res: Response): Promise<Response> => {
+export const getProduct = async (req: Request<TGetProductRequestParams>, res: Response): Promise<Response> => {
   try {
     const { id } = req.params;
 
@@ -41,22 +54,26 @@ export const getProduct = async (req: Request, res: Response): Promise<Response>
   }
 };
 
-export const createProduct = async (req: Request, res: Response): Promise<Response> => {
+export const createProduct = async (
+  req: Request<any, any, TCreateProductRequestBody>,
+  res: Response
+): Promise<Response> => {
   try {
-    const { name, sku, category, description, price, stock, status, metadata } = req.body;
+    const { name, sku, category, description, price, stock, status, metadata, shop_id } = req.body;
 
-    const newProduct = new Product({
+    const newProduct: TCreateProductData = {
       name,
       sku,
       category,
-      description: description || null,
-      price: Number(price),
-      stock: stock !== undefined ? Number(stock) : 0,
-      status: status,
-      metadata: metadata || null,
-    });
+      shop_id,
+      description,
+      price,
+      stock,
+      status,
+      metadata,
+    };
 
-    const [productId] = await productService.createProduct(newProduct);
+    const productId = await productService.createProduct(newProduct);
     const createdProduct = await productService.getProductById(productId);
 
     return Responses.created(res, 'Product created successfully', createdProduct);
@@ -66,18 +83,21 @@ export const createProduct = async (req: Request, res: Response): Promise<Respon
   }
 };
 
-export const updateProduct = async (req: Request, res: Response): Promise<Response> => {
+export const updateProduct = async (
+  req: Request<TUpdateProductRequestParams, any, TUpdateProductRequestBody>,
+  res: Response
+): Promise<Response> => {
   try {
-    const { id } = req.params as { id: string };
+    const { id } = req.params;
     const { name, sku, category, description, price, stock, status, metadata } = req.body;
 
-    const updateData: UpdateProductData = {};
+    const updateData: TUpdateProductData = {};
     if (name) updateData.name = name;
     if (sku) updateData.sku = sku;
     if (category) updateData.category = category;
     if (description !== undefined) updateData.description = description;
-    if (price !== undefined) updateData.price = Number(price);
-    if (stock !== undefined) updateData.stock = Number(stock);
+    if (price !== undefined) updateData.price = price;
+    if (stock !== undefined) updateData.stock = stock;
     if (status !== undefined) updateData.status = status;
     if (metadata !== undefined) updateData.metadata = metadata;
 
@@ -96,9 +116,9 @@ export const updateProduct = async (req: Request, res: Response): Promise<Respon
   }
 };
 
-export const deleteProduct = async (req: Request, res: Response): Promise<Response> => {
+export const deleteProduct = async (req: Request<TDeleteProductRequestParams>, res: Response): Promise<Response> => {
   try {
-    const { id } = req.params as { id: string };
+    const { id } = req.params;
 
     const deletedRows = await productService.deleteProduct(Number(id));
 
@@ -113,13 +133,13 @@ export const deleteProduct = async (req: Request, res: Response): Promise<Respon
   }
 };
 
-export const updateProductStock = async (req: Request, res: Response): Promise<Response> => {
+export const updateProductStock = async (
+  req: Request<TUpdateProductStockRequestParams, any, TUpdateProductStockRequestBody>,
+  res: Response
+): Promise<Response> => {
   try {
     const { id } = req.params;
-    const { quantity, operation } = req.body as {
-      quantity: number;
-      operation: string;
-    }; // operation: 'add' or 'subtract'
+    const { quantity, operation } = req.body;
 
     if (quantity === undefined || !operation) {
       throw new EntityError({
@@ -130,7 +150,7 @@ export const updateProductStock = async (req: Request, res: Response): Promise<R
 
     let updatedRows;
     if (operation === 'add') {
-      updatedRows = await productService.updateProductStock(Number(id), Number(quantity));
+      updatedRows = await productService.incrementProductStock(Number(id), Number(quantity));
     } else if (operation === 'subtract') {
       updatedRows = await productService.decrementProductStock(Number(id), Number(quantity));
     } else {

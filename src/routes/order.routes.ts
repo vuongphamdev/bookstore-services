@@ -1,6 +1,6 @@
 import { Router } from 'express';
 import {
-  getOrders,
+  searchOrders,
   getOrder,
   createOrder,
   updateOrder,
@@ -17,7 +17,7 @@ const router = Router();
 router.use(accessTokenValidator);
 
 // Order CRUD operations
-router.get('/', getOrders);
+router.get('/', searchOrders);
 router.get('/:id', getOrder);
 router.post('/', createOrder);
 router.put('/:id', updateOrder);

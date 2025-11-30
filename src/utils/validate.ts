@@ -16,11 +16,11 @@ export const validate = (validation: RunnableValidationChains<ValidationChain>) 
     const errorsObject = errors.mapped();
     const entityErrors = new EntityError({ errors: {} });
 
-    //If there are no errors, continue to the next middleware
+    // If there are no errors, continue to the next middleware
     if (errors.isEmpty()) {
       return next();
     }
-    //If there are errors, check if there is an error with status not equal 422
+    // If there are errors, check if there is an error with status not equal 422
     for (const key in errorsObject) {
       const { msg } = errorsObject[key];
       if (msg instanceof ErrorWithStatus && msg.status !== HTTP_STATUS.UNPROCESSABLE_ENTITY) {
@@ -28,6 +28,6 @@ export const validate = (validation: RunnableValidationChains<ValidationChain>) 
       }
       entityErrors.errors[key] = errorsObject[key];
     }
-    next(entityErrors);
+    return next(entityErrors);
   };
 };

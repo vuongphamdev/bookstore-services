@@ -1,5 +1,5 @@
 import { Knex } from 'knex';
-import { faker } from '@faker-js/faker';
+import { fa, faker } from '@faker-js/faker';
 import {
   EOrderStatus,
   EProductCategory,
@@ -10,7 +10,7 @@ import {
   EStopType,
   EStopStatus,
   EManifestStatus,
-  EUserRole,
+  ERole,
 } from '@constants/enums';
 import { Job, Order, OrderItem, Product, Shop, User, Driver, Manifest, Stop } from '@models/schemas';
 
@@ -41,6 +41,7 @@ export async function seed(knex: Knex): Promise<void> {
   const ORDER_ITEMS_MAX = 5;
   const STOPS_PER_ORDER = 2;
   const TOTAL_DRIVERS = 100;
+  const TOTAL_MANIFESTS = 300;
 
   const batchSize = 500;
 
@@ -64,7 +65,7 @@ export async function seed(knex: Knex): Promise<void> {
 
     // 1. Generate Users (1000)
     console.log(`👥 Generating ${TOTAL_USERS} users...`);
-    const roles = [EUserRole.ADMIN, EUserRole.USER, EUserRole.GUEST];
+    const roles = [ERole.ADMIN, ERole.USER, ERole.GUEST];
 
     for (let batch = 0; batch < Math.ceil(TOTAL_USERS / batchSize); batch++) {
       const users: User[] = [];
@@ -76,6 +77,7 @@ export async function seed(knex: Knex): Promise<void> {
         const lastName = faker.person.lastName();
         users.push(
           new User({
+            id: i + 1,
             name: `${firstName} ${lastName}`,
             email: faker.internet.email({ firstName, lastName }).toLowerCase() + `_${i}`,
             password: faker.internet.password({ length: 10 }),
@@ -104,6 +106,7 @@ export async function seed(knex: Knex): Promise<void> {
         const sellerId = fastRandom(TOTAL_USERS) + 1;
         shops.push(
           new Shop({
+            id: i + 1,
             user_id: sellerId,
             name: faker.company.name() + ` Shop ${i + 1}`,
             description: faker.company.catchPhrase(),
@@ -137,6 +140,7 @@ export async function seed(knex: Knex): Promise<void> {
         productCount++;
         products.push(
           new Product({
+            id: productCount,
             shop_id: shopId,
             name: faker.commerce.productName(),
             sku: `SKU-${shopId}-${i + 1}-${Date.now() + i}`,
@@ -180,8 +184,6 @@ export async function seed(knex: Knex): Promise<void> {
       EOrderStatus.COMPLETED,
     ];
 
-    const orderIds: number[] = [];
-
     for (let batch = 0; batch < Math.ceil(TOTAL_ORDERS / batchSize); batch++) {
       const orders: Order[] = [];
       const start = batch * batchSize;
@@ -193,6 +195,7 @@ export async function seed(knex: Knex): Promise<void> {
 
         orders.push(
           new Order({
+            id: i + 1,
             shop_id: shopId,
             buyer_id: buyerId,
             status: orderStatuses[fastRandom(orderStatuses.length)],
@@ -201,22 +204,21 @@ export async function seed(knex: Knex): Promise<void> {
         );
       }
 
-      const insertedIds = await knex('orders').insert(orders.map((o) => o.toRow()));
-      orderIds.push(...insertedIds);
-
+      await knex('orders').insert(orders.map((o) => o.toRow()));
       console.log(`   ✓ Orders batch ${batch + 1}/${Math.ceil(TOTAL_ORDERS / batchSize)} completed`);
     }
 
     // 5. Generate Order Items (1-5 per order)
     console.log(`📝 Generating order items (${ORDER_ITEMS_MIN}-${ORDER_ITEMS_MAX} per order)...`);
 
+    let orderItemCount = 0;
     for (let batch = 0; batch < Math.ceil(TOTAL_ORDERS / batchSize); batch++) {
       const orderItems: OrderItem[] = [];
       const start = batch * batchSize;
       const end = Math.min(start + batchSize, TOTAL_ORDERS);
 
       for (let i = start; i < end; i++) {
-        const orderId = i + 1;
+        const orderId = fastRandom(TOTAL_ORDERS) + 1;
         const numItems = fastRandom(ORDER_ITEMS_MAX - ORDER_ITEMS_MIN + 1) + ORDER_ITEMS_MIN;
 
         for (let j = 0; j < numItems; j++) {
@@ -225,6 +227,7 @@ export async function seed(knex: Knex): Promise<void> {
 
           orderItems.push(
             new OrderItem({
+              id: ++orderItemCount,
               order_id: orderId,
               product_id: product.id,
               quantity: quantity,
@@ -249,6 +252,7 @@ export async function seed(knex: Knex): Promise<void> {
 
       drivers.push(
         new Driver({
+          id: i + 1,
           name: `${firstName} ${lastName}`,
           code: `DRV-${String(i + 1).padStart(4, '0')}`,
           status: i < 80 ? EUserStatus.ACTIVE : EUserStatus.INACTIVE,
@@ -267,38 +271,27 @@ export async function seed(knex: Knex): Promise<void> {
     await knex('drivers').insert(drivers.map((d) => d.toRow()));
     console.log(`   ✓ Drivers generation completed`);
 
-    // 7. Generate Manifests (based on drivers, random dates for next 1 week)
-    console.log(`📋 Generating manifests for drivers...`);
     const now = new Date();
     const oneWeekLater = new Date(now.getTime() + 7 * 24 * 60 * 60 * 1000);
+
+    // 7. Generate Manifests (based on drivers, random dates for next 1 week)
+    console.log(`📋 Generating manifests for drivers...`);
     const manifestStatuses = [EManifestStatus.NEW, EManifestStatus.PROCESSING, EManifestStatus.COMPLETED];
-
-    const manifestIds: number[] = [];
-    let manifestCount = 0;
-
-    const manifestBatch: Manifest[] = [];
-    for (let driverId = 1; driverId <= TOTAL_DRIVERS; driverId++) {
-      // Each driver gets 1-3 manifests for the week
-      const numManifests = fastRandom(3) + 1;
-
-      for (let i = 0; i < numManifests; i++) {
-        manifestCount++;
-        const vehicleId = fastRandom(5) + 1; // Random vehicle ID 1-5
-        manifestBatch.push(
-          new Manifest({
-            driver_id: driverId,
-            vehicle_id: vehicleId,
-            manifest_date: randomDate(now, oneWeekLater),
-            status: manifestStatuses[fastRandom(manifestStatuses.length)],
-            notes: fastRandom(10) < 2 ? faker.lorem.sentence() : null,
-          })
-        );
-      }
+    const manifests: Manifest[] = [];
+    for (let i = 0; i < TOTAL_MANIFESTS; i++) {
+      manifests.push(
+        new Manifest({
+          id: i + 1,
+          driver_id: fastRandom(TOTAL_DRIVERS) + 1,
+          vehicle_id: fastRandom(5) + 1,
+          manifest_date: randomDate(now, oneWeekLater),
+          status: manifestStatuses[fastRandom(manifestStatuses.length)],
+          notes: fastRandom(10) < 2 ? faker.lorem.sentence() : null,
+        })
+      );
     }
-
-    const insertedManifestIds = await knex('manifests').insert(manifestBatch.map((m) => m.toRow()));
-    manifestIds.push(...insertedManifestIds);
-    console.log(`   ✓ ${manifestCount} manifests generated`);
+    await knex('manifests').insert(manifests.map((m) => m.toRow()));
+    console.log(`   ✓ Manifests generation completed`);
 
     // 8. Generate Jobs (1 job per order, assigned to random manifests)
     console.log(`💼 Generating ${TOTAL_ORDERS} jobs (1 per order)...`);
@@ -310,11 +303,12 @@ export async function seed(knex: Knex): Promise<void> {
       const end = Math.min(start + batchSize, TOTAL_ORDERS);
 
       for (let i = start; i < end; i++) {
-        const orderId = i + 1;
-        const manifestId = manifestIds[fastRandom(manifestIds.length)];
+        const orderId = fastRandom(TOTAL_ORDERS) + 1;
+        const manifestId = fastRandom(TOTAL_MANIFESTS) + 1;
 
         jobs.push(
           new Job({
+            id: i + 1,
             order_id: orderId,
             manifest_id: manifestId,
             status: jobStatuses[fastRandom(jobStatuses.length)],
@@ -337,17 +331,19 @@ export async function seed(knex: Knex): Promise<void> {
       EStopStatus.COMPLETED,
     ];
 
+    let stopCount = 0;
     for (let batch = 0; batch < Math.ceil(TOTAL_ORDERS / batchSize); batch++) {
       const stops: Stop[] = [];
       const start = batch * batchSize;
       const end = Math.min(start + batchSize, TOTAL_ORDERS);
 
       for (let i = start; i < end; i++) {
-        const orderId = i + 1;
+        const orderId = fastRandom(TOTAL_ORDERS) + 1;
 
         // Pickup stop
         stops.push(
           new Stop({
+            id: ++stopCount,
             order_id: orderId,
             type: EStopType.PICKUP,
             status: stopStatuses[fastRandom(stopStatuses.length)],
@@ -373,6 +369,7 @@ export async function seed(knex: Knex): Promise<void> {
         // Dropoff stop
         stops.push(
           new Stop({
+            id: ++stopCount,
             order_id: orderId,
             type: EStopType.DROPOFF,
             status: stopStatuses[fastRandom(stopStatuses.length)],
@@ -402,15 +399,15 @@ export async function seed(knex: Knex): Promise<void> {
 
     console.log('🎉 Data generation completed successfully!');
     console.log(`📈 Total records created:`);
-    console.log(`   👥 Users: ${TOTAL_USERS.toLocaleString()}`);
-    console.log(`   🏪 Shops: ${TOTAL_SHOPS.toLocaleString()}`);
-    console.log(`   📦 Products: ${productCount.toLocaleString()}`);
-    console.log(`   🛒 Orders: ${TOTAL_ORDERS.toLocaleString()}`);
-    console.log(`   📝 Order Items: ~${(TOTAL_ORDERS * ((ORDER_ITEMS_MIN + ORDER_ITEMS_MAX) / 2)).toLocaleString()}`);
-    console.log(`   🚗 Drivers: ${TOTAL_DRIVERS.toLocaleString()}`);
-    console.log(`   📋 Manifests: ${manifestCount.toLocaleString()}`);
-    console.log(`   💼 Jobs: ${TOTAL_ORDERS.toLocaleString()}`);
-    console.log(`   🚏 Stops: ${(TOTAL_ORDERS * STOPS_PER_ORDER).toLocaleString()}`);
+    console.log(`   👥 Users: ${TOTAL_USERS}`);
+    console.log(`   🏪 Shops: ${TOTAL_SHOPS}`);
+    console.log(`   📦 Products: ${productCount}`);
+    console.log(`   🛒 Orders: ${TOTAL_ORDERS}`);
+    console.log(`   📝 Order Items: ~${TOTAL_ORDERS * ((ORDER_ITEMS_MIN + ORDER_ITEMS_MAX) / 2)}`);
+    console.log(`   🚗 Drivers: ${TOTAL_DRIVERS}`);
+    console.log(`   📋 Manifests: ${TOTAL_MANIFESTS}`);
+    console.log(`   💼 Jobs: ${TOTAL_ORDERS}`);
+    console.log(`   🚏 Stops: ${TOTAL_ORDERS * STOPS_PER_ORDER}`);
   } catch (error) {
     console.error('❌ Error generating data:', error);
     // Rollback or cleanup logic can be added here if needed

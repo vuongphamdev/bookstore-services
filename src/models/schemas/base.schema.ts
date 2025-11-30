@@ -1,20 +1,24 @@
-/**
- * Base model class with common properties
- * Child classes should implement:
- * - static fromRow(row: any): T - Convert DB row to model instance
- * - toRow(): any - Convert model instance to DB row (for complete data)
- */
-export abstract class BaseModel {
+export type TBaseModel = {
   id?: number;
   created_at?: Date;
   updated_at?: Date;
+};
 
-  constructor(data: Partial<BaseModel> = {}) {
-    this.id = data.id;
-    this.created_at = data.created_at;
-    this.updated_at = data.updated_at;
+export type TCreateIgnoreColumns = 'id' | 'created_at' | 'updated_at';
+export type TUpdateIgnoreColumns = 'id' | 'created_at' | 'updated_at';
+
+/**
+ * Base model class with common properties
+ */
+export abstract class BaseModel<T> {
+  constructor(data: Partial<T>) {
+    Object.assign(this, data);
+  }
+
+  /**
+   * Convert instance to object format
+   */
+  toObject(): T {
+    return { ...(this as object) } as T;
   }
 }
-
-export type TCreateIgnoreColumns = 'id' | 'created_at' | 'updated_at' | 'toRow';
-export type TUpdateIgnoreColumns = 'id' | 'created_at';

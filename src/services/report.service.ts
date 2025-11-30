@@ -1,15 +1,15 @@
 import { db } from '@config';
-import { OrderItem } from '@models/schemas';
+import { EOrderStatus } from '@constants';
 
 class ReportService {
-  async getBestSellingProducts(tenant_id: string, limit: number) {
+  async getBestSellingProducts(limit: number) {
     const topSales = await db
       .with('top_sales', (qb) => {
         qb.select('product_id')
           .sum({ total_sales: 'quantity' })
-          .from<OrderItem>('order_items as oi')
+          .from('order_items as oi')
           .join('orders as o', 'oi.order_id', 'o.id')
-          .where('o.tenant_id', tenant_id)
+          .where('o.status', EOrderStatus.COMPLETED)
           .groupBy('product_id')
           .orderBy('total_sales', 'desc')
           .limit(limit);

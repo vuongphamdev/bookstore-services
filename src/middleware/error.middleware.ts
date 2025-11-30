@@ -1,10 +1,11 @@
 import { GENERAL_MESSAGE } from '@constants';
 import { HTTP_STATUS } from '@constants/http';
 import { EntityError, ErrorWithStatus, Responses } from '@models';
-import { Request, Response } from 'express';
+import { NextFunction, Request, Response } from 'express';
 
-export const defaultErrorHandler = (err: any, req: Request, res: Response) => {
+export const defaultErrorHandler = (err: any, req: Request, res: Response, _next: NextFunction) => {
   try {
+    console.error('Error Middleware:', err);
     if (err instanceof EntityError) {
       return Responses.entityError(res, err);
     } else if (err instanceof ErrorWithStatus) {

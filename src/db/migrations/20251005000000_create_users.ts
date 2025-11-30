@@ -1,4 +1,4 @@
-import { EUserRole, EUserStatus } from '@constants';
+import { ERole, EUserStatus } from '@constants';
 import { Knex } from 'knex';
 
 export async function up(knex: Knex): Promise<void> {
@@ -7,7 +7,7 @@ export async function up(knex: Knex): Promise<void> {
     table.string('name').notNullable();
     table.string('email').unique().notNullable();
     table.string('password').notNullable();
-    table.string('role').notNullable().defaultTo(EUserRole.USER);
+    table.string('role').notNullable().defaultTo(ERole.USER);
     table.string('status').notNullable().defaultTo(EUserStatus.UNVERIFIED);
     table.string('dob');
     table.string('phone_number');
