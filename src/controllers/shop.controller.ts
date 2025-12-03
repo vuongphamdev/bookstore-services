@@ -11,7 +11,7 @@ import {
   TUpdateShopRequestBody,
   TDeleteShopRequestParams,
 } from '@models';
-import { TCreateShopData, TUpdateShopData } from '@models/schemas';
+import { TCreateShopData } from '@models/schemas';
 import { EShopStatus } from '@constants';
 
 export const getShop = async (req: Request<TGetShopRequestParams>, res: Response): Promise<Response> => {

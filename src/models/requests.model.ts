@@ -41,13 +41,11 @@ export type TGetOrderRequestParams = {
 
 export type TCreateOrderRequestBody = {
   user_id?: number;
-  buyer_id?: number;
   shop_id?: number | null;
   items: Array<{
     product_id: number;
     quantity: number;
   }>;
-  status?: EOrderStatus;
   notes?: string | null;
 };
 
@@ -56,7 +54,6 @@ export type TUpdateOrderRequestParams = {
 };
 
 export type TUpdateOrderRequestBody = {
-  status?: EOrderStatus;
   notes?: string | null;
 };
 
@@ -82,9 +79,9 @@ export type TRemoveOrderItemRequestParams = {
 };
 
 // ======================= Product Requests =======================
-export type TSearchProductsRequestBody = {
+export type TSearchProductsRequestQueryParams = {
   keyword?: string;
-  category?: string[];
+  category?: string;
   shop_id?: number;
   offset?: number;
   limit?: number;
@@ -178,6 +175,6 @@ export type TUpdateRoleRequestBody = {
 };
 
 // ======================= Report Requests =======================
-export type TGetTopSellingProductsRequestBody = {
+export type TGetTopSellingProductsRequestParams = {
   top?: number;
 };

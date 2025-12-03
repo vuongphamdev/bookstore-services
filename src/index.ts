@@ -6,7 +6,7 @@ import cookieParser from 'cookie-parser';
 import { ENV } from './config/env';
 import { authRouter, productRouter, orderRouter, reportRouter, roleRouter, shopRouter, userRouter } from './routes';
 import { corsConfig, db, helmetConfig } from '@config';
-import { defaultErrorHandler } from '@middleware';
+import { defaultErrorHandler } from '@middlewares';
 import cors from 'cors';
 
 const swaggerDocument = YAML.load(__dirname + '/../swagger.yaml');
@@ -34,7 +34,7 @@ app.get('/ping', async (req: Request, res: Response, next) => {
 app.use('/docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
 // routes
-app.use('/', authRouter);
+app.use('/auth', authRouter);
 app.use('/users', userRouter);
 app.use('/products', productRouter);
 app.use('/orders', orderRouter);

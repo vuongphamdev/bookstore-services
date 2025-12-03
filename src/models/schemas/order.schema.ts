@@ -3,7 +3,7 @@ import { BaseModel, TBaseModel, TCreateIgnoreColumns, TUpdateIgnoreColumns } fro
 
 export type TOrder = TBaseModel & {
   shop_id: number;
-  buyer_id: number;
+  user_id: number;
   status: EOrderStatus;
   notes: string | null;
 };
@@ -26,11 +26,9 @@ export type TOrderWithDetails = TOrder & {
 };
 
 export type TCreateOrderData = Omit<TOrder, TCreateIgnoreColumns>;
-export type TUpdateOrderData = Partial<Omit<TOrder, TUpdateIgnoreColumns | 'shop_id' | 'buyer_id'>>;
+export type TUpdateOrderData = Partial<Pick<TOrder, 'notes'>>;
 export type TCreateOrderItemData = Omit<TOrderItem, TCreateIgnoreColumns>;
-export type TUpdateOrderItemData = Partial<
-  Omit<TOrderItem, TUpdateIgnoreColumns | 'order_id' | 'product_id' | 'price'>
->;
+export type TUpdateOrderItemData = Partial<Pick<TOrderItem, 'quantity'>>;
 
 export class Order extends BaseModel<TOrder> {}
 

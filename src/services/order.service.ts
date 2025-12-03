@@ -29,10 +29,10 @@ class OrderService {
 
   async getOrderById(orderId: number): Promise<TOrderWithDetails | null> {
     const order = await db('orders as o')
-      .select('o.*', 's.name as shop_name', 'order_items = []')
+      .select('o.*', 's.name as shop_name')
       .join('shops as s', 'o.shop_id', 's.id')
       .where('o.id', orderId)
-      .first<TOrderWithDetails>();
+      .first<Omit<TOrderWithDetails, 'order_items'>>();
 
     if (!order) {
       return null;
@@ -49,7 +49,7 @@ class OrderService {
   async searchOrders(userId: number, status: EOrderStatus[] = []): Promise<TOrderWithDetails[]> {
     const orders = (await db<Omit<TOrderWithDetails, 'order_items'>>('orders as o')
       .select('o.*', 's.name as shop_name')
-      .where({ buyer_id: userId })
+      .where({ user_id: userId })
       .modify((queryBuilder) => {
         if (status.length > 0) {
           queryBuilder.whereIn('status', status);

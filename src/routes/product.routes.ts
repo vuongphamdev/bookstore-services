@@ -7,18 +7,24 @@ import {
   deleteProduct,
   updateProductStock,
 } from '@controllers';
-import { accessTokenValidator } from '@middleware';
+import {
+  accessTokenValidator,
+  createProductBodyValidator,
+  searchProductsQueryValidator,
+  updateProductBodyValidator,
+  updateProductStockBodyValidator,
+} from '@middlewares';
+import { WrapAsync } from '@utils';
 
 const router = Router();
-router.get('/', searchProducts);
-router.get('/:id', getProduct);
+router.get('/', searchProductsQueryValidator, WrapAsync(searchProducts));
+router.get('/:id', WrapAsync(getProduct));
 
-// Protect all routes below
 router.use(accessTokenValidator);
 
-router.post('/', createProduct);
-router.put('/:id', updateProduct);
-router.delete('/:id', deleteProduct);
-router.patch('/:id/stock', updateProductStock);
+router.post('/', createProductBodyValidator, WrapAsync(createProduct));
+router.put('/:id', updateProductBodyValidator, WrapAsync(updateProduct));
+router.delete('/:id', WrapAsync(deleteProduct));
+router.patch('/:id/stock', updateProductStockBodyValidator, WrapAsync(updateProductStock));
 
 export default router;

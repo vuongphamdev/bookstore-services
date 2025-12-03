@@ -12,19 +12,14 @@ import {
  * Get current user
  */
 export const me = async (req: Request, res: Response): Promise<Response> => {
-  try {
-    const user = await userService.getUserById(req.user.user_id);
-    if (!user) {
-      throw new NotFoundError('User not found');
-    }
-
-    return Responses.success(res, 'User data retrieved successfully', {
-      user: user,
-    });
-  } catch (error) {
-    console.error(error);
-    throw new InternalServerError('Failed to get user data');
+  const user = await userService.getUserById(req.user.user_id);
+  if (!user) {
+    throw new NotFoundError('User not found');
   }
+
+  return Responses.success(res, 'User data retrieved successfully', {
+    user: user,
+  });
 };
 
 /**

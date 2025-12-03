@@ -9,23 +9,26 @@ import {
   addOrderItem,
   removeOrderItem,
 } from '@controllers';
-import { accessTokenValidator } from '@middleware';
+import {
+  accessTokenValidator,
+  addOrderItemBodyValidator,
+  createOrderBodyValidator,
+  updateOrderBodyValidator,
+} from '@middlewares';
+import { WrapAsync } from '@utils';
 
 const router = Router();
 
-// Protect all routes below
 router.use(accessTokenValidator);
 
-// Order CRUD operations
-router.get('/', searchOrders);
-router.get('/:id', getOrder);
-router.post('/', createOrder);
-router.put('/:id', updateOrder);
-router.delete('/:id', deleteOrder);
+router.get('/', WrapAsync(searchOrders));
+router.get('/:id', WrapAsync(getOrder));
+router.post('/', createOrderBodyValidator, WrapAsync(createOrder));
+router.put('/:id', updateOrderBodyValidator, WrapAsync(updateOrder));
+router.delete('/:id', WrapAsync(deleteOrder));
 
-// Order items management
-router.get('/:orderId/items', getOrderItems);
-router.post('/:orderId/items', addOrderItem);
-router.delete('/:orderId/items/:itemId', removeOrderItem);
+router.get('/:orderId/items', WrapAsync(getOrderItems));
+router.post('/:orderId/items', addOrderItemBodyValidator, WrapAsync(addOrderItem));
+router.delete('/:orderId/items/:itemId', WrapAsync(removeOrderItem));
 
 export default router;

@@ -1,18 +1,17 @@
 import { Router } from 'express';
 import { getShop, getMyShop, createShop, updateShop, deleteShop } from '@controllers';
-import { accessTokenValidator } from '@middleware';
+import { accessTokenValidator, createShopBodyValidator, updateShopBodyValidator } from '@middlewares';
+import { WrapAsync } from '@utils';
 
 const router = Router();
 
-// Public routes
-router.get('/:id', getShop);
+router.get('/:id', WrapAsync(getShop));
 
-// Protected routes (require authentication)
 router.use(accessTokenValidator);
 
-router.get('/my', getMyShop);
-router.post('/', createShop);
-router.put('/:id', updateShop);
-router.delete('/:id', deleteShop);
+router.get('/my', WrapAsync(getMyShop));
+router.post('/', createShopBodyValidator, WrapAsync(createShop));
+router.put('/:id', updateShopBodyValidator, WrapAsync(updateShop));
+router.delete('/:id', WrapAsync(deleteShop));
 
 export default router;

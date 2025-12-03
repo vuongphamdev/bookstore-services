@@ -5,14 +5,14 @@ export async function up(knex: Knex): Promise<void> {
   if (!hasTable) {
     return knex.schema.createTable('orders', (table) => {
       table.increments('id').primary();
-      table.integer('buyer_id').unsigned().notNullable();
+      table.integer('user_id').unsigned().notNullable();
       table.integer('shop_id').unsigned().notNullable();
       table.string('status');
       table.text('notes').nullable();
       table.timestamps(true, true);
 
-      table.foreign('buyer_id').references('id').inTable('users').onDelete('CASCADE');
-      table.index(['buyer_id']);
+      table.foreign('user_id').references('id').inTable('users').onDelete('CASCADE');
+      table.index(['user_id']);
     });
   }
 }

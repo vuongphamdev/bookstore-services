@@ -1,4 +1,3 @@
-import { AUTH_MESSAGES } from '@constants';
 import { HTTP_STATUS } from '@constants/http';
 import { ErrorWithStatus } from '@models';
 import { AuthService } from '@services';
@@ -12,14 +11,14 @@ const verifyAuthorization = async ({ value, req }: TVerifyParams) => {
   try {
     if (!value) {
       throw new ErrorWithStatus({
-        message: AUTH_MESSAGES.ACCESS_TOKEN_IS_REQUIRED,
+        message: 'Access token is required',
         status: HTTP_STATUS.UNAUTHORIZED,
       });
     }
     const token = value.split(' ')[1];
     if (!token) {
       throw new ErrorWithStatus({
-        message: AUTH_MESSAGES.ACCESS_TOKEN_IS_INVALID,
+        message: 'Access token is invalid',
         status: HTTP_STATUS.UNAUTHORIZED,
       });
     }
@@ -31,7 +30,7 @@ const verifyAuthorization = async ({ value, req }: TVerifyParams) => {
   } catch (error) {
     if (error instanceof JsonWebTokenError) {
       throw new ErrorWithStatus({
-        message: AUTH_MESSAGES.ACCESS_TOKEN_IS_INVALID,
+        message: 'Access token is invalid',
         status: HTTP_STATUS.UNAUTHORIZED,
       });
     }
@@ -43,7 +42,7 @@ const verifyRefreshTokenFromCookie = async ({ value, req }: TVerifyParams) => {
   try {
     if (!value) {
       throw new ErrorWithStatus({
-        message: AUTH_MESSAGES.REFRESH_TOKEN_IS_REQUIRED,
+        message: 'Refresh token is required',
         status: HTTP_STATUS.UNAUTHORIZED,
       });
     }
@@ -55,7 +54,7 @@ const verifyRefreshTokenFromCookie = async ({ value, req }: TVerifyParams) => {
   } catch (error) {
     if (error instanceof JsonWebTokenError) {
       throw new ErrorWithStatus({
-        message: AUTH_MESSAGES.REFRESH_TOKEN_IS_INVALID,
+        message: 'Refresh token is invalid',
         status: HTTP_STATUS.UNAUTHORIZED,
       });
     }

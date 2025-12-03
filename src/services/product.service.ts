@@ -4,7 +4,7 @@ import { Product, TCreateProductData, TProduct, TUpdateProductData } from '@mode
 export interface ISearchProductsParams {
   shop_id?: number;
   keyword?: string;
-  category?: string[];
+  category?: string;
   offset?: number;
   limit?: number;
 }
@@ -20,7 +20,7 @@ class ProductService {
       baseQuery = baseQuery.where('name', 'like', `%${keyword}%`);
     }
     if (category) {
-      baseQuery = baseQuery.whereIn('category', category);
+      baseQuery = baseQuery.whereIn('category', category.split(','));
     }
 
     // Clone for items and total

@@ -27,7 +27,7 @@ paths:
                     format: date-time
         '500':
           description: Internal server error
-  /register:
+  /auth/register:
     post:
       summary: Register a new user
       description: Create a new user account with authentication
@@ -46,14 +46,24 @@ paths:
               properties:
                 name:
                   type: string
-                  example: 'John Doe'
+                  example: 'Test user'
                 email:
                   type: string
                   format: email
-                  example: 'john@example.com'
+                  example: 'test@email.com'
                 password:
                   type: string
-                  example: 'password123'
+                  example: 'test@123'
+                dob:
+                  type: string
+                  format: date
+                  example: '1996-01-01'
+                phone_number:
+                  type: string
+                  example: '+1234567890'
+                address:
+                  type: string
+                  example: '123 Main St'
       responses:
         '201':
           description: User registered successfully
@@ -82,7 +92,7 @@ paths:
           description: Email already in use
         '500':
           description: Registration failed
-  /login:
+  /auth/login:
     post:
       summary: Login user
       description: Authenticate user with email and password
@@ -101,10 +111,10 @@ paths:
                 email:
                   type: string
                   format: email
-                  example: 'admin@bookstore.com'
+                  example: 'test@email.com'
                 password:
                   type: string
-                  example: 'password123'
+                  example: 'test@123'
       responses:
         '200':
           description: Login successful
@@ -131,7 +141,7 @@ paths:
           description: Invalid credentials
         '500':
           description: Login failed
-  /refresh-token:
+  /auth/refresh-token:
     post:
       summary: Refresh access token
       description: Get a new access token using the refresh token stored in HTTP-only cookie
@@ -166,7 +176,7 @@ paths:
           description: Invalid or missing refresh token
         '500':
           description: Token refresh failed
-  /logout:
+  /auth/logout:
     post:
       summary: Logout user
       description: Clear refresh token cookie and logout user
@@ -242,30 +252,6 @@ paths:
                 $ref: '#/components/schemas/ApiResponseUsers'
         '400':
           description: Invalid input
-    post:
-      summary: Create a new user
-      description: Create a new user account
-      tags:
-        - Users
-      security:
-        - BearerAuth: []
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/UserCreate'
-      responses:
-        '201':
-          description: User created successfully
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ApiResponseUser'
-        '400':
-          description: Missing required fields
-        '409':
-          description: User with email already exists
   /users/{id}:
     get:
       summary: Get user by ID
@@ -487,16 +473,13 @@ paths:
         - Reports
       security:
         - BearerAuth: []
-      requestBody:
-        required: false
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                top:
-                  type: integer
-                  example: 10
+      parameters:
+        - name: top
+          in: path
+          required: false
+          schema:
+            type: integer
+            example: 10
       responses:
         '200':
           description: Top selling products retrieved
@@ -574,8 +557,8 @@ paths:
           description: User or role not found
   /products:
     get:
-      summary: Get all products
-      description: Retrieve all products with optional filtering
+      summary: Search products
+      description: Search products with optional filtering
       tags:
         - Products
       parameters:
@@ -597,6 +580,18 @@ paths:
           schema:
             type: integer
           description: Filter by shop ID
+        - name: offset
+          in: query
+          required: false
+          schema:
+            type: integer
+          description: Offset for pagination
+        - name: limit
+          in: query
+          required: false
+          schema:
+            type: integer
+          description: Limit for pagination
       responses:
         '200':
           description: List of products
@@ -1185,33 +1180,6 @@ components:
         updated_at:
           type: string
           format: date-time
-    UserCreate:
-      type: object
-      required:
-        - name
-        - email
-        - password
-      properties:
-        name:
-          type: string
-          example: 'John Doe'
-        email:
-          type: string
-          format: email
-          example: 'john@example.com'
-        password:
-          type: string
-          example: 'securePassword123'
-        dob:
-          type: string
-          format: date
-          example: '1990-01-01'
-        phone_number:
-          type: string
-          example: '+1234567890'
-        address:
-          type: string
-          example: '123 Main St'
     UserUpdate:
       type: object
       properties:

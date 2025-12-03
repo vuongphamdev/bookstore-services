@@ -1,7 +1,7 @@
 import { Router } from 'express';
 import { login, logout, refreshToken, register } from '@controllers';
 import { WrapAsync } from '@utils';
-import { accessTokenValidator, loginValidator, refreshTokenCookieValidator, registerValidator } from '@middleware';
+import { accessTokenValidator, loginValidator, refreshTokenCookieValidator, registerValidator } from '@middlewares';
 
 const router = Router();
 

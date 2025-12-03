@@ -5,7 +5,6 @@ import { NextFunction, Request, Response } from 'express';
 
 export const defaultErrorHandler = (err: any, req: Request, res: Response, _next: NextFunction) => {
   try {
-    console.error('Error Middleware:', err);
     if (err instanceof EntityError) {
       return Responses.entityError(res, err);
     } else if (err instanceof ErrorWithStatus) {
@@ -19,7 +18,6 @@ export const defaultErrorHandler = (err: any, req: Request, res: Response, _next
       })
     );
   } catch (error) {
-    console.error(error);
     return Responses.error(
       res,
       new ErrorWithStatus({

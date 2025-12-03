@@ -1,7 +1,6 @@
 import { checkSchema, ParamSchema, Schema } from 'express-validator';
 import { validate } from '@utils';
 import { AuthorizationSchema, refreshTokenCookieSchema } from './validation-schemas';
-import { AUTH_MESSAGES } from '@constants';
 import { TLoginRequestBody, TRegisterRequestBody } from '@models';
 
 export const accessTokenValidator = validate(
@@ -27,15 +26,15 @@ export const loginValidator = validate(
     {
       email: {
         notEmpty: {
-          errorMessage: AUTH_MESSAGES.EMAIL_IS_REQUIRED,
+          errorMessage: 'Email is required',
         },
         isEmail: {
-          errorMessage: AUTH_MESSAGES.EMAIL_MUST_BE_VALID,
+          errorMessage: 'Email must be valid',
         },
       },
       password: {
         notEmpty: {
-          errorMessage: AUTH_MESSAGES.PASSWORD_IS_REQUIRED,
+          errorMessage: 'Password is required',
         },
       },
     } as Record<keyof TLoginRequestBody, ParamSchema>,
@@ -48,42 +47,42 @@ export const registerValidator = validate(
     {
       name: {
         notEmpty: {
-          errorMessage: AUTH_MESSAGES.NAME_IS_REQUIRED,
+          errorMessage: 'Name is required',
         },
       },
       email: {
         notEmpty: {
-          errorMessage: AUTH_MESSAGES.EMAIL_IS_REQUIRED,
+          errorMessage: 'Email is required',
         },
         isEmail: {
-          errorMessage: AUTH_MESSAGES.EMAIL_MUST_BE_VALID,
+          errorMessage: 'Email must be valid',
         },
       },
       password: {
         notEmpty: {
-          errorMessage: AUTH_MESSAGES.PASSWORD_IS_REQUIRED,
+          errorMessage: 'Password is required',
         },
         isLength: {
           options: { min: 6, max: 50 },
-          errorMessage: AUTH_MESSAGES.PASSWORD_MUST_BE_FROM_6_TO_50_CHARACTERS,
+          errorMessage: 'Password must be from 6 to 50 characters',
         },
       },
       address: {
         notEmpty: {
-          errorMessage: AUTH_MESSAGES.ADDRESS_IS_REQUIRED,
+          errorMessage: 'Address is requisred',
         },
       },
       phone_number: {
         notEmpty: {
-          errorMessage: AUTH_MESSAGES.PHONE_NUMBER_IS_REQUIRED,
+          errorMessage: 'Phone number is required',
         },
       },
       dob: {
         notEmpty: {
-          errorMessage: AUTH_MESSAGES.DOB_IS_REQUIRED,
+          errorMessage: 'DOB is required',
         },
         isISO8601: {
-          errorMessage: AUTH_MESSAGES.DOB_MUST_BE_VALID_DATE,
+          errorMessage: 'DOB must be valid date',
         },
       },
     } as Record<keyof TRegisterRequestBody, ParamSchema>,

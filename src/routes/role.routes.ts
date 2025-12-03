@@ -1,16 +1,15 @@
 import { Router } from 'express';
 import { getAllRoles, getRole, createRole, updateRole } from '@controllers';
-import { accessTokenValidator } from '@middleware';
+import { accessTokenValidator, createRoleBodyValidator, updateRoleBodyValidator } from '@middlewares';
+import { WrapAsync } from '@utils';
 
 const router = Router();
 
-// Protect all routes below
 router.use(accessTokenValidator);
 
-// Role CRUD operations
-router.get('/', getAllRoles);
-router.get('/:id', getRole);
-router.post('/', createRole);
-router.put('/:id', updateRole);
+router.get('/', WrapAsync(getAllRoles));
+router.get('/:id', WrapAsync(getRole));
+router.post('/', createRoleBodyValidator, WrapAsync(createRole));
+router.put('/:id', updateRoleBodyValidator, WrapAsync(updateRole));
 
 export default router;

@@ -197,7 +197,7 @@ export async function seed(knex: Knex): Promise<void> {
           new Order({
             id: i + 1,
             shop_id: shopId,
-            buyer_id: buyerId,
+            user_id: buyerId,
             status: orderStatuses[fastRandom(orderStatuses.length)],
             notes: fastRandom(10) < 3 ? faker.lorem.sentence() : null,
           })
