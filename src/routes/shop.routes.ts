@@ -5,11 +5,10 @@ import { WrapAsync } from '@utils';
 
 const router = Router();
 
-router.get('/:id', WrapAsync(getShop));
-
 router.use(accessTokenValidator);
 
 router.get('/my', WrapAsync(getMyShop));
+router.get('/:id', WrapAsync(getShop));
 router.post('/', createShopBodyValidator, WrapAsync(createShop));
 router.put('/:id', updateShopBodyValidator, WrapAsync(updateShop));
 router.delete('/:id', WrapAsync(deleteShop));

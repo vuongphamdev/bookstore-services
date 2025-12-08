@@ -89,7 +89,7 @@ export async function seed(knex: Knex): Promise<void> {
           })
         );
       }
-      await knex('users').insert(users.map((u) => u.toRow()));
+      await knex('users').insert(users.map((u) => u.toObject()));
       console.log(`   ✓ Users batch ${batch + 1}/${Math.ceil(TOTAL_USERS / batchSize)} completed`);
     }
 
@@ -114,7 +114,7 @@ export async function seed(knex: Knex): Promise<void> {
           })
         );
       }
-      await knex('shops').insert(shops.map((s) => s.toRow()));
+      await knex('shops').insert(shops.map((s) => s.toObject()));
       console.log(`   ✓ Shops batch ${batch + 1}/${Math.ceil(TOTAL_SHOPS / batchSize)} completed`);
     }
 
@@ -158,7 +158,7 @@ export async function seed(knex: Knex): Promise<void> {
       }
 
       if (products.length > 0) {
-        await knex('products').insert(products.map((p) => p.toRow()));
+        await knex('products').insert(products.map((p) => p.toObject()));
       }
 
       if (shopId % 20 === 0) {
@@ -204,7 +204,7 @@ export async function seed(knex: Knex): Promise<void> {
         );
       }
 
-      await knex('orders').insert(orders.map((o) => o.toRow()));
+      await knex('orders').insert(orders.map((o) => o.toObject()));
       console.log(`   ✓ Orders batch ${batch + 1}/${Math.ceil(TOTAL_ORDERS / batchSize)} completed`);
     }
 
@@ -237,7 +237,7 @@ export async function seed(knex: Knex): Promise<void> {
         }
       }
 
-      await knex('order_items').insert(orderItems.map((oi) => oi.toRow()));
+      await knex('order_items').insert(orderItems.map((oi) => oi.toObject()));
       console.log(`   ✓ Order items batch ${batch + 1}/${Math.ceil(TOTAL_ORDERS / batchSize)} completed`);
     }
 
@@ -268,7 +268,7 @@ export async function seed(knex: Knex): Promise<void> {
         })
       );
     }
-    await knex('drivers').insert(drivers.map((d) => d.toRow()));
+    await knex('drivers').insert(drivers.map((d) => d.toObject()));
     console.log(`   ✓ Drivers generation completed`);
 
     const now = new Date();
@@ -290,7 +290,7 @@ export async function seed(knex: Knex): Promise<void> {
         })
       );
     }
-    await knex('manifests').insert(manifests.map((m) => m.toRow()));
+    await knex('manifests').insert(manifests.map((m) => m.toObject()));
     console.log(`   ✓ Manifests generation completed`);
 
     // 8. Generate Jobs (1 job per order, assigned to random manifests)
@@ -317,7 +317,7 @@ export async function seed(knex: Knex): Promise<void> {
         );
       }
 
-      await knex('jobs').insert(jobs.map((j) => j.toRow()));
+      await knex('jobs').insert(jobs.map((j) => j.toObject()));
       console.log(`   ✓ Jobs batch ${batch + 1}/${Math.ceil(TOTAL_ORDERS / batchSize)} completed`);
     }
 
@@ -393,7 +393,7 @@ export async function seed(knex: Knex): Promise<void> {
         );
       }
 
-      await knex('stops').insert(stops.map((s) => s.toRow()));
+      await knex('stops').insert(stops.map((s) => s.toObject()));
       console.log(`   ✓ Stops batch ${batch + 1}/${Math.ceil(TOTAL_ORDERS / batchSize)} completed`);
     }
 

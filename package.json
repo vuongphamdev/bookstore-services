@@ -1,6 +1,7 @@
 {
-  "name": "migration-project",
+  "name": "courifly-services",
   "version": "1.0.0",
+  "description": "Courifly - Courier delivery and order tracking platform API",
   "main": "index.js",
   "scripts": {
     "_dev": "nodemon --watch src --ext ts --exec \"ts-node -r tsconfig-paths/register src/index.ts\"",
@@ -43,10 +44,15 @@
     "type": "git",
     "url": "git@github.com-vuongphamdev:vuongphamdev/migration-project.git"
   },
-  "keywords": [],
-  "author": "",
+  "keywords": [
+    "courier",
+    "delivery",
+    "tracking",
+    "logistics",
+    "order-management"
+  ],
+  "author": "VP",
   "license": "ISC",
-  "description": "",
   "dependencies": {
     "@faker-js/faker": "^10.0.0",
     "bcrypt": "^6.0.0",

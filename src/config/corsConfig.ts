@@ -9,7 +9,7 @@ const getAllowedOrigins = (): string[] | boolean => {
   if (isDevelopment || isTest) {
     return true;
   }
-  return ['https://bookstore.com', 'https://www.bookstore.com', 'https://admin.bookstore.com'];
+  return ['https://courifly.com', 'https://www.courifly.com', 'https://admin.courifly.com'];
 };
 
 export const corsConfig: CorsOptions = {

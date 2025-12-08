@@ -175,6 +175,6 @@ export type TUpdateRoleRequestBody = {
 };
 
 // ======================= Report Requests =======================
-export type TGetTopSellingProductsRequestParams = {
+export type TGetTopSellingProductsRequestQueryParams = {
   top?: number;
 };

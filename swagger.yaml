@@ -1,8 +1,8 @@
 openapi: 3.0.3
 info:
-  title: Bookstore E-commerce API
+  title: Courifly API
   version: 1.0.0
-  description: Node.js/Express/MySQL API for bookstore e-commerce system.
+  description: Courifly - Courier delivery and order tracking platform API. Built with Node.js/Express/MySQL.
 servers:
   - url: '{SERVER_URL}'
     description: API server (set dynamically)
@@ -450,7 +450,7 @@ paths:
           description: Shop not found
         '403':
           description: Forbidden
-  /shops/my-shops:
+  /shops/my:
     get:
       summary: Get my shops
       description: Retrieve all shops owned by the current user
@@ -475,7 +475,7 @@ paths:
         - BearerAuth: []
       parameters:
         - name: top
-          in: path
+          in: query
           required: false
           schema:
             type: integer
@@ -505,56 +505,7 @@ paths:
                           type: string
                         total_sold:
                           type: integer
-  /users/roles/assign:
-    post:
-      summary: Assign role to user
-      description: Assign a role to a user
-      tags:
-        - Roles
-      security:
-        - BearerAuth: []
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/UserRoleAssignment'
-      responses:
-        '200':
-          description: Role assigned successfully
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ApiResponseSuccess'
-        '400':
-          description: Missing required fields
-        '404':
-          description: User or role not found
-  /users/roles/remove:
-    delete:
-      summary: Remove role from user
-      description: Remove a role from a user
-      tags:
-        - Roles
-      security:
-        - BearerAuth: []
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/UserRoleAssignment'
-      responses:
-        '200':
-          description: Role removed successfully
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ApiResponseSuccess'
-        '400':
-          description: Missing required fields
-        '404':
-          description: User or role not found
+
   /products:
     get:
       summary: Search products
@@ -870,7 +821,7 @@ paths:
           description: Order not found
         '400':
           description: Invalid input
-  /orders/{id}/items:
+  /orders/{orderId}/items:
     get:
       summary: Get order items
       description: Retrieve all items for a specific order
@@ -879,7 +830,7 @@ paths:
       security:
         - BearerAuth: []
       parameters:
-        - name: id
+        - name: orderId
           in: path
           required: true
           schema:
@@ -901,7 +852,7 @@ paths:
       security:
         - BearerAuth: []
       parameters:
-        - name: id
+        - name: orderId
           in: path
           required: true
           schema:
@@ -1043,76 +994,7 @@ paths:
           description: Role not found
         '400':
           description: Invalid input
-    delete:
-      summary: Delete role
-      description: Delete a role (only if no users assigned)
-      tags:
-        - Roles
-      security:
-        - BearerAuth: []
-      parameters:
-        - name: id
-          in: path
-          required: true
-          schema:
-            type: integer
-      responses:
-        '200':
-          description: Role deleted successfully
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ApiResponseSuccess'
-        '404':
-          description: Role not found
-        '400':
-          description: Cannot delete role with assigned users
-  /roles/{id}/users:
-    get:
-      summary: Get users with role
-      description: Get all users assigned to a specific role
-      tags:
-        - Roles
-      security:
-        - BearerAuth: []
-      parameters:
-        - name: id
-          in: path
-          required: true
-          schema:
-            type: integer
-      responses:
-        '200':
-          description: Users with role retrieved
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ApiResponseUsers'
-        '404':
-          description: Role not found
-  /roles/users/{userId}:
-    get:
-      summary: Get user roles
-      description: Get all roles assigned to a specific user
-      tags:
-        - Roles
-      security:
-        - BearerAuth: []
-      parameters:
-        - name: userId
-          in: path
-          required: true
-          schema:
-            type: integer
-      responses:
-        '200':
-          description: User roles retrieved
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ApiResponseRoles'
-        '404':
-          description: User not found
+
 components:
   securitySchemes:
     BearerAuth:
@@ -1134,7 +1016,8 @@ components:
           type: string
         status:
           type: string
-          enum: ['active', 'inactive', 'banned']
+          enum: ['A', 'I', 'S', 'C', 'X']
+          description: 'Shop status - A: Active, I: Inactive, S: Suspended, C: Closed, X: Deleted'
         created_at:
           type: string
           format: date-time
@@ -1161,10 +1044,8 @@ components:
           type: string
         status:
           type: string
-          enum: ['active', 'inactive', 'banned']
-    User:
-      type: object
-      properties:
+          enum: ['A', 'I', 'S', 'C', 'X']
+          description: 'Shop status - A: Active, I: Inactive, S: Suspended, C: Closed, X: Deleted'
     User:
       type: object
       properties:
@@ -1174,6 +1055,24 @@ components:
           type: string
         email:
           type: string
+        role:
+          type: string
+          enum: ['A', 'U', 'G']
+          description: 'User role - A: Admin, U: User, G: Guest'
+        status:
+          type: string
+          enum: ['A', 'I', 'S', 'U', 'X']
+          description: 'User status - A: Active, I: Inactive, S: Suspended, U: Unverified, X: Deleted'
+        dob:
+          type: string
+          format: date
+          nullable: true
+        phone_number:
+          type: string
+          nullable: true
+        address:
+          type: string
+          nullable: true
         created_at:
           type: string
           format: date-time
@@ -1236,7 +1135,8 @@ components:
           type: integer
         status:
           type: string
-          enum: ['active', 'inactive', 'draft', 'archived']
+          enum: ['A', 'O', 'P', 'D', 'X']
+          description: 'Product status - A: Available, O: Out of Stock, P: Preorder, D: Discontinued, X: Deleted'
         metadata:
           type: string
         created_at:
@@ -1280,8 +1180,9 @@ components:
           example: 50
         status:
           type: string
-          enum: ['active', 'inactive', 'draft', 'archived']
-          example: 'active'
+          enum: ['A', 'O', 'P', 'D', 'X']
+          description: 'Product status - A: Available, O: Out of Stock, P: Preorder, D: Discontinued, X: Deleted'
+          example: 'A'
         metadata:
           type: string
           example: '{"isbn": "978-3-16-148410-0"}'
@@ -1303,7 +1204,8 @@ components:
           type: integer
         status:
           type: string
-          enum: ['active', 'inactive', 'draft', 'archived']
+          enum: ['A', 'O', 'P', 'D', 'X']
+          description: 'Product status - A: Available, O: Out of Stock, P: Preorder, D: Discontinued, X: Deleted'
         metadata:
           type: string
     StockUpdate:
@@ -1322,19 +1224,19 @@ components:
     Order:
       type: object
       properties:
-    Order:
-      type: object
-      properties:
         id:
+          type: integer
+        shop_id:
           type: integer
         user_id:
           type: integer
         status:
           type: string
-          enum: ['pending', 'processing', 'shipped', 'delivered', 'cancelled', 'returned', 'refunded']
-        total_amount:
-          type: number
-          format: float
+          enum: ['P', 'F', 'R', 'Y', 'U', 'T', 'O', 'D', 'C', 'X', 'N']
+          description: 'Order status - P: Pending, F: Confirmed, R: Preparing, Y: Ready to Ship, U: Picked Up, T: In Transit, O: Out for Delivery, D: Delivered, C: Completed, X: Cancelled, N: Refunded'
+        notes:
+          type: string
+          nullable: true
         created_at:
           type: string
           format: date-time
@@ -1353,30 +1255,31 @@ components:
     OrderCreate:
       type: object
       required:
+        - shop_id
         - user_id
         - status
-        - items
       properties:
+        shop_id:
+          type: integer
+          example: 1
         user_id:
           type: integer
           example: 1
         status:
           type: string
-          enum: ['pending', 'processing', 'shipped', 'delivered', 'cancelled', 'returned', 'refunded']
-          example: 'pending'
-        items:
-          type: array
-          items:
-            $ref: '#/components/schemas/OrderItemCreate'
+          enum: ['P', 'F', 'R', 'Y', 'U', 'T', 'O', 'D', 'C', 'X', 'N']
+          description: 'Order status - P: Pending, F: Confirmed, R: Preparing, Y: Ready to Ship, U: Picked Up, T: In Transit, O: Out for Delivery, D: Delivered, C: Completed, X: Cancelled, N: Refunded'
+          example: 'P'
+        notes:
+          type: string
+          nullable: true
+          example: 'Please deliver before 5 PM'
     OrderUpdate:
       type: object
       properties:
-        status:
+        notes:
           type: string
-          enum: ['pending', 'processing', 'shipped', 'delivered', 'cancelled', 'returned', 'refunded']
-        total_amount:
-          type: number
-          format: float
+          nullable: true
     OrderItem:
       type: object
       properties:
@@ -1424,7 +1327,8 @@ components:
           type: string
         code:
           type: string
-          enum: ['admin', 'user', 'shop_owner', 'driver']
+          enum: ['A', 'U', 'G']
+          description: 'Role code - A: Admin, U: User, G: Guest'
         created_at:
           type: string
           format: date-time
@@ -1444,8 +1348,9 @@ components:
           example: 'Store manager with elevated permissions'
         code:
           type: string
-          enum: ['admin', 'user', 'shop_owner', 'driver']
-          example: 'shop_owner'
+          enum: ['A', 'U', 'G']
+          description: 'Role code - A: Admin, U: User, G: Guest'
+          example: 'U'
     RoleUpdate:
       type: object
       properties:
@@ -1456,9 +1361,6 @@ components:
     ApiResponseSuccess:
       type: object
       properties:
-        success:
-          type: boolean
-          example: true
         message:
           type: string
           example: 'Operation completed successfully'
@@ -1466,42 +1368,40 @@ components:
           type: object
           nullable: true
         error:
-          type: string
+          type: object
+          additionalProperties:
+            type: string
           nullable: true
+          description: 'Validation errors object with field names as keys'
     ApiResponseUser:
       type: object
       properties:
-        success:
-          type: boolean
-          example: true
         message:
           type: string
           example: 'User retrieved successfully'
         data:
           $ref: '#/components/schemas/User'
         error:
-          type: string
+          type: object
+          additionalProperties:
+            type: string
           nullable: true
     ApiResponseUserWithRoles:
       type: object
       properties:
-        success:
-          type: boolean
-          example: true
         message:
           type: string
           example: 'User retrieved successfully'
         data:
           $ref: '#/components/schemas/UserWithRoles'
         error:
-          type: string
+          type: object
+          additionalProperties:
+            type: string
           nullable: true
     ApiResponseUsers:
       type: object
       properties:
-        success:
-          type: boolean
-          example: true
         message:
           type: string
           example: 'Users retrieved successfully'
@@ -1510,28 +1410,26 @@ components:
           items:
             $ref: '#/components/schemas/User'
         error:
-          type: string
+          type: object
+          additionalProperties:
+            type: string
           nullable: true
     ApiResponseProduct:
       type: object
       properties:
-        success:
-          type: boolean
-          example: true
         message:
           type: string
           example: 'Product retrieved successfully'
         data:
           $ref: '#/components/schemas/Product'
         error:
-          type: string
+          type: object
+          additionalProperties:
+            type: string
           nullable: true
     ApiResponseProducts:
       type: object
       properties:
-        success:
-          type: boolean
-          example: true
         message:
           type: string
           example: 'Products retrieved successfully'
@@ -1540,28 +1438,26 @@ components:
           items:
             $ref: '#/components/schemas/Product'
         error:
-          type: string
+          type: object
+          additionalProperties:
+            type: string
           nullable: true
     ApiResponseShop:
       type: object
       properties:
-        success:
-          type: boolean
-          example: true
         message:
           type: string
           example: 'Shop retrieved successfully'
         data:
           $ref: '#/components/schemas/Shop'
         error:
-          type: string
+          type: object
+          additionalProperties:
+            type: string
           nullable: true
     ApiResponseShops:
       type: object
       properties:
-        success:
-          type: boolean
-          example: true
         message:
           type: string
           example: 'Shops retrieved successfully'
@@ -1570,42 +1466,39 @@ components:
           items:
             $ref: '#/components/schemas/Shop'
         error:
-          type: string
+          type: object
+          additionalProperties:
+            type: string
           nullable: true
     ApiResponseOrder:
       type: object
       properties:
-        success:
-          type: boolean
-          example: true
         message:
           type: string
           example: 'Order retrieved successfully'
         data:
           $ref: '#/components/schemas/Order'
         error:
-          type: string
+          type: object
+          additionalProperties:
+            type: string
           nullable: true
     ApiResponseOrderWithItems:
       type: object
       properties:
-        success:
-          type: boolean
-          example: true
         message:
           type: string
           example: 'Order retrieved successfully'
         data:
           $ref: '#/components/schemas/OrderWithItems'
         error:
-          type: string
+          type: object
+          additionalProperties:
+            type: string
           nullable: true
     ApiResponseOrders:
       type: object
       properties:
-        success:
-          type: boolean
-          example: true
         message:
           type: string
           example: 'Orders retrieved successfully'
@@ -1614,14 +1507,13 @@ components:
           items:
             $ref: '#/components/schemas/Order'
         error:
-          type: string
+          type: object
+          additionalProperties:
+            type: string
           nullable: true
     ApiResponseOrderItems:
       type: object
       properties:
-        success:
-          type: boolean
-          example: true
         message:
           type: string
           example: 'Order items retrieved successfully'
@@ -1630,28 +1522,26 @@ components:
           items:
             $ref: '#/components/schemas/OrderItem'
         error:
-          type: string
+          type: object
+          additionalProperties:
+            type: string
           nullable: true
     ApiResponseRole:
       type: object
       properties:
-        success:
-          type: boolean
-          example: true
         message:
           type: string
           example: 'Role retrieved successfully'
         data:
           $ref: '#/components/schemas/Role'
         error:
-          type: string
+          type: object
+          additionalProperties:
+            type: string
           nullable: true
     ApiResponseRoles:
       type: object
       properties:
-        success:
-          type: boolean
-          example: true
         message:
           type: string
           example: 'Roles retrieved successfully'
@@ -1660,5 +1550,7 @@ components:
           items:
             $ref: '#/components/schemas/Role'
         error:
-          type: string
+          type: object
+          additionalProperties:
+            type: string
           nullable: true
