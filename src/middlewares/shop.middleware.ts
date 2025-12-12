@@ -1,6 +1,6 @@
 import { checkSchema, ParamSchema } from 'express-validator';
 import { validate } from '@utils';
-import { shopNameSchema, shopDescriptionSchema, shopNameOptionalSchema } from './validation-schemas';
+import { shopNameSchema, shopDescriptionSchema, shopNameOptionalSchema, shopStatusSchema } from './validation-schemas';
 import { TCreateShopRequestBody, TUpdateShopRequestBody } from '@models';
 
 export const createShopBodyValidator = validate(
@@ -18,6 +18,7 @@ export const updateShopBodyValidator = validate(
     {
       name: shopNameOptionalSchema,
       description: shopDescriptionSchema,
+      status: shopStatusSchema,
     } as Record<keyof TUpdateShopRequestBody, ParamSchema>,
     ['body']
   )

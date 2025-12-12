@@ -35,6 +35,10 @@ export type TUpdateUserRequestBody = {
 };
 
 // ======================= Order Requests =======================
+export type TSearchOrdersRequestQueryParams = {
+  status?: string;
+};
+
 export type TGetOrderRequestParams = {
   id: string;
 };

@@ -15,13 +15,15 @@ import {
   TAddOrderItemRequestParams,
   TAddOrderItemRequestBody,
   TRemoveOrderItemRequestParams,
+  TSearchOrdersRequestQueryParams,
 } from '@models';
 import { GENERAL_MESSAGE } from '@constants';
 import { EOrderStatus } from '@constants/enums';
 
-export const searchOrders = async (req: Request, res: Response) => {
+export const searchOrders = async (req: Request<any, any, any, TSearchOrdersRequestQueryParams>, res: Response) => {
   const { user_id } = req.user;
-  const orders = await orderService.searchOrders(user_id);
+  const statuses = (req.query.status ?? '').split(',') as EOrderStatus[];
+  const orders = await orderService.searchOrders(user_id, statuses);
   return Responses.success(res, 'Orders retrieved successfully', orders);
 };
 

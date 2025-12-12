@@ -1,0 +1,53 @@
+# Dependencies
+node_modules
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Build output
+dist
+
+# Environment files (use docker-compose environment instead)
+.env
+.env.local
+.env.*.local
+
+# IDE and editor files
+.idea
+.vscode
+*.swp
+*.swo
+*~
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Git
+.git
+.gitignore
+
+# Test files
+coverage
+*.test.ts
+*.spec.ts
+__tests__
+
+# Documentation (except swagger which is needed)
+docs
+*.md
+!README.md
+
+# Misc
+*.log
+.eslintcache
+.prettierrc
+.eslintrc.json
+.eslintignore
+eslint.config.mjs
+jest.config.js
+postman
+*.code-workspace
+
+# GitHub Actions
+.github

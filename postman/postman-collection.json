@@ -1,0 +1,956 @@
+{
+  "info": {
+    "_postman_id": "courifly-api-v1",
+    "name": "Courifly API",
+    "description": "Complete API collection for Courifly - Courier delivery and order tracking platform",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "courifly-project"
+  },
+  "item": [
+    {
+      "name": "Health Check",
+      "item": [
+        {
+          "name": "Ping",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{BASE_URL}}/ping",
+              "host": ["{{BASE_URL}}"],
+              "path": ["ping"]
+            },
+            "description": "Health check endpoint to test database connectivity"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Authentication",
+      "item": [
+        {
+          "name": "Register",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "if (pm.response.code === 201) {",
+                  "    const responseJson = pm.response.json();",
+                  "    if (responseJson.data && responseJson.data.accessToken) {",
+                  "        pm.environment.set('ACCESS_TOKEN', responseJson.data.accessToken);",
+                  "        console.log('Access token saved to environment');",
+                  "    }",
+                  "    if (responseJson.data && responseJson.data.user && responseJson.data.user.id) {",
+                  "        pm.environment.set('USER_ID', responseJson.data.user.id);",
+                  "        console.log('User ID saved to environment');",
+                  "    }",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"{{$randomFullName}}\",\n  \"email\": \"{{$randomEmail}}\",\n  \"password\": \"password123\",\n  \"address\": \"Da Nang, Viet Nam\",\n  \"phone_number\": \"0905078835\",\n  \"dob\": \"1990-01-01\"\n}"
+            },
+            "url": {
+              "raw": "{{BASE_URL}}/auth/register",
+              "host": ["{{BASE_URL}}"],
+              "path": ["auth", "register"]
+            },
+            "description": "Register a new user account"
+          }
+        },
+        {
+          "name": "Login",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "if (pm.response.code === 200) {",
+                  "    const responseJson = pm.response.json();",
+                  "    if (responseJson.data && responseJson.data.accessToken) {",
+                  "        pm.environment.set('ACCESS_TOKEN', responseJson.data.accessToken);",
+                  "        console.log('Access token saved to environment');",
+                  "    }",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"test@email.com\",\n  \"password\": \"test@123\"\n}"
+            },
+            "url": {
+              "raw": "{{BASE_URL}}/auth/login",
+              "host": ["{{BASE_URL}}"],
+              "path": ["auth", "login"]
+            },
+            "description": "Login with email and password"
+          }
+        },
+        {
+          "name": "Refresh Token",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "if (pm.response.code === 200) {",
+                  "    const responseJson = pm.response.json();",
+                  "    if (responseJson.data && responseJson.data.accessToken) {",
+                  "        pm.environment.set('ACCESS_TOKEN', responseJson.data.accessToken);",
+                  "        console.log('New access token saved to environment');",
+                  "    }",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{BASE_URL}}/auth/refresh-token",
+              "host": ["{{BASE_URL}}"],
+              "path": ["auth", "refresh-token"]
+            },
+            "description": "Refresh access token using refresh token from HTTP-only cookie"
+          }
+        },
+        {
+          "name": "Logout",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{ACCESS_TOKEN}}"
+              }
+            ],
+            "url": {
+              "raw": "{{BASE_URL}}/auth/logout",
+              "host": ["{{BASE_URL}}"],
+              "path": ["auth", "logout"]
+            },
+            "description": "Logout user and clear refresh token cookie"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Users",
+      "item": [
+        {
+          "name": "Get Current User",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{ACCESS_TOKEN}}"
+              }
+            ],
+            "url": {
+              "raw": "{{BASE_URL}}/users/me",
+              "host": ["{{BASE_URL}}"],
+              "path": ["users", "me"]
+            },
+            "description": "Get current authenticated user profile"
+          }
+        },
+        {
+          "name": "Get All Users",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{ACCESS_TOKEN}}"
+              }
+            ],
+            "url": {
+              "raw": "{{BASE_URL}}/users",
+              "host": ["{{BASE_URL}}"],
+              "path": ["users"]
+            },
+            "description": "Retrieve all users"
+          }
+        },
+        {
+          "name": "Get User By ID",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{ACCESS_TOKEN}}"
+              }
+            ],
+            "url": {
+              "raw": "{{BASE_URL}}/users/{{USER_ID}}",
+              "host": ["{{BASE_URL}}"],
+              "path": ["users", "{{USER_ID}}"]
+            },
+            "description": "Retrieve a specific user by ID"
+          }
+        },
+        {
+          "name": "Update User",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{ACCESS_TOKEN}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Updated Name\",\n  \"phone_number\": \"+1234567890\",\n  \"address\": \"123 Main St\"\n}"
+            },
+            "url": {
+              "raw": "{{BASE_URL}}/users/{{USER_ID}}",
+              "host": ["{{BASE_URL}}"],
+              "path": ["users", "{{USER_ID}}"]
+            },
+            "description": "Update user information"
+          }
+        },
+        {
+          "name": "Delete User",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{ACCESS_TOKEN}}"
+              }
+            ],
+            "url": {
+              "raw": "{{BASE_URL}}/users/{{USER_ID}}",
+              "host": ["{{BASE_URL}}"],
+              "path": ["users", "{{USER_ID}}"]
+            },
+            "description": "Delete a user by ID"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Shops",
+      "item": [
+        {
+          "name": "Get My Shops",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{ACCESS_TOKEN}}"
+              }
+            ],
+            "url": {
+              "raw": "{{BASE_URL}}/shops/my",
+              "host": ["{{BASE_URL}}"],
+              "path": ["shops", "my"]
+            },
+            "description": "Get all shops owned by current user"
+          }
+        },
+        {
+          "name": "Get Shop By ID",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{ACCESS_TOKEN}}"
+              }
+            ],
+            "url": {
+              "raw": "{{BASE_URL}}/shops/{{SHOP_ID}}",
+              "host": ["{{BASE_URL}}"],
+              "path": ["shops", "{{SHOP_ID}}"]
+            },
+            "description": "Get a specific shop by ID"
+          }
+        },
+        {
+          "name": "Create Shop",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "if (pm.response.code === 201) {",
+                  "    const responseJson = pm.response.json();",
+                  "    if (responseJson.data && responseJson.data.id) {",
+                  "        pm.environment.set('SHOP_ID', responseJson.data.id);",
+                  "        console.log('Shop ID saved to environment');",
+                  "    }",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{ACCESS_TOKEN}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"My Courier Shop\",\n  \"description\": \"Fast and reliable courier service\"\n}"
+            },
+            "url": {
+              "raw": "{{BASE_URL}}/shops",
+              "host": ["{{BASE_URL}}"],
+              "path": ["shops"]
+            },
+            "description": "Create a new shop"
+          }
+        },
+        {
+          "name": "Update Shop",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{ACCESS_TOKEN}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Updated Shop Name\",\n  \"description\": \"Updated description\",\n  \"status\": \"ACTIVE\"\n}"
+            },
+            "url": {
+              "raw": "{{BASE_URL}}/shops/{{SHOP_ID}}",
+              "host": ["{{BASE_URL}}"],
+              "path": ["shops", "{{SHOP_ID}}"]
+            },
+            "description": "Update shop information"
+          }
+        },
+        {
+          "name": "Delete Shop",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{ACCESS_TOKEN}}"
+              }
+            ],
+            "url": {
+              "raw": "{{BASE_URL}}/shops/{{SHOP_ID}}",
+              "host": ["{{BASE_URL}}"],
+              "path": ["shops", "{{SHOP_ID}}"]
+            },
+            "description": "Delete a shop by ID"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Products",
+      "item": [
+        {
+          "name": "Search Products",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{BASE_URL}}/products?keyword=&category=&shop_id=&offset=0&limit=10",
+              "host": ["{{BASE_URL}}"],
+              "path": ["products"],
+              "query": [
+                {
+                  "key": "keyword",
+                  "value": "",
+                  "description": "Search by keyword"
+                },
+                {
+                  "key": "category",
+                  "value": "",
+                  "description": "Filter by category"
+                },
+                {
+                  "key": "shop_id",
+                  "value": "",
+                  "description": "Filter by shop ID"
+                },
+                {
+                  "key": "offset",
+                  "value": "0",
+                  "description": "Offset for pagination"
+                },
+                {
+                  "key": "limit",
+                  "value": "10",
+                  "description": "Limit for pagination"
+                }
+              ]
+            },
+            "description": "Search products with optional filtering. Public endpoint."
+          }
+        },
+        {
+          "name": "Get Product By ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{BASE_URL}}/products/{{PRODUCT_ID}}",
+              "host": ["{{BASE_URL}}"],
+              "path": ["products", "{{PRODUCT_ID}}"]
+            },
+            "description": "Get a specific product by ID"
+          }
+        },
+        {
+          "name": "Create Product",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "if (pm.response.code === 201) {",
+                  "    const responseJson = pm.response.json();",
+                  "    if (responseJson.data && responseJson.data.id) {",
+                  "        pm.environment.set('PRODUCT_ID', responseJson.data.id);",
+                  "        console.log('Product ID saved to environment');",
+                  "    }",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{ACCESS_TOKEN}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"shop_id\": 1,\n  \"name\": \"Express Delivery Package\",\n  \"sku\": \"EXP-001\",\n  \"category\": \"DELIVERY\",\n  \"description\": \"Same-day express delivery service\",\n  \"price\": 25.99,\n  \"stock\": 100\n}"
+            },
+            "url": {
+              "raw": "{{BASE_URL}}/products",
+              "host": ["{{BASE_URL}}"],
+              "path": ["products"]
+            },
+            "description": "Create a new product. Requires authentication."
+          }
+        },
+        {
+          "name": "Update Product",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{ACCESS_TOKEN}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Updated Product Name\",\n  \"description\": \"Updated description\",\n  \"price\": 29.99\n}"
+            },
+            "url": {
+              "raw": "{{BASE_URL}}/products/{{PRODUCT_ID}}",
+              "host": ["{{BASE_URL}}"],
+              "path": ["products", "{{PRODUCT_ID}}"]
+            },
+            "description": "Update product information. Requires authentication."
+          }
+        },
+        {
+          "name": "Update Product Stock",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{ACCESS_TOKEN}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"quantity\": 10,\n  \"operation\": \"add\"\n}"
+            },
+            "url": {
+              "raw": "{{BASE_URL}}/products/{{PRODUCT_ID}}/stock",
+              "host": ["{{BASE_URL}}"],
+              "path": ["products", "{{PRODUCT_ID}}", "stock"]
+            },
+            "description": "Update product stock. Operation can be 'add' or 'subtract'."
+          }
+        },
+        {
+          "name": "Delete Product",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{ACCESS_TOKEN}}"
+              }
+            ],
+            "url": {
+              "raw": "{{BASE_URL}}/products/{{PRODUCT_ID}}",
+              "host": ["{{BASE_URL}}"],
+              "path": ["products", "{{PRODUCT_ID}}"]
+            },
+            "description": "Delete a product by ID. Requires authentication."
+          }
+        }
+      ]
+    },
+    {
+      "name": "Orders",
+      "item": [
+        {
+          "name": "Search Orders",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{ACCESS_TOKEN}}"
+              }
+            ],
+            "url": {
+              "raw": "{{BASE_URL}}/orders?status=",
+              "host": ["{{BASE_URL}}"],
+              "path": ["orders"],
+              "query": [
+                {
+                  "key": "status",
+                  "value": "",
+                  "description": "Filter by order status"
+                }
+              ]
+            },
+            "description": "Search orders with optional filtering. Requires authentication."
+          }
+        },
+        {
+          "name": "Get Order By ID",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{ACCESS_TOKEN}}"
+              }
+            ],
+            "url": {
+              "raw": "{{BASE_URL}}/orders/{{ORDER_ID}}",
+              "host": ["{{BASE_URL}}"],
+              "path": ["orders", "{{ORDER_ID}}"]
+            },
+            "description": "Get a specific order with all items"
+          }
+        },
+        {
+          "name": "Create Order",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "if (pm.response.code === 201) {",
+                  "    const responseJson = pm.response.json();",
+                  "    if (responseJson.data && responseJson.data.id) {",
+                  "        pm.environment.set('ORDER_ID', responseJson.data.id);",
+                  "        console.log('Order ID saved to environment');",
+                  "    }",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{ACCESS_TOKEN}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"shop_id\": 1,\n  \"notes\": \"Please handle with care\",\n  \"items\": [\n    {\n      \"product_id\": 1,\n      \"quantity\": 2\n    }\n  ]\n}"
+            },
+            "url": {
+              "raw": "{{BASE_URL}}/orders",
+              "host": ["{{BASE_URL}}"],
+              "path": ["orders"]
+            },
+            "description": "Create a new order with items"
+          }
+        },
+        {
+          "name": "Update Order",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{ACCESS_TOKEN}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"status\": \"CONFIRMED\",\n  \"notes\": \"Order confirmed\"\n}"
+            },
+            "url": {
+              "raw": "{{BASE_URL}}/orders/{{ORDER_ID}}",
+              "host": ["{{BASE_URL}}"],
+              "path": ["orders", "{{ORDER_ID}}"]
+            },
+            "description": "Update order status"
+          }
+        },
+        {
+          "name": "Delete Order",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{ACCESS_TOKEN}}"
+              }
+            ],
+            "url": {
+              "raw": "{{BASE_URL}}/orders/{{ORDER_ID}}",
+              "host": ["{{BASE_URL}}"],
+              "path": ["orders", "{{ORDER_ID}}"]
+            },
+            "description": "Delete an order by ID"
+          }
+        },
+        {
+          "name": "Get Order Items",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{ACCESS_TOKEN}}"
+              }
+            ],
+            "url": {
+              "raw": "{{BASE_URL}}/orders/{{ORDER_ID}}/items",
+              "host": ["{{BASE_URL}}"],
+              "path": ["orders", "{{ORDER_ID}}", "items"]
+            },
+            "description": "Get all items in an order"
+          }
+        },
+        {
+          "name": "Add Order Item",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{ACCESS_TOKEN}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"product_id\": 1,\n  \"quantity\": 1\n}"
+            },
+            "url": {
+              "raw": "{{BASE_URL}}/orders/{{ORDER_ID}}/items",
+              "host": ["{{BASE_URL}}"],
+              "path": ["orders", "{{ORDER_ID}}", "items"]
+            },
+            "description": "Add an item to an existing order"
+          }
+        },
+        {
+          "name": "Remove Order Item",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{ACCESS_TOKEN}}"
+              }
+            ],
+            "url": {
+              "raw": "{{BASE_URL}}/orders/{{ORDER_ID}}/items/{{ITEM_ID}}",
+              "host": ["{{BASE_URL}}"],
+              "path": ["orders", "{{ORDER_ID}}", "items", "{{ITEM_ID}}"]
+            },
+            "description": "Remove an item from an order"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Roles",
+      "item": [
+        {
+          "name": "Get All Roles",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{ACCESS_TOKEN}}"
+              }
+            ],
+            "url": {
+              "raw": "{{BASE_URL}}/roles",
+              "host": ["{{BASE_URL}}"],
+              "path": ["roles"]
+            },
+            "description": "Get all available roles"
+          }
+        },
+        {
+          "name": "Get Role By ID",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{ACCESS_TOKEN}}"
+              }
+            ],
+            "url": {
+              "raw": "{{BASE_URL}}/roles/{{ROLE_ID}}",
+              "host": ["{{BASE_URL}}"],
+              "path": ["roles", "{{ROLE_ID}}"]
+            },
+            "description": "Get a specific role by ID"
+          }
+        },
+        {
+          "name": "Create Role",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{ACCESS_TOKEN}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Driver\",\n  \"code\": \"D\",\n  \"description\": \"Delivery driver role\"\n}"
+            },
+            "url": {
+              "raw": "{{BASE_URL}}/roles",
+              "host": ["{{BASE_URL}}"],
+              "path": ["roles"]
+            },
+            "description": "Create a new role"
+          }
+        },
+        {
+          "name": "Update Role",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{ACCESS_TOKEN}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Updated Role\",\n  \"description\": \"Updated description\"\n}"
+            },
+            "url": {
+              "raw": "{{BASE_URL}}/roles/{{ROLE_ID}}",
+              "host": ["{{BASE_URL}}"],
+              "path": ["roles", "{{ROLE_ID}}"]
+            },
+            "description": "Update role information"
+          }
+        },
+        {
+          "name": "Delete Role",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{ACCESS_TOKEN}}"
+              }
+            ],
+            "url": {
+              "raw": "{{BASE_URL}}/roles/{{ROLE_ID}}",
+              "host": ["{{BASE_URL}}"],
+              "path": ["roles", "{{ROLE_ID}}"]
+            },
+            "description": "Delete a role by ID"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Reports",
+      "item": [
+        {
+          "name": "Top Selling Products",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{ACCESS_TOKEN}}"
+              }
+            ],
+            "url": {
+              "raw": "{{BASE_URL}}/reports/top-selling-products?top=10",
+              "host": ["{{BASE_URL}}"],
+              "path": ["reports", "top-selling-products"],
+              "query": [
+                {
+                  "key": "top",
+                  "value": "10",
+                  "description": "Number of top products to return"
+                }
+              ]
+            },
+            "description": "Get top selling products report"
+          }
+        }
+      ]
+    }
+  ],
+  "auth": {
+    "type": "bearer",
+    "bearer": [
+      {
+        "key": "token",
+        "value": "{{ACCESS_TOKEN}}",
+        "type": "string"
+      }
+    ]
+  },
+  "variable": [
+    {
+      "key": "BASE_URL",
+      "value": "http://localhost:3000",
+      "description": "API Base URL"
+    },
+    {
+      "key": "ACCESS_TOKEN",
+      "value": "",
+      "description": "JWT Access Token"
+    },
+    {
+      "key": "USER_ID",
+      "value": "1",
+      "description": "Sample user ID"
+    },
+    {
+      "key": "SHOP_ID",
+      "value": "1",
+      "description": "Sample shop ID"
+    },
+    {
+      "key": "PRODUCT_ID",
+      "value": "1",
+      "description": "Sample product ID"
+    },
+    {
+      "key": "ORDER_ID",
+      "value": "1",
+      "description": "Sample order ID"
+    },
+    {
+      "key": "ROLE_ID",
+      "value": "1",
+      "description": "Sample role ID"
+    },
+    {
+      "key": "ITEM_ID",
+      "value": "1",
+      "description": "Sample order item ID"
+    }
+  ]
+}

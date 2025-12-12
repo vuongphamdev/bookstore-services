@@ -49,10 +49,10 @@ class OrderService {
   async searchOrders(userId: number, status: EOrderStatus[] = []): Promise<TOrderWithDetails[]> {
     const orders = (await db<Omit<TOrderWithDetails, 'order_items'>>('orders as o')
       .select('o.*', 's.name as shop_name')
-      .where({ user_id: userId })
+      .where('o.user_id', userId)
       .modify((queryBuilder) => {
         if (status.length > 0) {
-          queryBuilder.whereIn('status', status);
+          queryBuilder.whereIn('o.status', status);
         }
       })
       .leftJoin('shops as s', 'o.shop_id', 's.id')) as Omit<TOrderWithDetails, 'order_items'>[];

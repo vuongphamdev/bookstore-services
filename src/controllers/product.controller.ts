@@ -2,7 +2,6 @@ import { Request, Response } from 'express';
 import { productService } from '@services';
 import {
   Responses,
-  InternalServerError,
   NotFoundError,
   EntityError,
   TGetProductRequestParams,

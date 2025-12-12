@@ -1,0 +1,100 @@
+version: '3.8'
+
+services:
+  # ================================
+  # MySQL Database Service
+  # ================================
+  db:
+    image: mysql:8.0
+    container_name: courifly-db
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD:-rootpassword}
+      MYSQL_DATABASE: ${DB_NAME:-courifly_db}
+      MYSQL_USER: ${DB_USER:-courifly_user}
+      MYSQL_PASSWORD: ${DB_PASS:-courifly_password}
+    ports:
+      - '${DB_PORT:-3306}:3306'
+    volumes:
+      - mysql_data:/var/lib/mysql
+    networks:
+      - courifly-network
+    healthcheck:
+      test: ['CMD', 'mysqladmin', 'ping', '-h', 'localhost', '-u', 'root', '-p${DB_ROOT_PASSWORD:-rootpassword}']
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+
+  # ================================
+  # Courifly API Service
+  # ================================
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: production
+    container_name: courifly-api
+    restart: unless-stopped
+    environment:
+      NODE_ENV: ${NODE_ENV:-production}
+      PORT: ${PORT:-3000}
+      SERVER_URL: ${SERVER_URL:-http://localhost:3000}
+      DB_HOST: db
+      DB_PORT: 3306
+      DB_USER: ${DB_USER:-courifly_user}
+      DB_PASS: ${DB_PASS:-courifly_password}
+      DB_NAME: ${DB_NAME:-courifly_db}
+      JWT_SECRET: ${JWT_SECRET:-your-super-secret-jwt-key-change-this-in-production}
+      JWT_EXPIRE_TIME: ${JWT_EXPIRE_TIME:-1h}
+    ports:
+      - '${PORT:-3000}:3000'
+    depends_on:
+      db:
+        condition: service_healthy
+    networks:
+      - courifly-network
+    healthcheck:
+      test: ['CMD', 'wget', '--no-verbose', '--tries=1', '--spider', 'http://localhost:3000/ping']
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
+
+  # ================================
+  # Database Migration Service (One-time run)
+  # ================================
+  migrate:
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
+    container_name: courifly-migrate
+    environment:
+      NODE_ENV: ${NODE_ENV:-development}
+      DB_HOST: db
+      DB_PORT: 3306
+      DB_USER: ${DB_USER:-courifly_user}
+      DB_PASS: ${DB_PASS:-courifly_password}
+      DB_NAME: ${DB_NAME:-courifly_db}
+    depends_on:
+      db:
+        condition: service_healthy
+    networks:
+      - courifly-network
+    command: sh -c "npm run db:migrate:latest && npm run db:seed:run"
+    profiles:
+      - migrate
+
+# ================================
+# Networks
+# ================================
+networks:
+  courifly-network:
+    driver: bridge
+
+# ================================
+# Volumes
+# ================================
+volumes:
+  mysql_data:
+    driver: local

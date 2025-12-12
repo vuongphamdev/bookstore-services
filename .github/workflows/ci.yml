@@ -8,8 +8,13 @@ on:
 
 env:
   NODE_VERSION: '20'
+  REGISTRY: ghcr.io
+  IMAGE_NAME: ${{ github.repository }}
 
 jobs:
+  # ================================
+  # Build and Test Job
+  # ================================
   build:
     name: Build and Test
     runs-on: ubuntu-latest
@@ -46,30 +51,82 @@ jobs:
           path: dist/
           retention-days: 7
 
+  # ================================
+  # Docker Build and Push Job
+  # ================================
+  docker:
+    name: Docker Build & Push
+    runs-on: ubuntu-latest
+    needs: [build]
+    if: github.event_name == 'push'
+    permissions:
+      contents: read
+      packages: write
+
+    outputs:
+      image-tag: ${{ steps.meta.outputs.tags }}
+      image-digest: ${{ steps.build-push.outputs.digest }}
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Log in to Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Extract Docker metadata
+        id: meta
+        uses: docker/metadata-action@v5
+        with:
+          images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
+          tags: |
+            type=ref,event=branch
+            type=sha,prefix={{branch}}-
+            type=raw,value=latest,enable=${{ github.ref == 'refs/heads/main' }}
+
+      - name: Build and push Docker image
+        id: build-push
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          file: ./Dockerfile
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+          build-args: |
+            NODE_ENV=production
+
+      - name: Generate artifact attestation
+        uses: actions/attest-build-provenance@v1
+        with:
+          subject-name: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
+          subject-digest: ${{ steps.build-push.outputs.digest }}
+          push-to-registry: true
+
+  # ================================
+  # Database Migration Job (Requires Approval)
+  # ================================
   migration:
     name: Database Migration
     runs-on: ubuntu-latest
     needs: [build]
-    environment: dev
+    # Environment with required reviewers for manual approval
+    # Configure this in: Repository Settings → Environments → db-migration → Required reviewers
+    environment: db-migration
     env:
       DB_HOST: ${{ secrets.DB_HOST }}
-      DB_PORT: ${{ secrets.DB_PORT }}
-      DB_USER: ${{ secrets.DB_USER }}
-      DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
       DB_NAME: ${{ secrets.DB_NAME }}
       DB_MIGRATION_USER: ${{ secrets.DB_MIGRATION_USER }}
       DB_MIGRATION_PASSWORD: ${{ secrets.DB_MIGRATION_PASSWORD }}
-      JWT_ACCESS_TOKEN_SECRET: ${{ secrets.JWT_ACCESS_TOKEN_SECRET }}
-      JWT_REFRESH_TOKEN_SECRET: ${{ secrets.JWT_REFRESH_TOKEN_SECRET }}
-      JWT_FORGOT_PASSWORD_TOKEN_SECRET: ${{ secrets.JWT_FORGOT_PASSWORD_TOKEN_SECRET }}
-      JWT_VERIFY_EMAIL_TOKEN_SECRET: ${{ secrets.JWT_VERIFY_EMAIL_TOKEN_SECRET }}
-      JWT_ACCESS_TOKEN_EXPIRE_TIME: ${{ secrets.JWT_ACCESS_TOKEN_EXPIRE_TIME }}
-      JWT_REFRESH_TOKEN_EXPIRE_TIME: ${{ secrets.JWT_REFRESH_TOKEN_EXPIRE_TIME }}
-      JWT_FORGOT_PASSWORD_TOKEN_EXPIRE_TIME: ${{ secrets.JWT_FORGOT_PASSWORD_TOKEN_EXPIRE_TIME }}
-      JWT_VERIFY_EMAIL_TOKEN_EXPIRE_TIME: ${{ secrets.JWT_VERIFY_EMAIL_TOKEN_EXPIRE_TIME }}
-      PASSWORD_SALT: ${{ secrets.PASSWORD_SALT }}
-      PORT: ${{ secrets.PORT }}
-      SERVER_URL: ${{ secrets.SERVER_URL }}
 
     steps:
       - name: Checkout code
@@ -84,31 +141,82 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      - name: Run migrations
-        run: npm run db:migrate:latest
-
-      - name: Check migration status
+      - name: Preview pending migrations
         run: npm run db:migrate:status
 
+      - name: ⚠️ Run migrations
+        run: npm run db:migrate:latest
+
+      - name: Verify migration status
+        run: npm run db:migrate:status
+
+  # ================================
+  # Deploy Job
+  # ================================
   deploy:
     name: Deploy
     runs-on: ubuntu-latest
-    needs: [build, migration]
+    needs: [docker, migration]
     if: github.event_name == 'push' && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/staging')
+    environment: ${{ github.ref == 'refs/heads/main' && 'production' || 'staging' }}
 
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Download build artifacts
-        uses: actions/download-artifact@v4
+      - name: Log in to Container Registry
+        uses: docker/login-action@v3
         with:
-          name: build-artifacts
-          path: dist/
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Deploy to server
-        run: echo "Add your deployment commands here"
-        # Example deployment commands:
-        # - scp -r dist/* user@server:/path/to/app
-        # - ssh user@server "pm2 restart app"
-        # - Or use a deployment action like easingthemes/ssh-deploy@v2
+      - name: Deploy to server via SSH
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.DEPLOY_HOST }}
+          username: ${{ secrets.DEPLOY_USER }}
+          key: ${{ secrets.DEPLOY_SSH_KEY }}
+          script: |
+            # Pull the latest image
+            docker pull ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ github.ref_name }}
+
+            # Stop and remove existing container (if exists)
+            docker stop courifly-api || true
+            docker rm courifly-api || true
+
+            # Run new container
+            docker run -d \
+              --name courifly-api \
+              --restart unless-stopped \
+              -p 3000:3000 \
+              -e NODE_ENV=${{ github.ref == 'refs/heads/main' && 'production' || 'staging' }} \
+              -e PORT=3000 \
+              -e DB_HOST=${{ secrets.DB_HOST }} \
+              -e DB_PORT=${{ secrets.DB_PORT }} \
+              -e DB_USER=${{ secrets.DB_USER }} \
+              -e DB_PASS=${{ secrets.DB_PASS }} \
+              -e DB_NAME=${{ secrets.DB_NAME }} \
+              -e JWT_SECRET=${{ secrets.JWT_SECRET }} \
+              -e JWT_EXPIRE_TIME=${{ secrets.JWT_EXPIRE_TIME }} \
+              ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ github.ref_name }}
+
+            # Cleanup old images
+            docker image prune -f
+
+      - name: Verify deployment
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.DEPLOY_HOST }}
+          username: ${{ secrets.DEPLOY_USER }}
+          key: ${{ secrets.DEPLOY_SSH_KEY }}
+          script: |
+            # Wait for container to be healthy
+            sleep 10
+
+            # Check container status
+            docker ps | grep courifly-api
+
+            # Health check
+            curl -f http://localhost:3000/ping || exit 1
+            echo "✅ Deployment successful!"
