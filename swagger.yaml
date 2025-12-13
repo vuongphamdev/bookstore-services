@@ -4,7 +4,7 @@ info:
   version: 1.0.0
   description: Courifly - Courier delivery and order tracking platform API. Built with Node.js/Express/MySQL.
 servers:
-  - url: '{SERVER_URL}'
+  - url: '{SERVER_HOST}:{SERVER_PORT}'
     description: API server (set dynamically)
 paths:
   /ping:

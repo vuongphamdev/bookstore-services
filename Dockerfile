@@ -1,13 +1,38 @@
 # ================================
-# Stage 1: Build Stage
+# Stage 1: Base Stage (shared dependencies)
 # ================================
-FROM node:20-alpine AS builder
+FROM node:20-alpine AS base
 
 # Set working directory
 WORKDIR /app
 
-# Copy package files for dependency installation
+# Install dependencies for native modules (bcrypt needs these)
+RUN apk add --no-cache python3 make g++
+
+# Copy package files
 COPY package*.json ./
+
+# ================================
+# Stage 2: Development Stage
+# ================================
+FROM base AS development
+
+# Install all dependencies (including devDependencies)
+RUN npm ci
+
+# Copy all source files
+COPY . .
+
+# Expose the application port
+EXPOSE 3000
+
+# Default command for development
+CMD ["npm", "run", "dev"]
+
+# ================================
+# Stage 3: Builder Stage
+# ================================
+FROM base AS builder
 
 # Install all dependencies (including devDependencies for building)
 RUN npm ci
@@ -20,7 +45,7 @@ COPY src ./src
 RUN npm run build
 
 # ================================
-# Stage 2: Production Stage
+# Stage 4: Production Stage
 # ================================
 FROM node:20-alpine AS production
 

@@ -1,14 +1,14 @@
 import type { Knex } from 'knex';
-import { ENV } from '@config/env';
 
 const config: { [key: string]: Knex.Config } = {
   development: {
     client: 'mysql2',
     connection: {
-      host: ENV.DB_HOST,
-      user: ENV.DB_MIGRATION_USER, // Use migration user for migrations
-      password: ENV.DB_MIGRATION_PASSWORD,
-      database: ENV.DB_NAME,
+      host: process.env.DB_HOST,
+      port: Number(process.env.DB_PORT),
+      database: process.env.DB_NAME,
+      user: process.env.DB_MIGRATION_USER, // Use migration user for migrations
+      password: process.env.DB_MIGRATION_PASSWORD,
     },
     migrations: {
       directory: './migrations',

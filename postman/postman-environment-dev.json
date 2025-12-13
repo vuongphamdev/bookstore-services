@@ -9,12 +9,6 @@
       "enabled": true
     },
     {
-      "key": "TENANT_ID",
-      "value": "dev001",
-      "description": "Development tenant ID",
-      "enabled": true
-    },
-    {
       "key": "USER_ID",
       "value": "1",
       "description": "Test user ID for development",

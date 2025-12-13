@@ -32,18 +32,14 @@ if (isExit) {
 
 export const ENV = {
   NODE_ENV: process.env.NODE_ENV ?? 'development',
-  DB_HOST: process.env.DB_HOST ?? 'localhost',
-  DB_PORT: Number(process.env.DB_PORT ?? 3306),
-  DB_USER: process.env.DB_USER ?? 'root',
-  DB_PASSWORD: process.env.DB_PASSWORD ?? '',
-  DB_NAME: process.env.DB_NAME ?? '',
 
-  // Migration user credentials
-  DB_MIGRATION_USER: process.env.DB_MIGRATION_USER,
-  DB_MIGRATION_PASSWORD: process.env.DB_MIGRATION_PASSWORD,
+  DB_HOST: 'localhost',
+  DB_NAME: process.env.DB_NAME as any,
+  DB_USER: process.env.DB_USER as any,
+  DB_PASSWORD: process.env.DB_PASSWORD as any,
 
-  SERVER_URL: process.env.SERVER_URL ?? 'http://localhost:3000',
-  PORT: Number(process.env.PORT ?? 3000),
+  SERVER_HOST: process.env.SERVER_HOST ?? 'localhost',
+  SERVER_PORT: Number(process.env.PORT ?? 3000),
 
   //JWT Secrets
   JWT_ACCESS_TOKEN_SECRET: process.env.JWT_ACCESS_TOKEN_SECRET!,
@@ -60,5 +56,3 @@ export const ENV = {
   //Others
   PASSWORD_SALT: process.env.PASSWORD_SALT!,
 };
-
-export const IS_PRODUCTION = ENV.NODE_ENV === 'production';

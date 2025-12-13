@@ -12,7 +12,7 @@ import cors from 'cors';
 const swaggerDocument = YAML.load(__dirname + '/../swagger.yaml');
 
 if (swaggerDocument && swaggerDocument.servers && swaggerDocument.servers.length > 0) {
-  swaggerDocument.servers[0].url = ENV.SERVER_URL;
+  swaggerDocument.servers[0].url = ENV.SERVER_HOST + ':' + ENV.SERVER_PORT;
 }
 
 const app = express();
@@ -45,7 +45,7 @@ app.use('/reports', reportRouter);
 // Error handling middleware
 app.use(defaultErrorHandler);
 
-const PORT = ENV.PORT;
+const PORT = ENV.SERVER_PORT;
 
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);

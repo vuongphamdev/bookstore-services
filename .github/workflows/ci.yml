@@ -8,8 +8,7 @@ on:
 
 env:
   NODE_VERSION: '20'
-  REGISTRY: ghcr.io
-  IMAGE_NAME: ${{ github.repository }}
+  IMAGE_NAME: ${{ secrets.DOCKER_USERNAME }}/courifly
 
 jobs:
   # ================================
@@ -63,9 +62,13 @@ jobs:
       contents: read
       packages: write
 
+    # Map branch name to environment
+    # 'dev' branch => 'dev' env
+    # 'main' branch => 'staging' env
+    environment: ${{ github.ref_name == 'dev' && 'dev' || 'staging' }}
+
     outputs:
-      image-tag: ${{ steps.meta.outputs.tags }}
-      image-digest: ${{ steps.build-push.outputs.digest }}
+      tag: ${{ steps.timestamp.outputs.tag }}
 
     steps:
       - name: Checkout code
@@ -74,21 +77,25 @@ jobs:
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
 
-      - name: Log in to Container Registry
+      - name: Log in to Docker Hub
         uses: docker/login-action@v3
         with:
-          registry: ${{ env.REGISTRY }}
-          username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_ACCESS_TOKEN }}
+
+      - name: Generate timestamp tag
+        id: timestamp
+        run: |
+          PROPER_TAG="${{ github.ref_name }}-$(date +'%Y%m%d-%H%M%S')"
+          echo "tag=$PROPER_TAG" >> $GITHUB_OUTPUT
 
       - name: Extract Docker metadata
         id: meta
         uses: docker/metadata-action@v5
         with:
-          images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
+          images: ${{ env.IMAGE_NAME }}
           tags: |
-            type=ref,event=branch
-            type=sha,prefix={{branch}}-
+            type=raw,value=${{ steps.timestamp.outputs.tag }}
             type=raw,value=latest,enable=${{ github.ref == 'refs/heads/main' }}
 
       - name: Build and push Docker image
@@ -99,18 +106,15 @@ jobs:
           file: ./Dockerfile
           push: true
           tags: ${{ steps.meta.outputs.tags }}
-          labels: ${{ steps.meta.outputs.labels }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
-          build-args: |
-            NODE_ENV=production
+          target: production
 
-      - name: Generate artifact attestation
-        uses: actions/attest-build-provenance@v1
-        with:
-          subject-name: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
-          subject-digest: ${{ steps.build-push.outputs.digest }}
-          push-to-registry: true
+      - name: Print image info
+        run: |
+          echo "Image: ${{ env.IMAGE_NAME }}"
+          echo "Tags: ${{ steps.meta.outputs.tags }}"
+          echo "Digest: ${{ steps.build-push.outputs.digest }}"
 
   # ================================
   # Database Migration Job (Requires Approval)
@@ -124,6 +128,7 @@ jobs:
     environment: db-migration
     env:
       DB_HOST: ${{ secrets.DB_HOST }}
+      DB_PORT: ${{ secrets.DB_PORT }}
       DB_NAME: ${{ secrets.DB_NAME }}
       DB_MIGRATION_USER: ${{ secrets.DB_MIGRATION_USER }}
       DB_MIGRATION_PASSWORD: ${{ secrets.DB_MIGRATION_PASSWORD }}
@@ -151,72 +156,150 @@ jobs:
         run: npm run db:migrate:status
 
   # ================================
-  # Deploy Job
+  # Deploy to Dev / Staging
   # ================================
-  deploy:
-    name: Deploy
+  deploy_base:
+    name: Deploy to ${{ github.ref_name == 'dev' && 'Dev' || 'Staging' }}
     runs-on: ubuntu-latest
-    needs: [docker, migration]
-    if: github.event_name == 'push' && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/staging')
-    environment: ${{ github.ref == 'refs/heads/main' && 'production' || 'staging' }}
+    needs: [docker]
+    if: github.event_name == 'push' && (github.ref_name == 'dev' || github.ref_name == 'main')
+
+    # dev => dev env
+    # main => staging env
+    environment: ${{ github.ref_name == 'dev' && 'dev' || 'staging' }}
 
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Log in to Container Registry
-        uses: docker/login-action@v3
+      - name: Prepare deployment directory
+        uses: appleboy/ssh-action@v1.0.3
         with:
-          registry: ${{ env.REGISTRY }}
-          username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
+          host: ${{ secrets.HOST }}
+          username: ${{ secrets.HOST_USER }}
+          key: ${{ secrets.HOST_KEY }}
+          script: |
+            sudo mkdir -p /opt/courifly
+            sudo chown -R $USER:$USER /opt/courifly
+      - name: Copy docker-compose to server
+        uses: appleboy/scp-action@v0.1.7
+        with:
+          host: ${{ secrets.HOST }}
+          username: ${{ secrets.HOST_USER }}
+          key: ${{ secrets.HOST_KEY }}
+          source: 'docker-compose.yml'
+          target: '/opt/courifly/'
 
       - name: Deploy to server via SSH
         uses: appleboy/ssh-action@v1.0.3
         with:
-          host: ${{ secrets.DEPLOY_HOST }}
-          username: ${{ secrets.DEPLOY_USER }}
-          key: ${{ secrets.DEPLOY_SSH_KEY }}
+          host: ${{ secrets.HOST }}
+          username: ${{ secrets.HOST_USER }}
+          key: ${{ secrets.HOST_KEY }}
+          envs: DOCKER_ACCESS_TOKEN,DOCKER_USERNAME,ENV_FILE,IMAGE_NAME,TAG
           script: |
-            # Pull the latest image
-            docker pull ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ github.ref_name }}
+            export DOCKER_ACCESS_TOKEN="${{ secrets.DOCKER_ACCESS_TOKEN }}"
+            export DOCKER_USERNAME="${{ secrets.DOCKER_USERNAME }}"
+            export IMAGE_NAME="${{ env.IMAGE_NAME }}"
+            export TAG="${{ needs.docker.outputs.tag }}"
 
-            # Stop and remove existing container (if exists)
-            docker stop courifly-api || true
-            docker rm courifly-api || true
+            cd /opt/courifly
 
-            # Run new container
-            docker run -d \
-              --name courifly-api \
-              --restart unless-stopped \
-              -p 3000:3000 \
-              -e NODE_ENV=${{ github.ref == 'refs/heads/main' && 'production' || 'staging' }} \
-              -e PORT=3000 \
-              -e DB_HOST=${{ secrets.DB_HOST }} \
-              -e DB_PORT=${{ secrets.DB_PORT }} \
-              -e DB_USER=${{ secrets.DB_USER }} \
-              -e DB_PASS=${{ secrets.DB_PASS }} \
-              -e DB_NAME=${{ secrets.DB_NAME }} \
-              -e JWT_SECRET=${{ secrets.JWT_SECRET }} \
-              -e JWT_EXPIRE_TIME=${{ secrets.JWT_EXPIRE_TIME }} \
-              ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ github.ref_name }}
+            cat << 'EOF' > .env
+            ${{ secrets.ENV_FILE }}
+            EOF
 
-            # Cleanup old images
+            echo "$DOCKER_ACCESS_TOKEN" | docker login -u "$DOCKER_USERNAME" --password-stdin
+
+            IMAGE_NAME=$IMAGE_NAME TAG=$TAG docker compose pull
+            IMAGE_NAME=$IMAGE_NAME TAG=$TAG docker compose up -d
+
             docker image prune -f
 
       - name: Verify deployment
         uses: appleboy/ssh-action@v1.0.3
         with:
-          host: ${{ secrets.DEPLOY_HOST }}
-          username: ${{ secrets.DEPLOY_USER }}
-          key: ${{ secrets.DEPLOY_SSH_KEY }}
+          host: ${{ secrets.HOST }}
+          username: ${{ secrets.HOST_USER }}
+          key: ${{ secrets.HOST_KEY }}
           script: |
-            # Wait for container to be healthy
             sleep 10
-
-            # Check container status
-            docker ps | grep courifly-api
-
-            # Health check
+            cd /opt/courifly
+            docker compose ps
             curl -f http://localhost:3000/ping || exit 1
             echo "✅ Deployment successful!"
+
+  # ================================
+  # Deploy to Production (Requires Approval)
+  # ================================
+  deploy_prod:
+    name: Deploy to Production
+    runs-on: ubuntu-latest
+    needs: [deploy_base, docker]
+    # Only run for main branch (after staging deploy)
+    if: github.event_name == 'push' && github.ref_name == 'main'
+
+    # 'prod' env (configured with reviewer in GitHub settings)
+    environment: prod
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Prepare deployment directory
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.HOST }}
+          username: ${{ secrets.HOST_USER }}
+          key: ${{ secrets.HOST_KEY }}
+          script: |
+            sudo mkdir -p /opt/courifly
+            sudo chown -R $USER:$USER /opt/courifly
+
+      - name: Copy docker-compose to server
+        uses: appleboy/scp-action@v0.1.7
+        with:
+          host: ${{ secrets.HOST }}
+          username: ${{ secrets.HOST_USER }}
+          key: ${{ secrets.HOST_KEY }}
+          source: 'docker-compose.yml'
+          target: '/opt/courifly/'
+
+      - name: Deploy to PROD Server via SSH
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.HOST }}
+          username: ${{ secrets.HOST_USER }}
+          key: ${{ secrets.HOST_KEY }}
+          envs: DOCKER_ACCESS_TOKEN,DOCKER_USERNAME,ENV_FILE,IMAGE_NAME,TAG
+          script: |
+            export DOCKER_ACCESS_TOKEN="${{ secrets.DOCKER_ACCESS_TOKEN }}"
+            export DOCKER_USERNAME="${{ secrets.DOCKER_USERNAME }}"
+            export IMAGE_NAME="${{ env.IMAGE_NAME }}"
+            export TAG="${{ needs.docker.outputs.tag }}"
+
+            cd /opt/courifly
+
+            cat << 'EOF' > .env
+            ${{ secrets.ENV_FILE }}
+            EOF
+
+            echo "$DOCKER_ACCESS_TOKEN" | docker login -u "$DOCKER_USERNAME" --password-stdin
+
+            IMAGE_NAME=$IMAGE_NAME TAG=$TAG docker compose pull
+            IMAGE_NAME=$IMAGE_NAME TAG=$TAG docker compose up -d
+
+            docker image prune -f
+
+      - name: Verify deployment
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.HOST }}
+          username: ${{ secrets.HOST_USER }}
+          key: ${{ secrets.HOST_KEY }}
+          script: |
+            sleep 10
+            cd /opt/courifly
+            docker compose ps
+            curl -f http://localhost:3000/ping || exit 1
+            echo "✅ Production Deployment successful!"
