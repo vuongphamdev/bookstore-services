@@ -61,10 +61,6 @@ jobs:
     permissions:
       contents: read
       packages: write
-
-    # Map branch name to environment
-    # 'dev' branch => 'dev' env
-    # 'main' branch => 'staging' env
     environment: ${{ github.ref_name == 'dev' && 'dev' || 'staging' }}
 
     outputs:
@@ -123,8 +119,6 @@ jobs:
     name: Database Migration
     runs-on: ubuntu-latest
     needs: [build]
-    # Environment with required reviewers for manual approval
-    # Configure this in: Repository Settings → Environments → db-migration → Required reviewers
     environment: db-migration
     env:
       DB_HOST: ${{ secrets.DB_HOST }}
@@ -163,9 +157,6 @@ jobs:
     runs-on: ubuntu-latest
     needs: [docker]
     if: github.event_name == 'push' && (github.ref_name == 'dev' || github.ref_name == 'main')
-
-    # dev => dev env
-    # main => staging env
     environment: ${{ github.ref_name == 'dev' && 'dev' || 'staging' }}
 
     steps:
@@ -181,6 +172,7 @@ jobs:
           script: |
             sudo mkdir -p /opt/courifly
             sudo chown -R $USER:$USER /opt/courifly
+
       - name: Copy docker-compose to server
         uses: appleboy/scp-action@v0.1.7
         with:
@@ -192,17 +184,17 @@ jobs:
 
       - name: Deploy to server via SSH
         uses: appleboy/ssh-action@v1.0.3
+        env:
+          DOCKER_ACCESS_TOKEN: ${{ secrets.DOCKER_ACCESS_TOKEN }}
+          DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
+          IMAGE_NAME: ${{ env.IMAGE_NAME }}
+          TAG: ${{ needs.docker.outputs.tag }}
         with:
           host: ${{ secrets.HOST }}
           username: ${{ secrets.HOST_USER }}
           key: ${{ secrets.HOST_KEY }}
-          envs: DOCKER_ACCESS_TOKEN,DOCKER_USERNAME,ENV_FILE,IMAGE_NAME,TAG
+          envs: DOCKER_ACCESS_TOKEN,DOCKER_USERNAME,IMAGE_NAME,TAG
           script: |
-            export DOCKER_ACCESS_TOKEN="${{ secrets.DOCKER_ACCESS_TOKEN }}"
-            export DOCKER_USERNAME="${{ secrets.DOCKER_USERNAME }}"
-            export IMAGE_NAME="${{ env.IMAGE_NAME }}"
-            export TAG="${{ needs.docker.outputs.tag }}"
-
             cd /opt/courifly
 
             cat << 'EOF' > .env
@@ -236,10 +228,7 @@ jobs:
     name: Deploy to Production
     runs-on: ubuntu-latest
     needs: [deploy_base, docker]
-    # Only run for main branch (after staging deploy)
     if: github.event_name == 'push' && github.ref_name == 'main'
-
-    # 'prod' env (configured with reviewer in GitHub settings)
     environment: prod
 
     steps:
@@ -267,17 +256,17 @@ jobs:
 
       - name: Deploy to PROD Server via SSH
         uses: appleboy/ssh-action@v1.0.3
+        env:
+          DOCKER_ACCESS_TOKEN: ${{ secrets.DOCKER_ACCESS_TOKEN }}
+          DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
+          IMAGE_NAME: ${{ env.IMAGE_NAME }}
+          TAG: ${{ needs.docker.outputs.tag }}
         with:
           host: ${{ secrets.HOST }}
           username: ${{ secrets.HOST_USER }}
           key: ${{ secrets.HOST_KEY }}
-          envs: DOCKER_ACCESS_TOKEN,DOCKER_USERNAME,ENV_FILE,IMAGE_NAME,TAG
+          envs: DOCKER_ACCESS_TOKEN,DOCKER_USERNAME,IMAGE_NAME,TAG
           script: |
-            export DOCKER_ACCESS_TOKEN="${{ secrets.DOCKER_ACCESS_TOKEN }}"
-            export DOCKER_USERNAME="${{ secrets.DOCKER_USERNAME }}"
-            export IMAGE_NAME="${{ env.IMAGE_NAME }}"
-            export TAG="${{ needs.docker.outputs.tag }}"
-
             cd /opt/courifly
 
             cat << 'EOF' > .env
