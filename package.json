@@ -11,7 +11,7 @@
     "dev:production": "NODE_ENV=production npm run _dev",
     "build": "npm run build:clean && npm run build:compile",
     "build:clean": "rm -rf dist",
-    "build:compile": "tsc",
+    "build:compile": "tsc && tsc-alias",
     "build:watch": "tsc --watch",
     "start": "npm run start:production",
     "start:development": "NODE_ENV=development node dist/index.js",
@@ -91,6 +91,7 @@
     "prettier": "3.6.2",
     "ts-jest": "^29.4.5",
     "ts-node": "^10.9.2",
+    "tsc-alias": "^1.8.16",
     "tsconfig-paths": "^4.2.0",
     "typescript": "^5.9.2",
     "typescript-eslint": "^8.46.4"

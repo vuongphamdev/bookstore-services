@@ -5,6 +5,7 @@ export const db = knex({
   client: 'mysql2',
   connection: {
     host: ENV.DB_HOST,
+    port: Number(ENV.DB_PORT),
     user: ENV.DB_USER,
     password: ENV.DB_PASSWORD,
     database: ENV.DB_NAME,

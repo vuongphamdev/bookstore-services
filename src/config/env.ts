@@ -33,7 +33,8 @@ if (isExit) {
 export const ENV = {
   NODE_ENV: process.env.NODE_ENV ?? 'development',
 
-  DB_HOST: 'localhost',
+  DB_HOST: process.env.DB_HOST || 'localhost',
+  DB_PORT: Number(process.env.DB_PORT) || 3306,
   DB_NAME: process.env.DB_NAME as any,
   DB_USER: process.env.DB_USER as any,
   DB_PASSWORD: process.env.DB_PASSWORD as any,
