@@ -63,7 +63,7 @@ jobs:
     needs: [prepare, build]
     # Only run if not production (Production has its own job for approval)
     if: needs.prepare.outputs.deploy_env != 'prod'
-    uses: ./.github/workflows/deploy-reusable.yml
+    uses: ./.github/workflows/build-docker-and-deploy-reusable.yml
     with:
       environment: ${{ needs.prepare.outputs.deploy_env }}
       image-tag: ${{ needs.prepare.outputs.version }}
@@ -90,7 +90,7 @@ jobs:
     name: Deploy to Production
     needs: [prepare, deploy]
     if: needs.prepare.outputs.is_release == 'true'
-    uses: ./.github/workflows/deploy-reusable.yml
+    uses: ./.github/workflows/build-docker-and-deploy-reusable.yml
     with:
       environment: prod
       image-tag: ${{ needs.prepare.outputs.version }}
