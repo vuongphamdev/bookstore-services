@@ -1,0 +1,26 @@
+name: Manual Deploy / Rollback
+
+on:
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: 'Environment to deploy to'
+        required: true
+        default: 'staging'
+        type: choice
+        options:
+          - dev
+          - staging
+          - prod
+      version:
+        description: 'Version/Tag to deploy (e.g., v01.0 or dev-20251121-a1b2c3)'
+        required: true
+
+jobs:
+  deploy:
+    name: Manual Deploy to ${{ github.event.inputs.environment }}
+    uses: ./.github/workflows/deploy-reusable.yml
+    with:
+      environment: ${{ github.event.inputs.environment }}
+      image-tag: ${{ github.event.inputs.version }}
+    secrets: inherit
