@@ -1,0 +1,67 @@
+name: Database Maintenance
+
+on:
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: 'Environment to run database commands'
+        required: true
+        default: 'staging'
+        type: choice
+        options:
+          - dev
+          - staging
+          - prod
+      command:
+        description: 'Database command to run'
+        required: true
+        default: 'migrate'
+        type: choice
+        options:
+          - migrate (latest)
+          - rollback (1 step)
+          - status
+          - seed
+
+jobs:
+  db-task:
+    name: DB ${{ github.event.inputs.command }} on ${{ github.event.inputs.environment }}
+    runs-on: ubuntu-latest
+    environment: ${{ github.event.inputs.environment }}
+
+    steps:
+      - name: Execute command via SSH
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.HOST }}
+          username: ${{ secrets.HOST_USER }}
+          key: ${{ secrets.HOST_KEY }}
+          script: |
+            cd /opt/courifly
+
+            # Map friendly names to npm scripts
+            case "${{ github.event.inputs.command }}" in
+              "migrate (latest)")
+                CMD="npm run db:migrate:latest"
+                ;;
+              "rollback (1 step)")
+                CMD="npm run db:migrate:rollback"
+                ;;
+              "status")
+                CMD="npm run db:migrate:status"
+                ;;
+              "seed")
+                CMD="npm run db:seed:run"
+                ;;
+              *)
+                echo "Invalid command"
+                exit 1
+                ;;
+            esac
+
+            echo "🚀 Running $CMD on ${{ github.event.inputs.environment }} environment..."
+
+            # Run the command inside the running API container
+            # We use docker compose exec to ensure it has the right environment variables and network access
+            # -T is used to disable pseudo-tty (required for non-interactive shells like CI)
+            docker compose exec -T api $CMD
