@@ -1,0 +1,5 @@
+src/routes/routes.ts
+dist
+node_modules
+docs
+postman
