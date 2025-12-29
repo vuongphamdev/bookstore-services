@@ -17,3 +17,7 @@ export type TCreateProductData = Omit<TProduct, TCreateIgnoreColumns>;
 export type TUpdateProductData = Partial<Omit<TProduct, TUpdateIgnoreColumns | 'shop_id'>>;
 
 export class Product extends BaseModel<TProduct> {}
+
+export type TTopSellingProduct = TProduct & {
+  total_sales: number;
+};

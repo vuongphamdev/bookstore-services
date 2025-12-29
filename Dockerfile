@@ -37,8 +37,8 @@ FROM base AS builder
 # Install all dependencies (including devDependencies for building)
 RUN npm ci
 
-# Copy source code and TypeScript config
-COPY tsconfig.json ./
+# Copy config files and source code
+COPY tsconfig.json tsoa.json ./
 COPY src ./src
 
 # Build the TypeScript application
@@ -69,7 +69,7 @@ RUN npm ci --only=production && npm cache clean --force
 COPY --from=builder /app/dist ./dist
 
 # Copy swagger documentation (needed at runtime)
-COPY swagger.yaml ./
+COPY --from=builder /app/docs ./docs
 
 # Change ownership to non-root user
 RUN chown -R nodejs:nodejs /app

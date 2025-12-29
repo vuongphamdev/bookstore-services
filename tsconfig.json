@@ -11,11 +11,13 @@
     "types": ["node"],
     "paths": {
       "@*": ["./src/*"]
-    }
+    },
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true
   },
   "ts-node": {
     "require": ["tsconfig-paths/register"]
   },
-  "include": ["src/**/*", "src/index.ts"],
+  "include": ["src/**/*"],
   "files": ["src/index.d.ts"]
 }

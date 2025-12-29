@@ -1,66 +1,103 @@
-import { Request, Response } from 'express';
-import { roleService } from '@services';
-import { TCreateRoleData } from '@models/schemas';
 import {
-  ConflictError,
-  NotFoundError,
-  Responses,
-  TGetRoleRequestParams,
-  TCreateRoleRequestBody,
-  TUpdateRoleRequestParams,
-  TUpdateRoleRequestBody,
-} from '@models';
+  Controller,
+  Get,
+  Post,
+  Put,
+  Route,
+  Tags,
+  Body,
+  Path,
+  SuccessResponse,
+  Security,
+  Middlewares,
+  Response,
+} from 'tsoa';
+import { createRoleBodyValidator, updateRoleBodyValidator } from '../middlewares';
+import { roleService } from '../services';
+import { Responses } from '../models/responses.model';
+import { TCreateRoleRequestBody, TUpdateRoleRequestBody } from '../models/requests.model';
+import { NotFoundError, ConflictError, ErrorWithStatus } from '../models/errors.model';
+import { HTTP_STATUS } from '@constants/http';
+import { TCreateRoleData, TRole } from '../models/schemas';
 
-export const getAllRoles = async (req: Request, res: Response): Promise<Response> => {
-  const roles = await roleService.getRoles();
-  return Responses.success(res, 'Roles retrieved successfully', roles);
-};
-
-export const getRole = async (req: Request<TGetRoleRequestParams>, res: Response): Promise<Response> => {
-  const { id } = req.params;
-
-  const role = await roleService.getRole(Number(id));
-
-  if (!role) {
-    throw new NotFoundError('Role not found');
+@Route('roles')
+@Tags('Roles')
+@Security('jwt')
+@Response<ErrorWithStatus>(HTTP_STATUS.UNAUTHORIZED, 'Unauthorized')
+export class RoleController extends Controller {
+  /**
+   * Get all available user roles
+   */
+  @Get('/')
+  @SuccessResponse(HTTP_STATUS.OK, 'Success')
+  public async getAllRoles() {
+    const roles = await roleService.getRoles();
+    return Responses.success('Roles retrieved successfully', roles);
   }
 
-  return Responses.success(res, 'Role retrieved successfully', role);
-};
+  /**
+   * Get a specific role by ID
+   */
+  @Get('{id}')
+  @SuccessResponse(HTTP_STATUS.OK, 'Success')
+  @Response<ErrorWithStatus>(HTTP_STATUS.NOT_FOUND, 'Role not found')
+  public async getRole(@Path() id: number) {
+    const role = await roleService.getRole(id);
 
-export const createRole = async (req: Request<any, any, TCreateRoleRequestBody>, res: Response): Promise<Response> => {
-  const { name, description, code } = req.body;
+    if (!role) {
+      throw new NotFoundError('Role not found');
+    }
 
-  const existingRole = await roleService.getRoleByName(name);
-  if (existingRole) {
-    throw new ConflictError('Role with this name already exists');
+    return Responses.success('Role retrieved successfully', role);
   }
 
-  const roleData: TCreateRoleData = {
-    name,
-    code,
-    description: description,
-  };
+  /**
+   * Create a new user role
+   */
+  @Post('/')
+  @Middlewares(createRoleBodyValidator)
+  @SuccessResponse(HTTP_STATUS.CREATED, 'Created')
+  @Response<ErrorWithStatus>(HTTP_STATUS.CONFLICT, 'Role with this name already exists')
+  @Response<ErrorWithStatus>(HTTP_STATUS.UNPROCESSABLE_ENTITY, 'Validation failed')
+  public async createRole(@Body() requestBody: TCreateRoleRequestBody) {
+    const { name, description, code } = requestBody;
 
-  const roleId = await roleService.createRole(roleData);
-  const newRole = await roleService.getRole(roleId);
+    const existingRole = await roleService.getRoleByName(name);
+    if (existingRole) {
+      throw new ConflictError('Role with this name already exists');
+    }
 
-  return Responses.created(res, 'Role created successfully', newRole);
-};
+    const roleData: TCreateRoleData = {
+      name,
+      code,
+      description: description,
+    };
 
-export const updateRole = async (
-  req: Request<TUpdateRoleRequestParams, any, TUpdateRoleRequestBody>,
-  res: Response
-): Promise<Response> => {
-  const { id } = req.params;
-  const { name, description } = req.body;
-  const updatedRows = await roleService.updateRole(Number(id), { name, description });
+    const roleId = await roleService.createRole(roleData);
+    const newRole = await roleService.getRole(roleId);
 
-  if (updatedRows === 0) {
-    throw new NotFoundError('Role not found');
+    this.setStatus(201);
+    return Responses.success('Role created successfully', newRole);
   }
 
-  const updatedRole = await roleService.getRole(Number(id));
+  /**
+   * Update an existing role's details
+   */
+  @Put('{id}')
+  @Middlewares(updateRoleBodyValidator)
+  @SuccessResponse(HTTP_STATUS.OK, 'Success')
+  @Response<ErrorWithStatus>(HTTP_STATUS.NOT_FOUND, 'Role not found')
+  @Response<ErrorWithStatus>(HTTP_STATUS.UNPROCESSABLE_ENTITY, 'Validation failed')
+  public async updateRole(@Path() id: number, @Body() requestBody: TUpdateRoleRequestBody) {
+    const { name, description } = requestBody;
+    const updatedRows = await roleService.updateRole(id, { name, description });
 
-  return Responses.success(res, 'Role updated successfully', updatedRole);
-};
+    if (updatedRows === 0) {
+      throw new NotFoundError('Role not found');
+    }
+
+    const updatedRole = await roleService.getRole(id);
+
+    return Responses.success('Role updated successfully', updatedRole);
+  }
+}

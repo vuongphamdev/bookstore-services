@@ -1,143 +1,195 @@
-import { Request, Response } from 'express';
-import { productService } from '@services';
 import {
-  Responses,
-  NotFoundError,
-  EntityError,
-  TGetProductRequestParams,
+  Controller,
+  Get,
+  Post,
+  Put,
+  Delete,
+  Patch,
+  Route,
+  Tags,
+  Body,
+  Path,
+  Query,
+  SuccessResponse,
+  Security,
+  Middlewares,
+  Response,
+} from 'tsoa';
+import {
+  searchProductsQueryValidator,
+  createProductBodyValidator,
+  updateProductBodyValidator,
+  updateProductStockBodyValidator,
+} from '../middlewares';
+import { productService } from '@services';
+import { Responses } from '../models/responses.model';
+import {
   TCreateProductRequestBody,
-  TUpdateProductRequestParams,
   TUpdateProductRequestBody,
-  TDeleteProductRequestParams,
-  TUpdateProductStockRequestParams,
   TUpdateProductStockRequestBody,
-  TSearchProductsRequestQueryParams,
-} from '@models';
-import { TCreateProductData, TUpdateProductData } from '@models/schemas';
+} from '../models/requests.model';
+import { TCreateProductData, TUpdateProductData } from '../models/schemas';
+import { NotFoundError, EntityError, ErrorWithStatus } from '../models/errors.model';
+import { HTTP_STATUS } from '@constants/http';
 
-export const searchProducts = async (
-  req: Request<any, any, any, TSearchProductsRequestQueryParams>,
-  res: Response
-): Promise<Response> => {
-  const { keyword, category, shop_id, offset, limit } = req.query;
-  const result = await productService.searchProducts({
-    keyword,
-    category,
-    shop_id,
-    offset,
-    limit,
-  });
-
-  return Responses.success(res, 'Products retrieved successfully', result);
-};
-
-export const getProduct = async (req: Request<TGetProductRequestParams>, res: Response): Promise<Response> => {
-  const { id } = req.params;
-
-  const product = await productService.getProductById(Number(id));
-
-  if (!product) {
-    throw new NotFoundError('Product not found');
-  }
-
-  return Responses.success(res, 'Product retrieved successfully', product);
-};
-
-export const createProduct = async (
-  req: Request<any, any, TCreateProductRequestBody>,
-  res: Response
-): Promise<Response> => {
-  const { name, sku, category, description, price, stock, status, metadata, shop_id } = req.body;
-
-  const newProduct: TCreateProductData = {
-    name,
-    sku,
-    category,
-    shop_id,
-    description,
-    price,
-    stock,
-    status,
-    metadata,
-  };
-
-  const productId = await productService.createProduct(newProduct);
-  const createdProduct = await productService.getProductById(productId);
-
-  return Responses.created(res, 'Product created successfully', createdProduct);
-};
-
-export const updateProduct = async (
-  req: Request<TUpdateProductRequestParams, any, TUpdateProductRequestBody>,
-  res: Response
-): Promise<Response> => {
-  const { id } = req.params;
-  const { name, sku, category, description, price, stock, status, metadata } = req.body;
-
-  const updateData: TUpdateProductData = {};
-  if (name) updateData.name = name;
-  if (sku) updateData.sku = sku;
-  if (category) updateData.category = category;
-  if (description !== undefined) updateData.description = description;
-  if (price !== undefined) updateData.price = price;
-  if (stock !== undefined) updateData.stock = stock;
-  if (status !== undefined) updateData.status = status;
-  if (metadata !== undefined) updateData.metadata = metadata;
-
-  const updatedRows = await productService.updateProduct(Number(id), updateData);
-
-  if (updatedRows === 0) {
-    throw new NotFoundError('Product not found');
-  }
-
-  const updatedProduct = await productService.getProductById(Number(id));
-
-  return Responses.success(res, 'Product updated successfully', updatedProduct);
-};
-
-export const deleteProduct = async (req: Request<TDeleteProductRequestParams>, res: Response): Promise<Response> => {
-  const { id } = req.params;
-
-  const deletedRows = await productService.deleteProduct(Number(id));
-
-  if (deletedRows === 0) {
-    throw new NotFoundError('Product not found');
-  }
-
-  return Responses.success(res, 'Product deleted successfully');
-};
-
-export const updateProductStock = async (
-  req: Request<TUpdateProductStockRequestParams, any, TUpdateProductStockRequestBody>,
-  res: Response
-): Promise<Response> => {
-  const { id } = req.params;
-  const { quantity, operation } = req.body;
-
-  if (quantity === undefined || !operation) {
-    throw new EntityError({
-      message: 'Quantity and operation are required',
-      errors: { quantity: { msg: 'Quantity and operation are required' } },
+@Route('products')
+@Tags('Products')
+export class ProductController extends Controller {
+  /**
+   * Search for products with various filters
+   */
+  @Get('/')
+  @Middlewares(searchProductsQueryValidator)
+  @SuccessResponse(HTTP_STATUS.OK, 'Success')
+  @Response<ErrorWithStatus>(HTTP_STATUS.UNPROCESSABLE_ENTITY, 'Validation failed')
+  public async searchProducts(
+    @Query() keyword?: string,
+    @Query() category?: string,
+    @Query() shop_id?: number,
+    @Query() offset?: number,
+    @Query() limit?: number
+  ) {
+    const result = await productService.searchProducts({
+      keyword,
+      category,
+      shop_id,
+      offset,
+      limit,
     });
+
+    return Responses.success('Products retrieved successfully', result);
   }
 
-  let updatedRows;
-  if (operation === 'add') {
-    updatedRows = await productService.incrementProductStock(Number(id), Number(quantity));
-  } else if (operation === 'subtract') {
-    updatedRows = await productService.decrementProductStock(Number(id), Number(quantity));
-  } else {
-    throw new EntityError({
-      message: "Operation must be 'add' or 'subtract'",
-      errors: { operation: { msg: "Operation must be 'add' or 'subtract'" } },
-    });
+  /**
+   * Get a single product by ID
+   */
+  @Get('{id}')
+  @SuccessResponse(HTTP_STATUS.OK, 'Success')
+  @Response<ErrorWithStatus>(HTTP_STATUS.NOT_FOUND, 'Product not found')
+  public async getProduct(@Path() id: number) {
+    const product = await productService.getProductById(id);
+
+    if (!product) {
+      throw new NotFoundError('Product not found');
+    }
+
+    return Responses.success('Product retrieved successfully', product);
   }
 
-  if (updatedRows === 0) {
-    throw new NotFoundError('Product not found');
+  /**
+   * Create a new product
+   */
+  @Post('/')
+  @Security('jwt')
+  @Middlewares(createProductBodyValidator)
+  @SuccessResponse(HTTP_STATUS.CREATED, 'Created')
+  @Response<ErrorWithStatus>(HTTP_STATUS.UNAUTHORIZED, 'Unauthorized')
+  @Response<ErrorWithStatus>(HTTP_STATUS.UNPROCESSABLE_ENTITY, 'Validation failed')
+  public async createProduct(@Body() requestBody: TCreateProductRequestBody) {
+    const { name, sku, category, description, price, stock, status, metadata, shop_id } = requestBody;
+
+    const newProduct: TCreateProductData = {
+      name,
+      sku,
+      category,
+      shop_id,
+      description,
+      price,
+      stock,
+      status,
+      metadata,
+    };
+
+    const productId = await productService.createProduct(newProduct);
+    const createdProduct = await productService.getProductById(productId);
+
+    this.setStatus(201);
+    return Responses.success('Product created successfully', createdProduct);
   }
 
-  const updatedProduct = await productService.getProductById(Number(id));
+  /**
+   * Update an existing product
+   */
+  @Put('{id}')
+  @Security('jwt')
+  @Middlewares(updateProductBodyValidator)
+  @SuccessResponse(HTTP_STATUS.OK, 'Success')
+  @Response<ErrorWithStatus>(HTTP_STATUS.UNAUTHORIZED, 'Unauthorized')
+  @Response<ErrorWithStatus>(HTTP_STATUS.NOT_FOUND, 'Product not found')
+  @Response<ErrorWithStatus>(HTTP_STATUS.UNPROCESSABLE_ENTITY, 'Validation failed')
+  public async updateProduct(@Path() id: number, @Body() requestBody: TUpdateProductRequestBody) {
+    const { name, sku, category, description, price, stock, status, metadata } = requestBody;
 
-  return Responses.success(res, 'Product stock updated successfully', updatedProduct);
-};
+    const updateData: TUpdateProductData = {};
+    if (name) updateData.name = name;
+    if (sku) updateData.sku = sku;
+    if (category) updateData.category = category;
+    if (description !== undefined) updateData.description = description;
+    if (price !== undefined) updateData.price = price;
+    if (stock !== undefined) updateData.stock = stock;
+    if (status !== undefined) updateData.status = status;
+    if (metadata !== undefined) updateData.metadata = metadata;
+
+    const updatedRows = await productService.updateProduct(id, updateData);
+
+    if (updatedRows === 0) {
+      throw new NotFoundError('Product not found');
+    }
+
+    const updatedProduct = await productService.getProductById(id);
+
+    return Responses.success('Product updated successfully', updatedProduct);
+  }
+
+  /**
+   * Delete a product
+   */
+  @Delete('{id}')
+  @Security('jwt')
+  @SuccessResponse(HTTP_STATUS.OK, 'Success')
+  @Response<ErrorWithStatus>(HTTP_STATUS.UNAUTHORIZED, 'Unauthorized')
+  @Response<ErrorWithStatus>(HTTP_STATUS.NOT_FOUND, 'Product not found')
+  public async deleteProduct(@Path() id: number) {
+    const deletedRows = await productService.deleteProduct(id);
+
+    if (deletedRows === 0) {
+      throw new NotFoundError('Product not found');
+    }
+
+    return Responses.success('Product deleted successfully');
+  }
+
+  /**
+   * Update product stock
+   */
+  @Patch('{id}/stock')
+  @Security('jwt')
+  @Middlewares(updateProductStockBodyValidator)
+  @SuccessResponse(HTTP_STATUS.OK, 'Success')
+  @Response<ErrorWithStatus>(HTTP_STATUS.UNAUTHORIZED, 'Unauthorized')
+  @Response<ErrorWithStatus>(HTTP_STATUS.NOT_FOUND, 'Product not found')
+  @Response<ErrorWithStatus>(HTTP_STATUS.UNPROCESSABLE_ENTITY, 'Validation failed')
+  public async updateProductStock(@Path() id: number, @Body() requestBody: TUpdateProductStockRequestBody) {
+    const { quantity, operation } = requestBody;
+
+    let updatedRows;
+    if (operation === 'add') {
+      updatedRows = await productService.incrementProductStock(id, Number(quantity));
+    } else if (operation === 'subtract') {
+      updatedRows = await productService.decrementProductStock(id, Number(quantity));
+    } else {
+      throw new EntityError({
+        message: "Operation must be 'add' or 'subtract'",
+        errors: { operation: { msg: "Operation must be 'add' or 'subtract'" } },
+      });
+    }
+
+    if (updatedRows === 0) {
+      throw new NotFoundError('Product not found');
+    }
+
+    const updatedProduct = await productService.getProductById(id);
+
+    return Responses.success('Product stock updated successfully', updatedProduct);
+  }
+}

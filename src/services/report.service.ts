@@ -1,5 +1,6 @@
 import { db } from '@config';
 import { EOrderStatus } from '@constants';
+import { TTopSellingProduct } from '@models/schemas';
 
 class ReportService {
   async getBestSellingProducts(limit: number) {
@@ -17,7 +18,7 @@ class ReportService {
       .select('products.*', 'ts.total_sales')
       .from('top_sales as ts')
       .join('products', 'ts.product_id', 'products.id');
-    return topSales;
+    return topSales as TTopSellingProduct[];
   }
 }
 

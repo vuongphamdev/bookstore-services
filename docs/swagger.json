@@ -1,0 +1,2754 @@
+{
+	"openapi": "3.0.0",
+	"components": {
+		"examples": {},
+		"headers": {},
+		"parameters": {},
+		"requestBodies": {},
+		"responses": {},
+		"schemas": {
+			"ErrorWithStatus": {
+				"properties": {
+					"status": {
+						"type": "number",
+						"format": "double"
+					},
+					"message": {
+						"type": "string"
+					}
+				},
+				"required": [
+					"status",
+					"message"
+				],
+				"type": "object",
+				"additionalProperties": false
+			},
+			"ERole": {
+				"enum": [
+					"A",
+					"U",
+					"G"
+				],
+				"type": "string"
+			},
+			"EUserStatus": {
+				"enum": [
+					"A",
+					"I",
+					"S",
+					"U",
+					"X"
+				],
+				"type": "string"
+			},
+			"Pick_TUser.Exclude_keyofTUser.password__": {
+				"properties": {
+					"id": {
+						"type": "number",
+						"format": "double"
+					},
+					"created_at": {
+						"type": "string",
+						"format": "date-time"
+					},
+					"updated_at": {
+						"type": "string",
+						"format": "date-time"
+					},
+					"name": {
+						"type": "string"
+					},
+					"email": {
+						"type": "string"
+					},
+					"role": {
+						"$ref": "#/components/schemas/ERole"
+					},
+					"status": {
+						"$ref": "#/components/schemas/EUserStatus"
+					},
+					"dob": {
+						"type": "string",
+						"format": "date-time"
+					},
+					"phone_number": {
+						"type": "string"
+					},
+					"address": {
+						"type": "string"
+					}
+				},
+				"required": [
+					"name",
+					"email",
+					"role",
+					"status",
+					"dob",
+					"phone_number",
+					"address"
+				],
+				"type": "object",
+				"description": "From T, pick a set of properties whose keys are in the union K"
+			},
+			"Omit_TUser.password_": {
+				"$ref": "#/components/schemas/Pick_TUser.Exclude_keyofTUser.password__",
+				"description": "Construct a type with the properties of T except for those in type K."
+			},
+			"TUserResponse": {
+				"$ref": "#/components/schemas/Omit_TUser.password_"
+			},
+			"Record_string.string_": {
+				"properties": {},
+				"additionalProperties": {
+					"type": "string"
+				},
+				"type": "object",
+				"description": "Construct a type with a set of properties K of type T"
+			},
+			"ApiResponse__user-TUserResponse__": {
+				"properties": {
+					"message": {
+						"type": "string"
+					},
+					"data": {
+						"properties": {
+							"user": {
+								"$ref": "#/components/schemas/TUserResponse"
+							}
+						},
+						"required": [
+							"user"
+						],
+						"type": "object"
+					},
+					"error": {
+						"$ref": "#/components/schemas/Record_string.string_"
+					}
+				},
+				"required": [
+					"message"
+				],
+				"type": "object",
+				"additionalProperties": false
+			},
+			"ApiResponse_TUserResponse_": {
+				"properties": {
+					"message": {
+						"type": "string"
+					},
+					"data": {
+						"$ref": "#/components/schemas/TUserResponse"
+					},
+					"error": {
+						"$ref": "#/components/schemas/Record_string.string_"
+					}
+				},
+				"required": [
+					"message"
+				],
+				"type": "object",
+				"additionalProperties": false
+			},
+			"TUpdateUserRequestBody": {
+				"properties": {
+					"address": {
+						"type": "string",
+						"nullable": true
+					},
+					"phone_number": {
+						"type": "string",
+						"nullable": true
+					},
+					"dob": {
+						"type": "string",
+						"format": "date-time",
+						"nullable": true
+					},
+					"name": {
+						"type": "string"
+					}
+				},
+				"type": "object"
+			},
+			"TBaseModel": {
+				"properties": {
+					"updated_at": {
+						"type": "string",
+						"format": "date-time"
+					},
+					"created_at": {
+						"type": "string",
+						"format": "date-time"
+					},
+					"id": {
+						"type": "number",
+						"format": "double"
+					}
+				},
+				"type": "object"
+			},
+			"EShopStatus": {
+				"enum": [
+					"A",
+					"I",
+					"S",
+					"C",
+					"X"
+				],
+				"type": "string"
+			},
+			"TShop": {
+				"allOf": [
+					{
+						"$ref": "#/components/schemas/TBaseModel"
+					},
+					{
+						"properties": {
+							"description": {
+								"type": "string",
+								"nullable": true
+							},
+							"status": {
+								"$ref": "#/components/schemas/EShopStatus"
+							},
+							"user_id": {
+								"type": "number",
+								"format": "double"
+							},
+							"name": {
+								"type": "string"
+							}
+						},
+						"required": [
+							"description",
+							"status",
+							"user_id",
+							"name"
+						],
+						"type": "object"
+					}
+				]
+			},
+			"ApiResponse_TShop_": {
+				"properties": {
+					"message": {
+						"type": "string"
+					},
+					"data": {
+						"$ref": "#/components/schemas/TShop"
+					},
+					"error": {
+						"$ref": "#/components/schemas/Record_string.string_"
+					}
+				},
+				"required": [
+					"message"
+				],
+				"type": "object",
+				"additionalProperties": false
+			},
+			"ApiResponse_TShop-Array_": {
+				"properties": {
+					"message": {
+						"type": "string"
+					},
+					"data": {
+						"items": {
+							"$ref": "#/components/schemas/TShop"
+						},
+						"type": "array"
+					},
+					"error": {
+						"$ref": "#/components/schemas/Record_string.string_"
+					}
+				},
+				"required": [
+					"message"
+				],
+				"type": "object",
+				"additionalProperties": false
+			},
+			"TCreateShopRequestBody": {
+				"properties": {
+					"description": {
+						"type": "string",
+						"nullable": true
+					},
+					"name": {
+						"type": "string"
+					}
+				},
+				"required": [
+					"name"
+				],
+				"type": "object"
+			},
+			"TUpdateShopRequestBody": {
+				"properties": {
+					"description": {
+						"type": "string",
+						"nullable": true
+					},
+					"name": {
+						"type": "string"
+					}
+				},
+				"type": "object"
+			},
+			"ApiResponse_unknown_": {
+				"properties": {
+					"message": {
+						"type": "string"
+					},
+					"data": {},
+					"error": {
+						"$ref": "#/components/schemas/Record_string.string_"
+					}
+				},
+				"required": [
+					"message"
+				],
+				"type": "object",
+				"additionalProperties": false
+			},
+			"TRole": {
+				"allOf": [
+					{
+						"$ref": "#/components/schemas/TBaseModel"
+					},
+					{
+						"properties": {
+							"description": {
+								"type": "string",
+								"nullable": true
+							},
+							"name": {
+								"type": "string"
+							},
+							"code": {
+								"$ref": "#/components/schemas/ERole"
+							}
+						},
+						"required": [
+							"description",
+							"name",
+							"code"
+						],
+						"type": "object"
+					}
+				]
+			},
+			"ApiResponse_TRole-Array_": {
+				"properties": {
+					"message": {
+						"type": "string"
+					},
+					"data": {
+						"items": {
+							"$ref": "#/components/schemas/TRole"
+						},
+						"type": "array"
+					},
+					"error": {
+						"$ref": "#/components/schemas/Record_string.string_"
+					}
+				},
+				"required": [
+					"message"
+				],
+				"type": "object",
+				"additionalProperties": false
+			},
+			"ApiResponse_TRole_": {
+				"properties": {
+					"message": {
+						"type": "string"
+					},
+					"data": {
+						"$ref": "#/components/schemas/TRole"
+					},
+					"error": {
+						"$ref": "#/components/schemas/Record_string.string_"
+					}
+				},
+				"required": [
+					"message"
+				],
+				"type": "object",
+				"additionalProperties": false
+			},
+			"TCreateRoleRequestBody": {
+				"properties": {
+					"description": {
+						"type": "string",
+						"nullable": true
+					},
+					"code": {
+						"$ref": "#/components/schemas/ERole"
+					},
+					"name": {
+						"type": "string"
+					}
+				},
+				"required": [
+					"description",
+					"code",
+					"name"
+				],
+				"type": "object"
+			},
+			"TUpdateRoleRequestBody": {
+				"properties": {
+					"description": {
+						"type": "string",
+						"nullable": true
+					},
+					"name": {
+						"type": "string"
+					}
+				},
+				"type": "object"
+			},
+			"EProductStatus": {
+				"enum": [
+					"A",
+					"O",
+					"P",
+					"D",
+					"X"
+				],
+				"type": "string"
+			},
+			"TProduct": {
+				"allOf": [
+					{
+						"$ref": "#/components/schemas/TBaseModel"
+					},
+					{
+						"properties": {
+							"metadata": {
+								"type": "string",
+								"nullable": true
+							},
+							"status": {
+								"$ref": "#/components/schemas/EProductStatus"
+							},
+							"stock": {
+								"type": "number",
+								"format": "double"
+							},
+							"price": {
+								"type": "number",
+								"format": "double"
+							},
+							"description": {
+								"type": "string",
+								"nullable": true
+							},
+							"category": {
+								"type": "string"
+							},
+							"sku": {
+								"type": "string"
+							},
+							"name": {
+								"type": "string"
+							},
+							"shop_id": {
+								"type": "number",
+								"format": "double"
+							}
+						},
+						"required": [
+							"status",
+							"stock",
+							"price",
+							"category",
+							"sku",
+							"name",
+							"shop_id"
+						],
+						"type": "object"
+					}
+				]
+			},
+			"TTopSellingProduct": {
+				"allOf": [
+					{
+						"$ref": "#/components/schemas/TProduct"
+					},
+					{
+						"properties": {
+							"total_sales": {
+								"type": "number",
+								"format": "double"
+							}
+						},
+						"required": [
+							"total_sales"
+						],
+						"type": "object"
+					}
+				]
+			},
+			"ApiResponse_TTopSellingProduct-Array_": {
+				"properties": {
+					"message": {
+						"type": "string"
+					},
+					"data": {
+						"items": {
+							"$ref": "#/components/schemas/TTopSellingProduct"
+						},
+						"type": "array"
+					},
+					"error": {
+						"$ref": "#/components/schemas/Record_string.string_"
+					}
+				},
+				"required": [
+					"message"
+				],
+				"type": "object",
+				"additionalProperties": false
+			},
+			"ApiResponse__items-TProduct-Array--total-number__": {
+				"properties": {
+					"message": {
+						"type": "string"
+					},
+					"data": {
+						"properties": {
+							"total": {
+								"type": "number",
+								"format": "double"
+							},
+							"items": {
+								"items": {
+									"$ref": "#/components/schemas/TProduct"
+								},
+								"type": "array"
+							}
+						},
+						"required": [
+							"total",
+							"items"
+						],
+						"type": "object"
+					},
+					"error": {
+						"$ref": "#/components/schemas/Record_string.string_"
+					}
+				},
+				"required": [
+					"message"
+				],
+				"type": "object",
+				"additionalProperties": false
+			},
+			"ApiResponse_TProduct_": {
+				"properties": {
+					"message": {
+						"type": "string"
+					},
+					"data": {
+						"$ref": "#/components/schemas/TProduct"
+					},
+					"error": {
+						"$ref": "#/components/schemas/Record_string.string_"
+					}
+				},
+				"required": [
+					"message"
+				],
+				"type": "object",
+				"additionalProperties": false
+			},
+			"TCreateProductRequestBody": {
+				"properties": {
+					"shop_id": {
+						"type": "number",
+						"format": "double"
+					},
+					"metadata": {
+						"type": "string",
+						"nullable": true
+					},
+					"status": {
+						"$ref": "#/components/schemas/EProductStatus"
+					},
+					"stock": {
+						"type": "number",
+						"format": "double"
+					},
+					"price": {
+						"type": "number",
+						"format": "double"
+					},
+					"description": {
+						"type": "string",
+						"nullable": true
+					},
+					"category": {
+						"type": "string"
+					},
+					"sku": {
+						"type": "string"
+					},
+					"name": {
+						"type": "string"
+					}
+				},
+				"required": [
+					"shop_id",
+					"status",
+					"stock",
+					"price",
+					"category",
+					"sku",
+					"name"
+				],
+				"type": "object"
+			},
+			"TUpdateProductRequestBody": {
+				"properties": {
+					"metadata": {
+						"type": "string",
+						"nullable": true
+					},
+					"status": {
+						"$ref": "#/components/schemas/EProductStatus"
+					},
+					"stock": {
+						"type": "number",
+						"format": "double"
+					},
+					"price": {
+						"type": "number",
+						"format": "double"
+					},
+					"description": {
+						"type": "string",
+						"nullable": true
+					},
+					"category": {
+						"type": "string"
+					},
+					"sku": {
+						"type": "string"
+					},
+					"name": {
+						"type": "string"
+					}
+				},
+				"type": "object"
+			},
+			"TUpdateProductStockRequestBody": {
+				"properties": {
+					"operation": {
+						"type": "string",
+						"enum": [
+							"add",
+							"subtract"
+						]
+					},
+					"quantity": {
+						"type": "number",
+						"format": "double"
+					}
+				},
+				"required": [
+					"operation",
+					"quantity"
+				],
+				"type": "object"
+			},
+			"EOrderStatus": {
+				"enum": [
+					"P",
+					"F",
+					"R",
+					"Y",
+					"U",
+					"T",
+					"O",
+					"D",
+					"C",
+					"X",
+					"N"
+				],
+				"type": "string"
+			},
+			"TOrder": {
+				"allOf": [
+					{
+						"$ref": "#/components/schemas/TBaseModel"
+					},
+					{
+						"properties": {
+							"notes": {
+								"type": "string",
+								"nullable": true
+							},
+							"status": {
+								"$ref": "#/components/schemas/EOrderStatus"
+							},
+							"user_id": {
+								"type": "number",
+								"format": "double"
+							},
+							"shop_id": {
+								"type": "number",
+								"format": "double"
+							}
+						},
+						"required": [
+							"notes",
+							"status",
+							"user_id",
+							"shop_id"
+						],
+						"type": "object"
+					}
+				]
+			},
+			"TOrderItem": {
+				"allOf": [
+					{
+						"$ref": "#/components/schemas/TBaseModel"
+					},
+					{
+						"properties": {
+							"price": {
+								"type": "number",
+								"format": "double"
+							},
+							"quantity": {
+								"type": "number",
+								"format": "double"
+							},
+							"product_id": {
+								"type": "number",
+								"format": "double"
+							},
+							"order_id": {
+								"type": "number",
+								"format": "double"
+							}
+						},
+						"required": [
+							"price",
+							"quantity",
+							"product_id",
+							"order_id"
+						],
+						"type": "object"
+					}
+				]
+			},
+			"TOrderItemWithProduct": {
+				"allOf": [
+					{
+						"$ref": "#/components/schemas/TOrderItem"
+					},
+					{
+						"properties": {
+							"product_sku": {
+								"type": "string"
+							},
+							"product_name": {
+								"type": "string"
+							}
+						},
+						"required": [
+							"product_sku",
+							"product_name"
+						],
+						"type": "object"
+					}
+				]
+			},
+			"TOrderWithDetails": {
+				"allOf": [
+					{
+						"$ref": "#/components/schemas/TOrder"
+					},
+					{
+						"properties": {
+							"shop_name": {
+								"type": "string"
+							},
+							"order_items": {
+								"items": {
+									"$ref": "#/components/schemas/TOrderItemWithProduct"
+								},
+								"type": "array"
+							}
+						},
+						"required": [
+							"shop_name",
+							"order_items"
+						],
+						"type": "object"
+					}
+				]
+			},
+			"ApiResponse_TOrderWithDetails-Array_": {
+				"properties": {
+					"message": {
+						"type": "string"
+					},
+					"data": {
+						"items": {
+							"$ref": "#/components/schemas/TOrderWithDetails"
+						},
+						"type": "array"
+					},
+					"error": {
+						"$ref": "#/components/schemas/Record_string.string_"
+					}
+				},
+				"required": [
+					"message"
+				],
+				"type": "object",
+				"additionalProperties": false
+			},
+			"ApiResponse_TOrderWithDetails_": {
+				"properties": {
+					"message": {
+						"type": "string"
+					},
+					"data": {
+						"$ref": "#/components/schemas/TOrderWithDetails"
+					},
+					"error": {
+						"$ref": "#/components/schemas/Record_string.string_"
+					}
+				},
+				"required": [
+					"message"
+				],
+				"type": "object",
+				"additionalProperties": false
+			},
+			"TCreateOrderRequestBody": {
+				"properties": {
+					"notes": {
+						"type": "string",
+						"nullable": true
+					},
+					"items": {
+						"items": {
+							"properties": {
+								"quantity": {
+									"type": "number",
+									"format": "double"
+								},
+								"product_id": {
+									"type": "number",
+									"format": "double"
+								}
+							},
+							"required": [
+								"quantity",
+								"product_id"
+							],
+							"type": "object"
+						},
+						"type": "array"
+					},
+					"shop_id": {
+						"type": "number",
+						"format": "double",
+						"nullable": true
+					},
+					"user_id": {
+						"type": "number",
+						"format": "double"
+					}
+				},
+				"required": [
+					"items"
+				],
+				"type": "object"
+			},
+			"TUpdateOrderRequestBody": {
+				"properties": {
+					"notes": {
+						"type": "string",
+						"nullable": true
+					}
+				},
+				"type": "object"
+			},
+			"ApiResponse_TOrderItemWithProduct-Array_": {
+				"properties": {
+					"message": {
+						"type": "string"
+					},
+					"data": {
+						"items": {
+							"$ref": "#/components/schemas/TOrderItemWithProduct"
+						},
+						"type": "array"
+					},
+					"error": {
+						"$ref": "#/components/schemas/Record_string.string_"
+					}
+				},
+				"required": [
+					"message"
+				],
+				"type": "object",
+				"additionalProperties": false
+			},
+			"TAddOrderItemRequestBody": {
+				"properties": {
+					"quantity": {
+						"type": "number",
+						"format": "double"
+					},
+					"product_id": {
+						"type": "number",
+						"format": "double"
+					}
+				},
+				"required": [
+					"quantity",
+					"product_id"
+				],
+				"type": "object"
+			},
+			"ApiResponse__accessToken-string__": {
+				"properties": {
+					"message": {
+						"type": "string"
+					},
+					"data": {
+						"properties": {
+							"accessToken": {
+								"type": "string"
+							}
+						},
+						"required": [
+							"accessToken"
+						],
+						"type": "object"
+					},
+					"error": {
+						"$ref": "#/components/schemas/Record_string.string_"
+					}
+				},
+				"required": [
+					"message"
+				],
+				"type": "object",
+				"additionalProperties": false
+			},
+			"TLoginRequestBody": {
+				"properties": {
+					"password": {
+						"type": "string"
+					},
+					"email": {
+						"type": "string"
+					}
+				},
+				"required": [
+					"password",
+					"email"
+				],
+				"type": "object"
+			},
+			"ApiResponse__user-TUserResponse--accessToken-string__": {
+				"properties": {
+					"message": {
+						"type": "string"
+					},
+					"data": {
+						"properties": {
+							"accessToken": {
+								"type": "string"
+							},
+							"user": {
+								"$ref": "#/components/schemas/TUserResponse"
+							}
+						},
+						"required": [
+							"accessToken",
+							"user"
+						],
+						"type": "object"
+					},
+					"error": {
+						"$ref": "#/components/schemas/Record_string.string_"
+					}
+				},
+				"required": [
+					"message"
+				],
+				"type": "object",
+				"additionalProperties": false
+			},
+			"TRegisterRequestBody": {
+				"properties": {
+					"address": {
+						"type": "string",
+						"nullable": true
+					},
+					"phone_number": {
+						"type": "string",
+						"nullable": true
+					},
+					"dob": {
+						"type": "string",
+						"format": "date-time",
+						"nullable": true
+					},
+					"password": {
+						"type": "string"
+					},
+					"name": {
+						"type": "string"
+					},
+					"email": {
+						"type": "string"
+					}
+				},
+				"required": [
+					"address",
+					"phone_number",
+					"dob",
+					"password",
+					"name",
+					"email"
+				],
+				"type": "object"
+			}
+		},
+		"securitySchemes": {}
+	},
+	"info": {
+		"title": "courifly-services",
+		"version": "1.0.0",
+		"description": "Courifly - Courier delivery and order tracking platform API",
+		"license": {
+			"name": "ISC"
+		},
+		"contact": {
+			"name": "VP"
+		}
+	},
+	"paths": {
+		"/users/me": {
+			"get": {
+				"operationId": "Me",
+				"responses": {
+					"200": {
+						"description": "Success",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ApiResponse__user-TUserResponse__"
+								}
+							}
+						}
+					},
+					"401": {
+						"description": "Unauthorized",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ErrorWithStatus"
+								}
+							}
+						}
+					},
+					"404": {
+						"description": "User not found",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ErrorWithStatus"
+								}
+							}
+						}
+					}
+				},
+				"description": "Get current authenticated user's information",
+				"tags": [
+					"Users"
+				],
+				"security": [
+					{
+						"jwt": []
+					}
+				],
+				"parameters": []
+			}
+		},
+		"/users/{id}": {
+			"put": {
+				"operationId": "UpdateUser",
+				"responses": {
+					"200": {
+						"description": "Success",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ApiResponse_TUserResponse_"
+								}
+							}
+						}
+					},
+					"401": {
+						"description": "Unauthorized",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ErrorWithStatus"
+								}
+							}
+						}
+					},
+					"404": {
+						"description": "User not found",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ErrorWithStatus"
+								}
+							}
+						}
+					},
+					"422": {
+						"description": "Validation failed",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ErrorWithStatus"
+								}
+							}
+						}
+					}
+				},
+				"description": "Update user information for a specific user ID",
+				"tags": [
+					"Users"
+				],
+				"security": [
+					{
+						"jwt": []
+					}
+				],
+				"parameters": [
+					{
+						"in": "path",
+						"name": "id",
+						"required": true,
+						"schema": {
+							"format": "double",
+							"type": "number"
+						}
+					}
+				],
+				"requestBody": {
+					"required": true,
+					"content": {
+						"application/json": {
+							"schema": {
+								"$ref": "#/components/schemas/TUpdateUserRequestBody"
+							}
+						}
+					}
+				}
+			}
+		},
+		"/shops/{id}": {
+			"get": {
+				"operationId": "GetShop",
+				"responses": {
+					"200": {
+						"description": "Success",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ApiResponse_TShop_"
+								}
+							}
+						}
+					},
+					"404": {
+						"description": "Shop not found",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ErrorWithStatus"
+								}
+							}
+						}
+					}
+				},
+				"description": "Get a single shop by ID",
+				"tags": [
+					"Shops"
+				],
+				"security": [],
+				"parameters": [
+					{
+						"in": "path",
+						"name": "id",
+						"required": true,
+						"schema": {
+							"format": "double",
+							"type": "number"
+						}
+					}
+				]
+			},
+			"put": {
+				"operationId": "UpdateShop",
+				"responses": {
+					"200": {
+						"description": "Success",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ApiResponse_TShop_"
+								}
+							}
+						}
+					},
+					"401": {
+						"description": "Unauthorized",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ErrorWithStatus"
+								}
+							}
+						}
+					},
+					"403": {
+						"description": "Forbidden",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ErrorWithStatus"
+								}
+							}
+						}
+					},
+					"404": {
+						"description": "Shop not found",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ErrorWithStatus"
+								}
+							}
+						}
+					},
+					"422": {
+						"description": "Validation failed",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ErrorWithStatus"
+								}
+							}
+						}
+					}
+				},
+				"description": "Update an existing shop's details",
+				"tags": [
+					"Shops"
+				],
+				"security": [
+					{
+						"jwt": []
+					}
+				],
+				"parameters": [
+					{
+						"in": "path",
+						"name": "id",
+						"required": true,
+						"schema": {
+							"format": "double",
+							"type": "number"
+						}
+					}
+				],
+				"requestBody": {
+					"required": true,
+					"content": {
+						"application/json": {
+							"schema": {
+								"$ref": "#/components/schemas/TUpdateShopRequestBody"
+							}
+						}
+					}
+				}
+			},
+			"delete": {
+				"operationId": "DeleteShop",
+				"responses": {
+					"200": {
+						"description": "Success",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ApiResponse_unknown_"
+								}
+							}
+						}
+					},
+					"401": {
+						"description": "Unauthorized",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ErrorWithStatus"
+								}
+							}
+						}
+					},
+					"403": {
+						"description": "Forbidden",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ErrorWithStatus"
+								}
+							}
+						}
+					},
+					"404": {
+						"description": "Shop not found",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ErrorWithStatus"
+								}
+							}
+						}
+					}
+				},
+				"description": "Delete a shop",
+				"tags": [
+					"Shops"
+				],
+				"security": [
+					{
+						"jwt": []
+					}
+				],
+				"parameters": [
+					{
+						"in": "path",
+						"name": "id",
+						"required": true,
+						"schema": {
+							"format": "double",
+							"type": "number"
+						}
+					}
+				]
+			}
+		},
+		"/shops/my-shops": {
+			"get": {
+				"operationId": "GetMyShop",
+				"responses": {
+					"200": {
+						"description": "Success",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ApiResponse_TShop-Array_"
+								}
+							}
+						}
+					},
+					"401": {
+						"description": "Unauthorized",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ErrorWithStatus"
+								}
+							}
+						}
+					}
+				},
+				"description": "Get shops belonging to the authenticated user",
+				"tags": [
+					"Shops"
+				],
+				"security": [
+					{
+						"jwt": []
+					}
+				],
+				"parameters": []
+			}
+		},
+		"/shops": {
+			"post": {
+				"operationId": "CreateShop",
+				"responses": {
+					"201": {
+						"description": "Created",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ApiResponse_TShop_"
+								}
+							}
+						}
+					},
+					"401": {
+						"description": "Unauthorized",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ErrorWithStatus"
+								}
+							}
+						}
+					},
+					"422": {
+						"description": "Validation failed",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ErrorWithStatus"
+								}
+							}
+						}
+					}
+				},
+				"description": "Create a new shop for the authenticated user",
+				"tags": [
+					"Shops"
+				],
+				"security": [
+					{
+						"jwt": []
+					}
+				],
+				"parameters": [],
+				"requestBody": {
+					"required": true,
+					"content": {
+						"application/json": {
+							"schema": {
+								"$ref": "#/components/schemas/TCreateShopRequestBody"
+							}
+						}
+					}
+				}
+			}
+		},
+		"/roles": {
+			"get": {
+				"operationId": "GetAllRoles",
+				"responses": {
+					"200": {
+						"description": "Success",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ApiResponse_TRole-Array_"
+								}
+							}
+						}
+					},
+					"401": {
+						"description": "Unauthorized",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ErrorWithStatus"
+								}
+							}
+						}
+					}
+				},
+				"description": "Get all available user roles",
+				"tags": [
+					"Roles"
+				],
+				"security": [
+					{
+						"jwt": []
+					}
+				],
+				"parameters": []
+			},
+			"post": {
+				"operationId": "CreateRole",
+				"responses": {
+					"201": {
+						"description": "Created",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ApiResponse_TRole_"
+								}
+							}
+						}
+					},
+					"401": {
+						"description": "Unauthorized",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ErrorWithStatus"
+								}
+							}
+						}
+					},
+					"409": {
+						"description": "Role with this name already exists",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ErrorWithStatus"
+								}
+							}
+						}
+					},
+					"422": {
+						"description": "Validation failed",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ErrorWithStatus"
+								}
+							}
+						}
+					}
+				},
+				"description": "Create a new user role",
+				"tags": [
+					"Roles"
+				],
+				"security": [
+					{
+						"jwt": []
+					}
+				],
+				"parameters": [],
+				"requestBody": {
+					"required": true,
+					"content": {
+						"application/json": {
+							"schema": {
+								"$ref": "#/components/schemas/TCreateRoleRequestBody"
+							}
+						}
+					}
+				}
+			}
+		},
+		"/roles/{id}": {
+			"get": {
+				"operationId": "GetRole",
+				"responses": {
+					"200": {
+						"description": "Success",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ApiResponse_TRole_"
+								}
+							}
+						}
+					},
+					"401": {
+						"description": "Unauthorized",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ErrorWithStatus"
+								}
+							}
+						}
+					},
+					"404": {
+						"description": "Role not found",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ErrorWithStatus"
+								}
+							}
+						}
+					}
+				},
+				"description": "Get a specific role by ID",
+				"tags": [
+					"Roles"
+				],
+				"security": [
+					{
+						"jwt": []
+					}
+				],
+				"parameters": [
+					{
+						"in": "path",
+						"name": "id",
+						"required": true,
+						"schema": {
+							"format": "double",
+							"type": "number"
+						}
+					}
+				]
+			},
+			"put": {
+				"operationId": "UpdateRole",
+				"responses": {
+					"200": {
+						"description": "Success",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ApiResponse_TRole_"
+								}
+							}
+						}
+					},
+					"401": {
+						"description": "Unauthorized",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ErrorWithStatus"
+								}
+							}
+						}
+					},
+					"404": {
+						"description": "Role not found",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ErrorWithStatus"
+								}
+							}
+						}
+					},
+					"422": {
+						"description": "Validation failed",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ErrorWithStatus"
+								}
+							}
+						}
+					}
+				},
+				"description": "Update an existing role's details",
+				"tags": [
+					"Roles"
+				],
+				"security": [
+					{
+						"jwt": []
+					}
+				],
+				"parameters": [
+					{
+						"in": "path",
+						"name": "id",
+						"required": true,
+						"schema": {
+							"format": "double",
+							"type": "number"
+						}
+					}
+				],
+				"requestBody": {
+					"required": true,
+					"content": {
+						"application/json": {
+							"schema": {
+								"$ref": "#/components/schemas/TUpdateRoleRequestBody"
+							}
+						}
+					}
+				}
+			}
+		},
+		"/reports/top-selling": {
+			"get": {
+				"operationId": "GetTopSellingProducts",
+				"responses": {
+					"200": {
+						"description": "Success",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ApiResponse_TTopSellingProduct-Array_"
+								}
+							}
+						}
+					}
+				},
+				"description": "Get the top best-selling products",
+				"tags": [
+					"Reports"
+				],
+				"security": [],
+				"parameters": [
+					{
+						"in": "query",
+						"name": "top",
+						"required": false,
+						"schema": {
+							"format": "double",
+							"type": "number"
+						}
+					}
+				]
+			}
+		},
+		"/products": {
+			"get": {
+				"operationId": "SearchProducts",
+				"responses": {
+					"200": {
+						"description": "Success",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ApiResponse__items-TProduct-Array--total-number__"
+								}
+							}
+						}
+					},
+					"422": {
+						"description": "Validation failed",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ErrorWithStatus"
+								}
+							}
+						}
+					}
+				},
+				"description": "Search for products with various filters",
+				"tags": [
+					"Products"
+				],
+				"security": [],
+				"parameters": [
+					{
+						"in": "query",
+						"name": "keyword",
+						"required": false,
+						"schema": {
+							"type": "string"
+						}
+					},
+					{
+						"in": "query",
+						"name": "category",
+						"required": false,
+						"schema": {
+							"type": "string"
+						}
+					},
+					{
+						"in": "query",
+						"name": "shop_id",
+						"required": false,
+						"schema": {
+							"format": "double",
+							"type": "number"
+						}
+					},
+					{
+						"in": "query",
+						"name": "offset",
+						"required": false,
+						"schema": {
+							"format": "double",
+							"type": "number"
+						}
+					},
+					{
+						"in": "query",
+						"name": "limit",
+						"required": false,
+						"schema": {
+							"format": "double",
+							"type": "number"
+						}
+					}
+				]
+			},
+			"post": {
+				"operationId": "CreateProduct",
+				"responses": {
+					"201": {
+						"description": "Created",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ApiResponse_TProduct_"
+								}
+							}
+						}
+					},
+					"401": {
+						"description": "Unauthorized",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ErrorWithStatus"
+								}
+							}
+						}
+					},
+					"422": {
+						"description": "Validation failed",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ErrorWithStatus"
+								}
+							}
+						}
+					}
+				},
+				"description": "Create a new product",
+				"tags": [
+					"Products"
+				],
+				"security": [
+					{
+						"jwt": []
+					}
+				],
+				"parameters": [],
+				"requestBody": {
+					"required": true,
+					"content": {
+						"application/json": {
+							"schema": {
+								"$ref": "#/components/schemas/TCreateProductRequestBody"
+							}
+						}
+					}
+				}
+			}
+		},
+		"/products/{id}": {
+			"get": {
+				"operationId": "GetProduct",
+				"responses": {
+					"200": {
+						"description": "Success",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ApiResponse_TProduct_"
+								}
+							}
+						}
+					},
+					"404": {
+						"description": "Product not found",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ErrorWithStatus"
+								}
+							}
+						}
+					}
+				},
+				"description": "Get a single product by ID",
+				"tags": [
+					"Products"
+				],
+				"security": [],
+				"parameters": [
+					{
+						"in": "path",
+						"name": "id",
+						"required": true,
+						"schema": {
+							"format": "double",
+							"type": "number"
+						}
+					}
+				]
+			},
+			"put": {
+				"operationId": "UpdateProduct",
+				"responses": {
+					"200": {
+						"description": "Success",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ApiResponse_TProduct_"
+								}
+							}
+						}
+					},
+					"401": {
+						"description": "Unauthorized",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ErrorWithStatus"
+								}
+							}
+						}
+					},
+					"404": {
+						"description": "Product not found",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ErrorWithStatus"
+								}
+							}
+						}
+					},
+					"422": {
+						"description": "Validation failed",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ErrorWithStatus"
+								}
+							}
+						}
+					}
+				},
+				"description": "Update an existing product",
+				"tags": [
+					"Products"
+				],
+				"security": [
+					{
+						"jwt": []
+					}
+				],
+				"parameters": [
+					{
+						"in": "path",
+						"name": "id",
+						"required": true,
+						"schema": {
+							"format": "double",
+							"type": "number"
+						}
+					}
+				],
+				"requestBody": {
+					"required": true,
+					"content": {
+						"application/json": {
+							"schema": {
+								"$ref": "#/components/schemas/TUpdateProductRequestBody"
+							}
+						}
+					}
+				}
+			},
+			"delete": {
+				"operationId": "DeleteProduct",
+				"responses": {
+					"200": {
+						"description": "Success",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ApiResponse_unknown_"
+								}
+							}
+						}
+					},
+					"401": {
+						"description": "Unauthorized",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ErrorWithStatus"
+								}
+							}
+						}
+					},
+					"404": {
+						"description": "Product not found",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ErrorWithStatus"
+								}
+							}
+						}
+					}
+				},
+				"description": "Delete a product",
+				"tags": [
+					"Products"
+				],
+				"security": [
+					{
+						"jwt": []
+					}
+				],
+				"parameters": [
+					{
+						"in": "path",
+						"name": "id",
+						"required": true,
+						"schema": {
+							"format": "double",
+							"type": "number"
+						}
+					}
+				]
+			}
+		},
+		"/products/{id}/stock": {
+			"patch": {
+				"operationId": "UpdateProductStock",
+				"responses": {
+					"200": {
+						"description": "Success",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ApiResponse_TProduct_"
+								}
+							}
+						}
+					},
+					"401": {
+						"description": "Unauthorized",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ErrorWithStatus"
+								}
+							}
+						}
+					},
+					"404": {
+						"description": "Product not found",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ErrorWithStatus"
+								}
+							}
+						}
+					},
+					"422": {
+						"description": "Validation failed",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ErrorWithStatus"
+								}
+							}
+						}
+					}
+				},
+				"description": "Update product stock",
+				"tags": [
+					"Products"
+				],
+				"security": [
+					{
+						"jwt": []
+					}
+				],
+				"parameters": [
+					{
+						"in": "path",
+						"name": "id",
+						"required": true,
+						"schema": {
+							"format": "double",
+							"type": "number"
+						}
+					}
+				],
+				"requestBody": {
+					"required": true,
+					"content": {
+						"application/json": {
+							"schema": {
+								"$ref": "#/components/schemas/TUpdateProductStockRequestBody"
+							}
+						}
+					}
+				}
+			}
+		},
+		"/orders": {
+			"get": {
+				"operationId": "SearchOrders",
+				"responses": {
+					"200": {
+						"description": "Success",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ApiResponse_TOrderWithDetails-Array_"
+								}
+							}
+						}
+					},
+					"401": {
+						"description": "Unauthorized",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ErrorWithStatus"
+								}
+							}
+						}
+					}
+				},
+				"description": "Search for orders with optional status filter",
+				"tags": [
+					"Orders"
+				],
+				"security": [
+					{
+						"jwt": []
+					}
+				],
+				"parameters": [
+					{
+						"in": "query",
+						"name": "status",
+						"required": false,
+						"schema": {
+							"type": "string"
+						}
+					}
+				]
+			},
+			"post": {
+				"operationId": "CreateOrder",
+				"responses": {
+					"201": {
+						"description": "Created",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ApiResponse_TOrderWithDetails_"
+								}
+							}
+						}
+					},
+					"401": {
+						"description": "Unauthorized",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ErrorWithStatus"
+								}
+							}
+						}
+					},
+					"404": {
+						"description": "Not found",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ErrorWithStatus"
+								}
+							}
+						}
+					},
+					"422": {
+						"description": "Validation failed",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ErrorWithStatus"
+								}
+							}
+						}
+					}
+				},
+				"description": "Create a new order with items",
+				"tags": [
+					"Orders"
+				],
+				"security": [
+					{
+						"jwt": []
+					}
+				],
+				"parameters": [],
+				"requestBody": {
+					"required": true,
+					"content": {
+						"application/json": {
+							"schema": {
+								"$ref": "#/components/schemas/TCreateOrderRequestBody"
+							}
+						}
+					}
+				}
+			}
+		},
+		"/orders/{id}": {
+			"get": {
+				"operationId": "GetOrder",
+				"responses": {
+					"200": {
+						"description": "Success",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ApiResponse_TOrderWithDetails_"
+								}
+							}
+						}
+					},
+					"401": {
+						"description": "Unauthorized",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ErrorWithStatus"
+								}
+							}
+						}
+					},
+					"404": {
+						"description": "Not found",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ErrorWithStatus"
+								}
+							}
+						}
+					}
+				},
+				"description": "Get a single order by ID",
+				"tags": [
+					"Orders"
+				],
+				"security": [
+					{
+						"jwt": []
+					}
+				],
+				"parameters": [
+					{
+						"in": "path",
+						"name": "id",
+						"required": true,
+						"schema": {
+							"format": "double",
+							"type": "number"
+						}
+					}
+				]
+			},
+			"put": {
+				"operationId": "UpdateOrder",
+				"responses": {
+					"200": {
+						"description": "Success",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ApiResponse_TOrderWithDetails_"
+								}
+							}
+						}
+					},
+					"401": {
+						"description": "Unauthorized",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ErrorWithStatus"
+								}
+							}
+						}
+					},
+					"404": {
+						"description": "Not found",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ErrorWithStatus"
+								}
+							}
+						}
+					},
+					"422": {
+						"description": "Validation failed",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ErrorWithStatus"
+								}
+							}
+						}
+					}
+				},
+				"description": "Update an order's information",
+				"tags": [
+					"Orders"
+				],
+				"security": [
+					{
+						"jwt": []
+					}
+				],
+				"parameters": [
+					{
+						"in": "path",
+						"name": "id",
+						"required": true,
+						"schema": {
+							"format": "double",
+							"type": "number"
+						}
+					}
+				],
+				"requestBody": {
+					"required": true,
+					"content": {
+						"application/json": {
+							"schema": {
+								"$ref": "#/components/schemas/TUpdateOrderRequestBody"
+							}
+						}
+					}
+				}
+			},
+			"delete": {
+				"operationId": "DeleteOrder",
+				"responses": {
+					"200": {
+						"description": "Success",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ApiResponse_unknown_"
+								}
+							}
+						}
+					},
+					"401": {
+						"description": "Unauthorized",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ErrorWithStatus"
+								}
+							}
+						}
+					},
+					"404": {
+						"description": "Not found",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ErrorWithStatus"
+								}
+							}
+						}
+					}
+				},
+				"description": "Delete an order and restore product stock",
+				"tags": [
+					"Orders"
+				],
+				"security": [
+					{
+						"jwt": []
+					}
+				],
+				"parameters": [
+					{
+						"in": "path",
+						"name": "id",
+						"required": true,
+						"schema": {
+							"format": "double",
+							"type": "number"
+						}
+					}
+				]
+			}
+		},
+		"/orders/{orderId}/items": {
+			"get": {
+				"operationId": "GetOrderItems",
+				"responses": {
+					"200": {
+						"description": "Success",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ApiResponse_TOrderItemWithProduct-Array_"
+								}
+							}
+						}
+					},
+					"401": {
+						"description": "Unauthorized",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ErrorWithStatus"
+								}
+							}
+						}
+					}
+				},
+				"description": "Get items for a specific order",
+				"tags": [
+					"Orders"
+				],
+				"security": [
+					{
+						"jwt": []
+					}
+				],
+				"parameters": [
+					{
+						"in": "path",
+						"name": "orderId",
+						"required": true,
+						"schema": {
+							"format": "double",
+							"type": "number"
+						}
+					}
+				]
+			},
+			"post": {
+				"operationId": "AddOrderItem",
+				"responses": {
+					"201": {
+						"description": "Created",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ApiResponse_unknown_"
+								}
+							}
+						}
+					},
+					"401": {
+						"description": "Unauthorized",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ErrorWithStatus"
+								}
+							}
+						}
+					},
+					"404": {
+						"description": "Not found",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ErrorWithStatus"
+								}
+							}
+						}
+					},
+					"422": {
+						"description": "Validation failed",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ErrorWithStatus"
+								}
+							}
+						}
+					}
+				},
+				"description": "Add a new item to an existing order",
+				"tags": [
+					"Orders"
+				],
+				"security": [
+					{
+						"jwt": []
+					}
+				],
+				"parameters": [
+					{
+						"in": "path",
+						"name": "orderId",
+						"required": true,
+						"schema": {
+							"format": "double",
+							"type": "number"
+						}
+					}
+				],
+				"requestBody": {
+					"required": true,
+					"content": {
+						"application/json": {
+							"schema": {
+								"$ref": "#/components/schemas/TAddOrderItemRequestBody"
+							}
+						}
+					}
+				}
+			}
+		},
+		"/orders/items/{itemId}": {
+			"delete": {
+				"operationId": "RemoveOrderItem",
+				"responses": {
+					"200": {
+						"description": "Success",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ApiResponse_unknown_"
+								}
+							}
+						}
+					},
+					"401": {
+						"description": "Unauthorized",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ErrorWithStatus"
+								}
+							}
+						}
+					},
+					"404": {
+						"description": "Order item not found",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ErrorWithStatus"
+								}
+							}
+						}
+					}
+				},
+				"description": "Remove an item from an order",
+				"tags": [
+					"Orders"
+				],
+				"security": [
+					{
+						"jwt": []
+					}
+				],
+				"parameters": [
+					{
+						"in": "path",
+						"name": "itemId",
+						"required": true,
+						"schema": {
+							"format": "double",
+							"type": "number"
+						}
+					}
+				]
+			}
+		},
+		"/auth/login": {
+			"post": {
+				"operationId": "Login",
+				"responses": {
+					"200": {
+						"description": "Login successful",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ApiResponse__accessToken-string__"
+								}
+							}
+						}
+					},
+					"401": {
+						"description": "Invalid credentials",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ErrorWithStatus"
+								}
+							}
+						}
+					},
+					"404": {
+						"description": "User not found",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ErrorWithStatus"
+								}
+							}
+						}
+					},
+					"422": {
+						"description": "Validation failed",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ErrorWithStatus"
+								}
+							}
+						}
+					}
+				},
+				"description": "User login",
+				"tags": [
+					"Auth"
+				],
+				"security": [],
+				"parameters": [],
+				"requestBody": {
+					"required": true,
+					"content": {
+						"application/json": {
+							"schema": {
+								"$ref": "#/components/schemas/TLoginRequestBody"
+							}
+						}
+					}
+				}
+			}
+		},
+		"/auth/refresh-token": {
+			"post": {
+				"operationId": "RefreshToken",
+				"responses": {
+					"200": {
+						"description": "Success",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ApiResponse__accessToken-string__"
+								}
+							}
+						}
+					},
+					"401": {
+						"description": "User not authenticated",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ErrorWithStatus"
+								}
+							}
+						}
+					}
+				},
+				"description": "Refresh JWT token using HTTP-only cookie",
+				"tags": [
+					"Auth"
+				],
+				"security": [
+					{
+						"refreshToken": []
+					}
+				],
+				"parameters": []
+			}
+		},
+		"/auth/logout": {
+			"post": {
+				"operationId": "Logout",
+				"responses": {
+					"200": {
+						"description": "Success",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ApiResponse_unknown_"
+								}
+							}
+						}
+					}
+				},
+				"description": "Logout and clear refresh token cookie",
+				"tags": [
+					"Auth"
+				],
+				"security": [],
+				"parameters": []
+			}
+		},
+		"/auth/register": {
+			"post": {
+				"operationId": "Register",
+				"responses": {
+					"201": {
+						"description": "Created",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ApiResponse__user-TUserResponse--accessToken-string__"
+								}
+							}
+						}
+					},
+					"409": {
+						"description": "Conflict",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ErrorWithStatus"
+								}
+							}
+						}
+					}
+				},
+				"description": "User registration",
+				"tags": [
+					"Auth"
+				],
+				"security": [],
+				"parameters": [],
+				"requestBody": {
+					"required": true,
+					"content": {
+						"application/json": {
+							"schema": {
+								"$ref": "#/components/schemas/TRegisterRequestBody"
+							}
+						}
+					}
+				}
+			}
+		}
+	},
+	"servers": [
+		{
+			"url": "/"
+		}
+	]
+}

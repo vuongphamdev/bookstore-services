@@ -12,6 +12,8 @@ export type TUser = TBaseModel & {
   address: string | null;
 };
 
+export type TUserResponse = Omit<TUser, 'password'>;
+
 export type TCreateUserData = Omit<TUser, TCreateIgnoreColumns>;
 export type TUpdateUserData = Partial<Pick<TUser, 'address' | 'dob' | 'name' | 'phone_number'>>;
 

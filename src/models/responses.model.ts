@@ -12,19 +12,12 @@ export class Responses {
   /**
    * Send a successful response
    */
-  static success<T>(res: Response, message: string, data?: T, statusCode: number = 200): Response<ApiResponse<T>> {
+  static success<T>(message: string, data?: T) {
     const response: ApiResponse<T> = {
       message,
       data,
     };
-    return res.status(statusCode).json(response);
-  }
-
-  /**
-   * Send a created response
-   */
-  static created<T>(res: Response, message: string, data?: T): Response {
-    return Responses.success(res, message, data, 201);
+    return response;
   }
 
   /**

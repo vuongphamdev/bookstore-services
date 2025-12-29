@@ -1,13 +1,13 @@
 import { db } from '@config';
-import { TCreateUserData, TUpdateUserData, TUser } from '@models/schemas';
+import { TCreateUserData, TUpdateUserData, TUser, TUserResponse } from '@models/schemas';
 
 class UserService {
-  async getUserById(id: number) {
+  async getUserById(id: number): Promise<TUserResponse | null> {
     const row = await db<TUser>('users')
-      .select('id', 'name', 'role', 'dob', 'email', 'created_at', 'updated_at')
+      .select('id', 'name', 'email', 'role', 'status', 'dob', 'phone_number', 'address', 'created_at', 'updated_at')
       .where({ id })
       .first();
-    return row ?? null;
+    return (row as TUserResponse) ?? null;
   }
 
   async getUserByEmail(email: string): Promise<TUser | null> {

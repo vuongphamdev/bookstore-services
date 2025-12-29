@@ -1,13 +1,13 @@
+import * as express from 'express';
 import { HTTP_STATUS } from '@constants/http';
 import { ErrorWithStatus } from '@models';
 import { AuthService } from '@services';
-import { ParamSchema } from 'express-validator';
 import { Request } from 'express-validator/lib/base';
 import { JsonWebTokenError } from 'jsonwebtoken';
 
-type TVerifyParams = { value: string; req?: Request };
+type TVerifyParams = { value: string | undefined; req?: Request };
 
-const verifyAuthorization = async ({ value, req }: TVerifyParams) => {
+export const verifyAuthorization = async ({ value, req }: TVerifyParams) => {
   try {
     if (!value) {
       throw new ErrorWithStatus({
@@ -38,7 +38,7 @@ const verifyAuthorization = async ({ value, req }: TVerifyParams) => {
   }
 };
 
-const verifyRefreshTokenFromCookie = async ({ value, req }: TVerifyParams) => {
+export const verifyRefreshTokenFromCookie = async ({ value, req }: TVerifyParams) => {
   try {
     if (!value) {
       throw new ErrorWithStatus({
@@ -62,14 +62,13 @@ const verifyRefreshTokenFromCookie = async ({ value, req }: TVerifyParams) => {
   }
 };
 
-export const AuthorizationSchema: ParamSchema = {
-  custom: {
-    options: async (value, { req }) => verifyAuthorization({ value, req }),
-  },
-};
-
-export const refreshTokenCookieSchema: ParamSchema = {
-  custom: {
-    options: async (value, { req }) => verifyRefreshTokenFromCookie({ value, req }),
-  },
-};
+export async function expressAuthentication(request: express.Request, securityName: string, _scopes?: string[]) {
+  if (securityName === 'jwt') {
+    const token = request.headers['authorization']?.split(' ')[1];
+    return verifyAuthorization({ value: token, req: request });
+  }
+  if (securityName === 'refreshToken') {
+    const token = request.cookies['refreshToken'];
+    return verifyRefreshTokenFromCookie({ value: token, req: request });
+  }
+}

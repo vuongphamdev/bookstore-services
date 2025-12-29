@@ -14,9 +14,9 @@ class ShopService {
   /**
    * Get shops by UserID
    */
-  async getShopsByUserId(user_id: number): Promise<TShop | null> {
-    const row = await db<TShop>('shops').select('*').where({ user_id }).first();
-    return row ?? null;
+  async getShopsByUserId(user_id: number): Promise<TShop[]> {
+    const rows = await db<TShop>('shops').select('*').where({ user_id });
+    return rows;
   }
 
   /**

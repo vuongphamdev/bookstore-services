@@ -1,0 +1,20 @@
+{
+  "entryFile": "src/index.ts",
+  "compilerOptions": {
+    "baseUrl": ".",
+    "paths": {
+      "@*": ["src/*"]
+    }
+  },
+  "noImplicitAdditionalProperties": "throw-on-extras",
+  "controllerPathGlobs": ["src/controllers/**/*.controller.ts"],
+  "spec": {
+    "outputDirectory": "docs",
+    "specVersion": 3
+  },
+  "routes": {
+    "routesDir": "src/routes",
+    "basePath": "",
+    "authenticationModule": "src/authentication.ts"
+  }
+}

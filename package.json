@@ -4,6 +4,10 @@
   "description": "Courifly - Courier delivery and order tracking platform API",
   "main": "index.js",
   "scripts": {
+    "generate": "tsoa spec-and-routes && npm run gen-postman",
+    "gen-postman": "openapi2postmanv2 -s docs/swagger.json -o postman/postman-collection.json -p",
+    "predev": "npm run generate",
+    "prebuild": "npm run generate",
     "_dev": "nodemon --watch src --ext ts --exec \"ts-node -r tsconfig-paths/register src/index.ts\"",
     "dev": "npm run dev:development",
     "dev:development": "NODE_ENV=development npm run _dev",
@@ -21,7 +25,6 @@
     "db:migrate:latest": "knex --knexfile src/db/knexfile.ts migrate:latest",
     "db:migrate:rollback": "knex --knexfile src/db/knexfile.ts migrate:rollback",
     "db:migrate:rollback:all": "knex --knexfile src/db/knexfile.ts migrate:rollback --all",
-    "db:migrate:rollback:step": "knex --knexfile src/db/knexfile.ts migrate:rollback --step 2",
     "db:migrate:status": "knex --knexfile src/db/knexfile.ts migrate:status",
     "db:migrate:make": "knex --knexfile src/db/knexfile.ts migrate:make",
     "db:seed:run": "knex --knexfile src/db/knexfile.ts seed:run",
@@ -68,6 +71,7 @@
     "lodash": "^4.17.21",
     "mysql2": "^3.14.4",
     "swagger-ui-express": "^5.0.1",
+    "tsoa": "^7.0.0-alpha.0",
     "yamljs": "^0.3.0"
   },
   "devDependencies": {
@@ -88,6 +92,7 @@
     "eslint": "^9.39.1",
     "jest": "^30.2.0",
     "nodemon": "^3.1.10",
+    "openapi-to-postmanv2": "^5.7.0",
     "prettier": "3.6.2",
     "ts-jest": "^29.4.5",
     "ts-node": "^10.9.2",

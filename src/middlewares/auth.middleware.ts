@@ -1,25 +1,6 @@
-import { checkSchema, ParamSchema, Schema } from 'express-validator';
+import { checkSchema, ParamSchema } from 'express-validator';
 import { validate } from '@utils';
-import { AuthorizationSchema, refreshTokenCookieSchema } from './validation-schemas';
 import { TLoginRequestBody, TRegisterRequestBody } from '@models';
-
-export const accessTokenValidator = validate(
-  checkSchema(
-    {
-      Authorization: AuthorizationSchema,
-    },
-    ['headers']
-  )
-);
-
-export const refreshTokenCookieValidator = validate(
-  checkSchema(
-    {
-      refreshToken: refreshTokenCookieSchema,
-    },
-    ['cookies']
-  )
-);
 
 export const loginValidator = validate(
   checkSchema(

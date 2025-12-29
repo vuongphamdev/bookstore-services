@@ -1,101 +1,145 @@
-import { Request, Response } from 'express';
-import { AuthService, userService } from '@services';
+import { Controller, Post, Body, Route, Tags, SuccessResponse, Request, Middlewares, Security, Response } from 'tsoa';
+import { loginValidator, registerValidator } from '../middlewares';
+import { AuthService, userService } from '../services';
+import { Responses } from '../models/responses.model';
+import { TLoginRequestBody, TRegisterRequestBody } from '../models/requests.model';
 import {
+  NotFoundError,
+  UnauthorizedError,
   ConflictError,
   InternalServerError,
-  NotFoundError,
-  Responses,
-  TLoginRequestBody,
-  TRegisterRequestBody,
-  UnauthorizedError,
-} from '@models';
-import { hashPassword } from '@utils/crypto';
-import { setCookieRefreshToken } from '@utils/cookie';
-import { ERole, EUserStatus } from '@constants';
+  ErrorWithStatus,
+} from '../models/errors.model';
+import { hashPassword } from '../utils/crypto';
+import { setCookieRefreshToken } from '../utils/cookie';
+import { ERole, EUserStatus } from '../constants';
+import { TUserResponse } from '../models/schemas';
+import { HTTP_STATUS } from '@constants/http';
+import { Request as ExpressRequest } from 'express';
 
-/**
- * User login
- */
-export const login = async (req: Request<any, any, TLoginRequestBody>, res: Response): Promise<Response> => {
-  const { email, password } = req.body;
+export interface TRegisterResponseData {
+  user: TUserResponse;
+  accessToken: string;
+}
 
-  const user = await userService.getUserByEmail(email);
-  if (!user) {
-    throw new NotFoundError('User not found');
+@Route('auth')
+@Tags('Auth')
+export class AuthController extends Controller {
+  /**
+   * User login
+   */
+  @Post('login')
+  @Middlewares(loginValidator)
+  @SuccessResponse(HTTP_STATUS.OK, 'Login successful')
+  @Response<ErrorWithStatus>(HTTP_STATUS.UNPROCESSABLE_ENTITY, 'Validation failed')
+  @Response<ErrorWithStatus>(HTTP_STATUS.NOT_FOUND, 'User not found')
+  @Response<ErrorWithStatus>(HTTP_STATUS.UNAUTHORIZED, 'Invalid credentials')
+  public async login(@Body() requestBody: TLoginRequestBody, @Request() request: ExpressRequest) {
+    const { email, password } = requestBody;
+
+    const user = await userService.getUserByEmail(email);
+    if (!user) {
+      throw new NotFoundError('User not found');
+    }
+
+    const isPasswordValid = hashPassword(password) === user.password;
+    if (!isPasswordValid) {
+      throw new UnauthorizedError('Invalid credentials');
+    }
+
+    const [accessToken, refreshToken] = await AuthService.signAccessAndRefreshToken({
+      user_id: user.id!,
+      email: user.email,
+      role: user.role,
+    });
+
+    const res = (request as any).res;
+    if (res) {
+      setCookieRefreshToken(res, refreshToken);
+    }
+
+    return Responses.success('Login successful', {
+      accessToken,
+    });
   }
 
-  const isPasswordValid = hashPassword(password) === user.password;
-  if (!isPasswordValid) {
-    throw new UnauthorizedError('Invalid credentials');
+  /**
+   * Refresh JWT token using HTTP-only cookie
+   */
+  @Post('refresh-token')
+  @Security('refreshToken')
+  @SuccessResponse(HTTP_STATUS.OK, 'Success')
+  @Response<ErrorWithStatus>(HTTP_STATUS.UNAUTHORIZED, 'User not authenticated')
+  public async refreshToken(@Request() request: ExpressRequest) {
+    const user = request.user;
+    if (!user) {
+      throw new UnauthorizedError('User not authenticated');
+    }
+
+    const newAccessToken = await AuthService.signAccessToken({
+      user_id: user.user_id,
+      email: user.email,
+      role: user.role,
+    });
+
+    return Responses.success('Token refreshed successfully', {
+      accessToken: newAccessToken,
+    });
   }
 
-  const [accessToken, refreshToken] = await AuthService.signAccessAndRefreshToken({
-    user_id: user.id!,
-    email: user.email,
-    role: user.role,
-  });
-
-  setCookieRefreshToken(res, refreshToken);
-  return Responses.success(res, 'Login successful', {
-    accessToken,
-  });
-};
-
-/**
- * Refresh JWT token using HTTP-only cookie
- */
-export const refreshToken = async (req: Request, res: Response): Promise<Response> => {
-  const user = req.user;
-  if (!user) {
-    throw new UnauthorizedError('User not authenticated');
+  /**
+   * Logout and clear refresh token cookie
+   */
+  @Post('logout')
+  @SuccessResponse(HTTP_STATUS.OK, 'Success')
+  public async logout(@Request() request: ExpressRequest) {
+    const res = request.res;
+    if (res) {
+      res.clearCookie('refreshToken');
+    }
+    return Responses.success('Logged out successfully');
   }
-  const newAccessToken = await AuthService.signAccessToken({
-    user_id: user.user_id,
-    email: user.email,
-    role: user.role,
-  });
 
-  return Responses.success(res, 'Token refreshed successfully', {
-    accessToken: newAccessToken,
-  });
-};
+  /**
+   * User registration
+   */
+  @Post('register')
+  @Middlewares(registerValidator)
+  @SuccessResponse('201', 'Created')
+  @Response<ErrorWithStatus>(HTTP_STATUS.CONFLICT, 'Conflict')
+  public async register(@Body() requestBody: TRegisterRequestBody, @Request() request: ExpressRequest) {
+    const existingUser = await userService.getUserByEmail(requestBody.email);
+    if (existingUser) {
+      throw new ConflictError('Email already in use');
+    }
 
-/**
- * Logout and clear refresh token cookie
- */
-export const logout = async (req: Request, res: Response): Promise<Response> => {
-  res.clearCookie('refreshToken');
-  return Responses.success(res, 'Logged out successfully', null);
-};
+    const addedUserId = await userService.createUser({
+      ...requestBody,
+      password: hashPassword(requestBody.password),
+      role: ERole.USER,
+      status: EUserStatus.UNVERIFIED,
+    });
 
-/**
- * User registration
- */
-export const register = async (req: Request<any, any, TRegisterRequestBody>, res: Response) => {
-  const registerData = req.body;
-  const existingUser = await userService.getUserByEmail(registerData.email);
-  if (existingUser) {
-    throw new ConflictError('Email already in use');
+    const newUser = await userService.getUserById(addedUserId);
+    if (!newUser) {
+      throw new InternalServerError('Failed to retrieve newly created user');
+    }
+
+    const [accessToken, refreshToken] = await AuthService.signAccessAndRefreshToken({
+      user_id: addedUserId,
+      email: newUser.email,
+      role: newUser.role,
+    });
+
+    const res = (request as any).res;
+    if (res) {
+      setCookieRefreshToken(res, refreshToken);
+    }
+
+    this.setStatus(201);
+    return Responses.success('User registered successfully', {
+      user: newUser,
+      accessToken,
+    });
   }
-  const addedUserId = await userService.createUser({
-    ...registerData,
-    password: hashPassword(registerData.password),
-    role: ERole.USER,
-    status: EUserStatus.UNVERIFIED,
-  });
-  const newUser = await userService.getUserById(addedUserId);
-  if (!newUser) {
-    throw new InternalServerError('Failed to retrieve newly created user');
-  }
-  const [accessToken, refreshToken] = await AuthService.signAccessAndRefreshToken({
-    user_id: addedUserId,
-    email: newUser.email,
-    role: newUser.role,
-  });
-
-  setCookieRefreshToken(res, refreshToken);
-  return Responses.created(res, 'User registered successfully', {
-    user: newUser,
-    accessToken,
-  });
-};
+}
