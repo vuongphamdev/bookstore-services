@@ -8,7 +8,7 @@ import { corsConfig, db, helmetConfig, ENV } from '@config';
 import { defaultErrorHandler } from '@middlewares';
 import { RegisterRoutes } from '@routes';
 
-const swaggerDocument = require('../docs/swagger.json');
+import swaggerDocument from '../docs/swagger.json';
 
 const app = express();
 
