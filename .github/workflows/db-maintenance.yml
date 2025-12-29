@@ -42,16 +42,16 @@ jobs:
             # Map friendly names to npm scripts
             case "${{ github.event.inputs.command }}" in
               "migrate (latest)")
-                CMD="npm run db:migrate:latest"
+                CMD="npm run db:migrate:ci"
                 ;;
               "rollback (1 step)")
-                CMD="npm run db:migrate:rollback"
+                CMD="npm run db:migrate:rollback:ci"
                 ;;
               "status")
-                CMD="npm run db:migrate:status"
+                CMD="npm run db:migrate:status:ci"
                 ;;
               "seed")
-                CMD="npm run db:seed:run"
+                CMD="npm run db:seed:run:ci"
                 ;;
               *)
                 echo "Invalid command"
@@ -62,6 +62,6 @@ jobs:
             echo "🚀 Running $CMD on ${{ github.event.inputs.environment }} environment..."
 
             # Run the command inside the running API container
-            # We use docker compose exec to ensure it has the right environment variables and network access
-            # -T is used to disable pseudo-tty (required for non-interactive shells like CI)
-            docker compose exec -T api $CMD
+            # We set dummy IMAGE_NAME/TAG to suppress docker-compose warnings
+            # -T is used to disable pseudo-tty
+            IMAGE_NAME=courifly TAG=latest docker compose exec -T api $CMD
