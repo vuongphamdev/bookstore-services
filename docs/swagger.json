@@ -1028,7 +1028,18 @@
 				"type": "object"
 			}
 		},
-		"securitySchemes": {}
+		"securitySchemes": {
+			"jwt": {
+				"type": "http",
+				"scheme": "bearer",
+				"bearerFormat": "JWT"
+			},
+			"refreshToken": {
+				"type": "apiKey",
+				"name": "refreshToken",
+				"in": "cookie"
+			}
+		}
 	},
 	"info": {
 		"title": "courifly-services",

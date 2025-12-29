@@ -10,7 +10,20 @@
   "controllerPathGlobs": ["src/controllers/**/*.controller.ts"],
   "spec": {
     "outputDirectory": "docs",
-    "specVersion": 3
+    "specVersion": 3,
+    "securityDefinitions": {
+      "jwt": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT"
+      },
+      "refreshToken": {
+        "type": "apiKey",
+        "name": "refreshToken",
+        "in": "cookie",
+        "description": "JSON Web Token used for refreshing access tokens"
+      }
+    }
   },
   "routes": {
     "routesDir": "src/routes",
