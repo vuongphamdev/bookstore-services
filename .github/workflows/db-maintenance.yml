@@ -27,41 +27,48 @@ jobs:
   db-task:
     name: DB ${{ github.event.inputs.command }} on ${{ github.event.inputs.environment }}
     runs-on: ubuntu-latest
-    environment: ${{ github.event.inputs.environment }}
+    environment: db-migration
 
     steps:
-      - name: Execute command via SSH
-        uses: appleboy/ssh-action@v1.0.3
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
         with:
-          host: ${{ secrets.HOST }}
-          username: ${{ secrets.HOST_USER }}
-          key: ${{ secrets.HOST_KEY }}
-          script: |
-            cd /opt/courifly
+          node-version: '20'
+          cache: 'npm'
 
-            # Map friendly names to npm scripts
-            case "${{ github.event.inputs.command }}" in
-              "migrate (latest)")
-                CMD="npm run db:migrate:ci"
-                ;;
-              "rollback (1 step)")
-                CMD="npm run db:migrate:rollback:ci"
-                ;;
-              "status")
-                CMD="npm run db:migrate:status:ci"
-                ;;
-              "seed")
-                CMD="npm run db:seed:run:ci"
-                ;;
-              *)
-                echo "Invalid command"
-                exit 1
-                ;;
-            esac
+      - name: Install dependencies
+        run: npm ci
 
-            echo "🚀 Running $CMD on ${{ github.event.inputs.environment }} environment..."
+      - name: Execute command
+        env:
+          DB_HOST: ${{ secrets.DB_HOST }}
+          DB_PORT: ${{ secrets.DB_PORT }}
+          DB_NAME: ${{ secrets.DB_NAME }}
+          DB_USER: ${{ secrets.DB_MIGRATION_USER }}
+          DB_PASSWORD: ${{ secrets.DB_MIGRATION_PASSWORD }}
+        run: |
+          # Map friendly names to npm scripts
+          case "${{ github.event.inputs.command }}" in
+            "migrate (latest)")
+              CMD="db:migrate:latest"
+              ;;
+            "rollback (1 step)")
+              CMD="db:migrate:rollback"
+              ;;
+            "status")
+              CMD="db:migrate:status"
+              ;;
+            "seed")
+              CMD="db:seed:run"
+              ;;
+            *)
+              echo "Invalid command"
+              exit 1
+              ;;
+          esac
 
-            # Run the command inside the running API container
-            # We set dummy IMAGE_NAME/TAG to suppress docker-compose warnings
-            # -T is used to disable pseudo-tty
-            IMAGE_NAME=courifly TAG=latest docker compose exec -T api $CMD
+          echo "🚀 Running npm run $CMD on ${{ github.event.inputs.environment }} environment (targeting ${{ secrets.HOST }})..."
+          npm run $CMD
