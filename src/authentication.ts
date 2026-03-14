@@ -5,28 +5,18 @@ import { AuthService } from '@services';
 import { Request } from 'express-validator/lib/base';
 import { JsonWebTokenError } from 'jsonwebtoken';
 
-type TVerifyParams = { value: string | undefined; req?: Request };
+type TVerifyParams = { token: string | undefined; req?: Request };
 
-export const verifyAuthorization = async ({ value, req }: TVerifyParams) => {
+export const verifyAuthorization = async ({ token, req }: TVerifyParams) => {
   try {
-    if (!value) {
+    if (!token) {
       throw new ErrorWithStatus({
         message: 'Access token is required',
         status: HTTP_STATUS.UNAUTHORIZED,
       });
     }
-    const token = value.split(' ')[1];
-    if (!token) {
-      throw new ErrorWithStatus({
-        message: 'Access token is invalid',
-        status: HTTP_STATUS.UNAUTHORIZED,
-      });
-    }
     const result = await AuthService.verifyAuthorizationToken(token);
-    if (req) {
-      req.user = result;
-    }
-    return true;
+    return result;
   } catch (error) {
     if (error instanceof JsonWebTokenError) {
       throw new ErrorWithStatus({
@@ -38,7 +28,7 @@ export const verifyAuthorization = async ({ value, req }: TVerifyParams) => {
   }
 };
 
-export const verifyRefreshTokenFromCookie = async ({ value, req }: TVerifyParams) => {
+export const verifyRefreshTokenFromCookie = async ({ token: value, req }: TVerifyParams) => {
   try {
     if (!value) {
       throw new ErrorWithStatus({
@@ -47,10 +37,7 @@ export const verifyRefreshTokenFromCookie = async ({ value, req }: TVerifyParams
       });
     }
     const result = await AuthService.verifyRefreshToken(value);
-    if (req) {
-      req.user = result;
-    }
-    return true;
+    return result;
   } catch (error) {
     if (error instanceof JsonWebTokenError) {
       throw new ErrorWithStatus({
@@ -65,10 +52,10 @@ export const verifyRefreshTokenFromCookie = async ({ value, req }: TVerifyParams
 export async function expressAuthentication(request: express.Request, securityName: string, _scopes?: string[]) {
   if (securityName === 'jwt') {
     const token = request.headers['authorization']?.split(' ')[1];
-    return verifyAuthorization({ value: token, req: request });
+    return verifyAuthorization({ token: token, req: request });
   }
   if (securityName === 'refreshToken') {
     const token = request.cookies['refreshToken'];
-    return verifyRefreshTokenFromCookie({ value: token, req: request });
+    return verifyRefreshTokenFromCookie({ token: token, req: request });
   }
 }

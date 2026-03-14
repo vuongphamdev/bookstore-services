@@ -1037,7 +1037,8 @@
 			"refreshToken": {
 				"type": "apiKey",
 				"name": "refreshToken",
-				"in": "cookie"
+				"in": "cookie",
+				"description": "JSON Web Token used for refreshing access tokens"
 			}
 		}
 	},

@@ -9,7 +9,7 @@
                     "description": "",
                     "item": [
                         {
-                            "id": "29e844bc-79bb-4cab-84a2-e86bfc039ebf",
+                            "id": "02eeb1bf-3a4b-4868-8cfb-989097379255",
                             "name": "Me",
                             "request": {
                                 "name": "Me",
@@ -48,7 +48,7 @@
                             },
                             "response": [
                                 {
-                                    "id": "4f0e6651-c1ea-4c6a-aace-91765bf5c257",
+                                    "id": "f2b7f326-20c8-42cd-ac08-66ee63aa45b7",
                                     "name": "Success",
                                     "originalRequest": {
                                         "url": {
@@ -87,12 +87,12 @@
                                             "value": "application/json"
                                         }
                                     ],
-                                    "body": "{\n  \"message\": \"<string>\",\n  \"data\": {\n    \"user\": {\n      \"name\": \"<string>\",\n      \"email\": \"<string>\",\n      \"role\": \"U\",\n      \"status\": \"X\",\n      \"dob\": \"<dateTime>\",\n      \"phone_number\": \"<string>\",\n      \"address\": \"<string>\",\n      \"id\": \"<double>\",\n      \"created_at\": \"<dateTime>\",\n      \"updated_at\": \"<dateTime>\"\n    }\n  },\n  \"error\": {\n    \"key_0\": \"<string>\",\n    \"key_1\": \"<string>\",\n    \"key_2\": \"<string>\",\n    \"key_3\": \"<string>\"\n  }\n}",
+                                    "body": "{\n  \"message\": \"<string>\",\n  \"data\": {\n    \"user\": {\n      \"name\": \"<string>\",\n      \"email\": \"<string>\",\n      \"role\": \"U\",\n      \"status\": \"U\",\n      \"dob\": \"<dateTime>\",\n      \"phone_number\": \"<string>\",\n      \"address\": \"<string>\",\n      \"id\": \"<double>\",\n      \"created_at\": \"<dateTime>\",\n      \"updated_at\": \"<dateTime>\"\n    }\n  },\n  \"error\": {\n    \"key_0\": \"<string>\",\n    \"key_1\": \"<string>\"\n  }\n}",
                                     "cookie": [],
                                     "_postman_previewlanguage": "json"
                                 },
                                 {
-                                    "id": "06a53d15-df42-4114-9a04-153674a8f243",
+                                    "id": "3158261e-b63f-4854-8b9a-721cad177805",
                                     "name": "Unauthorized",
                                     "originalRequest": {
                                         "url": {
@@ -136,7 +136,7 @@
                                     "_postman_previewlanguage": "json"
                                 },
                                 {
-                                    "id": "993b5275-bb1f-493b-8341-5e4dbf64525d",
+                                    "id": "25980eb9-a0d3-42cb-9b6d-1d6354b6f0f7",
                                     "name": "User not found",
                                     "originalRequest": {
                                         "url": {
@@ -192,7 +192,7 @@
                     "description": "",
                     "item": [
                         {
-                            "id": "5420eb5e-dacd-4ecf-85cf-88690a58f441",
+                            "id": "6d8306ab-3800-4ce9-9be5-a96b5399a5c0",
                             "name": "Update User",
                             "request": {
                                 "name": "Update User",
@@ -255,7 +255,7 @@
                             },
                             "response": [
                                 {
-                                    "id": "3a214420-ef0a-42cf-9ca6-9bd631b10f4b",
+                                    "id": "15d34102-ecfc-4548-a095-d88b456f75ea",
                                     "name": "Success",
                                     "originalRequest": {
                                         "url": {
@@ -318,12 +318,12 @@
                                             "value": "application/json"
                                         }
                                     ],
-                                    "body": "{\n  \"message\": \"<string>\",\n  \"data\": {\n    \"name\": \"<string>\",\n    \"email\": \"<string>\",\n    \"role\": \"U\",\n    \"status\": \"I\",\n    \"dob\": \"<dateTime>\",\n    \"phone_number\": \"<string>\",\n    \"address\": \"<string>\",\n    \"id\": \"<double>\",\n    \"created_at\": \"<dateTime>\",\n    \"updated_at\": \"<dateTime>\"\n  },\n  \"error\": {\n    \"key_0\": \"<string>\",\n    \"key_1\": \"<string>\",\n    \"key_2\": \"<string>\",\n    \"key_3\": \"<string>\"\n  }\n}",
+                                    "body": "{\n  \"message\": \"<string>\",\n  \"data\": {\n    \"name\": \"<string>\",\n    \"email\": \"<string>\",\n    \"role\": \"G\",\n    \"status\": \"A\",\n    \"dob\": \"<dateTime>\",\n    \"phone_number\": \"<string>\",\n    \"address\": \"<string>\",\n    \"id\": \"<double>\",\n    \"created_at\": \"<dateTime>\",\n    \"updated_at\": \"<dateTime>\"\n  },\n  \"error\": {\n    \"key_0\": \"<string>\",\n    \"key_1\": \"<string>\"\n  }\n}",
                                     "cookie": [],
                                     "_postman_previewlanguage": "json"
                                 },
                                 {
-                                    "id": "1b0b3c29-dfe4-4d3b-945c-bb8d7d7a1ba7",
+                                    "id": "4f518036-1c9e-484a-9cf0-76f3f0544fdd",
                                     "name": "Unauthorized",
                                     "originalRequest": {
                                         "url": {
@@ -391,7 +391,7 @@
                                     "_postman_previewlanguage": "json"
                                 },
                                 {
-                                    "id": "c251ac7d-f56f-4686-b72b-10a93f0d61cf",
+                                    "id": "a7e8078a-c187-48b1-8b33-f67a24b3cda3",
                                     "name": "User not found",
                                     "originalRequest": {
                                         "url": {
@@ -459,7 +459,7 @@
                                     "_postman_previewlanguage": "json"
                                 },
                                 {
-                                    "id": "2c82cc80-1de9-4426-b5cb-6f65f4bcf84f",
+                                    "id": "32e90042-5b9c-4494-9f78-8c8ee471d540",
                                     "name": "Validation failed",
                                     "originalRequest": {
                                         "url": {
@@ -545,7 +545,7 @@
                     "description": "",
                     "item": [
                         {
-                            "id": "ea3739e7-b81d-40fe-b428-9f0351ab6c6b",
+                            "id": "11bc3c3d-19ae-483c-ab5e-356b67b69525",
                             "name": "Get Shop",
                             "request": {
                                 "name": "Get Shop",
@@ -587,7 +587,7 @@
                             },
                             "response": [
                                 {
-                                    "id": "05f6ec48-6c98-48fa-8d5c-40a4a4547ba4",
+                                    "id": "be5075ff-3423-4f2f-a281-0126b6275881",
                                     "name": "Success",
                                     "originalRequest": {
                                         "url": {
@@ -629,12 +629,12 @@
                                             "value": "application/json"
                                         }
                                     ],
-                                    "body": "{\n  \"message\": \"<string>\",\n  \"data\": {\n    \"description\": \"<string>\",\n    \"status\": \"X\",\n    \"user_id\": \"<double>\",\n    \"name\": \"<string>\",\n    \"updated_at\": \"<dateTime>\",\n    \"created_at\": \"<dateTime>\",\n    \"id\": \"<double>\"\n  },\n  \"error\": {\n    \"key_0\": \"<string>\",\n    \"key_1\": \"<string>\",\n    \"key_2\": \"<string>\"\n  }\n}",
+                                    "body": "{\n  \"message\": \"<string>\",\n  \"data\": {\n    \"description\": \"<string>\",\n    \"status\": \"A\",\n    \"user_id\": \"<double>\",\n    \"name\": \"<string>\",\n    \"updated_at\": \"<dateTime>\",\n    \"created_at\": \"<dateTime>\",\n    \"id\": \"<double>\"\n  },\n  \"error\": {\n    \"key_0\": \"<string>\",\n    \"key_1\": \"<string>\"\n  }\n}",
                                     "cookie": [],
                                     "_postman_previewlanguage": "json"
                                 },
                                 {
-                                    "id": "3e292023-5ab8-4c8d-b145-1ff7e6bc28b4",
+                                    "id": "2fecab03-a6f4-4998-919f-c1a27092175a",
                                     "name": "Shop not found",
                                     "originalRequest": {
                                         "url": {
@@ -687,7 +687,7 @@
                             }
                         },
                         {
-                            "id": "f6154dfc-7116-4508-ac1f-7ba05f8e9b44",
+                            "id": "47bce3ae-31b1-41fa-8bc2-687f4c6d2f6b",
                             "name": "Update Shop",
                             "request": {
                                 "name": "Update Shop",
@@ -750,7 +750,7 @@
                             },
                             "response": [
                                 {
-                                    "id": "feac89d8-2258-4bf7-9f20-20db83858969",
+                                    "id": "73f4ffe1-8d90-4250-a051-127f29a2a5d5",
                                     "name": "Success",
                                     "originalRequest": {
                                         "url": {
@@ -813,12 +813,12 @@
                                             "value": "application/json"
                                         }
                                     ],
-                                    "body": "{\n  \"message\": \"<string>\",\n  \"data\": {\n    \"description\": \"<string>\",\n    \"status\": \"X\",\n    \"user_id\": \"<double>\",\n    \"name\": \"<string>\",\n    \"updated_at\": \"<dateTime>\",\n    \"created_at\": \"<dateTime>\",\n    \"id\": \"<double>\"\n  },\n  \"error\": {\n    \"key_0\": \"<string>\",\n    \"key_1\": \"<string>\",\n    \"key_2\": \"<string>\"\n  }\n}",
+                                    "body": "{\n  \"message\": \"<string>\",\n  \"data\": {\n    \"description\": \"<string>\",\n    \"status\": \"A\",\n    \"user_id\": \"<double>\",\n    \"name\": \"<string>\",\n    \"updated_at\": \"<dateTime>\",\n    \"created_at\": \"<dateTime>\",\n    \"id\": \"<double>\"\n  },\n  \"error\": {\n    \"key_0\": \"<string>\",\n    \"key_1\": \"<string>\"\n  }\n}",
                                     "cookie": [],
                                     "_postman_previewlanguage": "json"
                                 },
                                 {
-                                    "id": "bed6730f-9d31-474e-abfc-520bc440afd2",
+                                    "id": "ef1167c3-75a9-494d-9421-5fbe292eae71",
                                     "name": "Unauthorized",
                                     "originalRequest": {
                                         "url": {
@@ -886,7 +886,7 @@
                                     "_postman_previewlanguage": "json"
                                 },
                                 {
-                                    "id": "74e5f81f-fc15-426f-8c6b-6d6cada3e35f",
+                                    "id": "5a3f9fa6-9a13-4ce6-96e9-e9c99d302254",
                                     "name": "Forbidden",
                                     "originalRequest": {
                                         "url": {
@@ -954,7 +954,7 @@
                                     "_postman_previewlanguage": "json"
                                 },
                                 {
-                                    "id": "58b99e96-2a42-4c15-938b-4e3af64ab193",
+                                    "id": "bf73103a-1f32-46aa-9ad7-978d7e4dfa9c",
                                     "name": "Shop not found",
                                     "originalRequest": {
                                         "url": {
@@ -1022,7 +1022,7 @@
                                     "_postman_previewlanguage": "json"
                                 },
                                 {
-                                    "id": "67e28013-b844-4bbf-9a6e-a7418bf1839a",
+                                    "id": "383dc4f4-14d6-4a94-9f5c-07a5e5cc88a3",
                                     "name": "Validation failed",
                                     "originalRequest": {
                                         "url": {
@@ -1096,7 +1096,7 @@
                             }
                         },
                         {
-                            "id": "7f00f09b-1634-4b1c-a51f-3efa03a1ac7a",
+                            "id": "621f7faa-4f0a-4afd-9617-c4f2cce52bba",
                             "name": "Delete Shop",
                             "request": {
                                 "name": "Delete Shop",
@@ -1146,7 +1146,7 @@
                             },
                             "response": [
                                 {
-                                    "id": "381cdf7a-d95c-4d90-b396-ff8b4fa8d9a2",
+                                    "id": "f6cd79e7-1d36-4347-9cee-f6e733399ef6",
                                     "name": "Success",
                                     "originalRequest": {
                                         "url": {
@@ -1196,12 +1196,12 @@
                                             "value": "application/json"
                                         }
                                     ],
-                                    "body": "{\n  \"message\": \"<string>\",\n  \"data\": \"\",\n  \"error\": {\n    \"key_0\": \"<string>\",\n    \"key_1\": \"<string>\",\n    \"key_2\": \"<string>\"\n  }\n}",
+                                    "body": "{\n  \"message\": \"<string>\",\n  \"data\": \"\",\n  \"error\": {\n    \"key_0\": \"<string>\",\n    \"key_1\": \"<string>\"\n  }\n}",
                                     "cookie": [],
                                     "_postman_previewlanguage": "json"
                                 },
                                 {
-                                    "id": "e4007849-764e-4849-80ee-56597aba3777",
+                                    "id": "9d70ea3d-2661-45d2-89cb-adc8b7134449",
                                     "name": "Unauthorized",
                                     "originalRequest": {
                                         "url": {
@@ -1256,7 +1256,7 @@
                                     "_postman_previewlanguage": "json"
                                 },
                                 {
-                                    "id": "b6728606-273d-457f-8d95-5f88543fa563",
+                                    "id": "d6f1ddef-0087-44cc-9dc8-a367806ca1db",
                                     "name": "Forbidden",
                                     "originalRequest": {
                                         "url": {
@@ -1311,7 +1311,7 @@
                                     "_postman_previewlanguage": "json"
                                 },
                                 {
-                                    "id": "60b37c10-87e5-453a-97ad-156fb3f7b9a5",
+                                    "id": "3b48cf95-731b-41c1-b57e-e37b64cd533a",
                                     "name": "Shop not found",
                                     "originalRequest": {
                                         "url": {
@@ -1378,7 +1378,7 @@
                     "description": "",
                     "item": [
                         {
-                            "id": "f18969d4-262e-4659-9d39-52d2a3621834",
+                            "id": "af473155-68a7-403e-80cb-c28bb290c441",
                             "name": "Get My Shop",
                             "request": {
                                 "name": "Get My Shop",
@@ -1417,7 +1417,7 @@
                             },
                             "response": [
                                 {
-                                    "id": "3d56c45f-5cab-446d-8b7c-792b05b634fc",
+                                    "id": "61e0a937-4194-4817-ae6f-841cfd02b896",
                                     "name": "Success",
                                     "originalRequest": {
                                         "url": {
@@ -1456,12 +1456,12 @@
                                             "value": "application/json"
                                         }
                                     ],
-                                    "body": "{\n  \"message\": \"<string>\",\n  \"data\": [\n    {\n      \"description\": \"<string>\",\n      \"status\": \"I\",\n      \"user_id\": \"<double>\",\n      \"name\": \"<string>\",\n      \"updated_at\": \"<dateTime>\",\n      \"created_at\": \"<dateTime>\",\n      \"id\": \"<double>\"\n    },\n    {\n      \"description\": \"<string>\",\n      \"status\": \"A\",\n      \"user_id\": \"<double>\",\n      \"name\": \"<string>\",\n      \"updated_at\": \"<dateTime>\",\n      \"created_at\": \"<dateTime>\",\n      \"id\": \"<double>\"\n    }\n  ],\n  \"error\": {\n    \"key_0\": \"<string>\",\n    \"key_1\": \"<string>\"\n  }\n}",
+                                    "body": "{\n  \"message\": \"<string>\",\n  \"data\": [\n    {\n      \"description\": \"<string>\",\n      \"status\": \"C\",\n      \"user_id\": \"<double>\",\n      \"name\": \"<string>\",\n      \"updated_at\": \"<dateTime>\",\n      \"created_at\": \"<dateTime>\",\n      \"id\": \"<double>\"\n    },\n    {\n      \"description\": \"<string>\",\n      \"status\": \"I\",\n      \"user_id\": \"<double>\",\n      \"name\": \"<string>\",\n      \"updated_at\": \"<dateTime>\",\n      \"created_at\": \"<dateTime>\",\n      \"id\": \"<double>\"\n    }\n  ],\n  \"error\": {\n    \"key_0\": \"<string>\",\n    \"key_1\": \"<string>\",\n    \"key_2\": \"<string>\"\n  }\n}",
                                     "cookie": [],
                                     "_postman_previewlanguage": "json"
                                 },
                                 {
-                                    "id": "3ebdd611-c7db-41f1-a01f-01472adc11c4",
+                                    "id": "56d48537-6a42-46ac-ba07-810fb8bd03e5",
                                     "name": "Unauthorized",
                                     "originalRequest": {
                                         "url": {
@@ -1513,7 +1513,7 @@
                     ]
                 },
                 {
-                    "id": "872a1ed5-fa85-4cf3-8583-fbcce9bc59f1",
+                    "id": "1c45ce26-c0f2-429a-8522-0d6c8d881ea6",
                     "name": "Create Shop",
                     "request": {
                         "name": "Create Shop",
@@ -1564,7 +1564,7 @@
                     },
                     "response": [
                         {
-                            "id": "85c90880-9416-419d-b0fa-825c18307ab8",
+                            "id": "ac6a5f05-3c85-4ba1-bece-14e7007f4eb6",
                             "name": "Created",
                             "originalRequest": {
                                 "url": {
@@ -1615,12 +1615,12 @@
                                     "value": "application/json"
                                 }
                             ],
-                            "body": "{\n  \"message\": \"<string>\",\n  \"data\": {\n    \"description\": \"<string>\",\n    \"status\": \"X\",\n    \"user_id\": \"<double>\",\n    \"name\": \"<string>\",\n    \"updated_at\": \"<dateTime>\",\n    \"created_at\": \"<dateTime>\",\n    \"id\": \"<double>\"\n  },\n  \"error\": {\n    \"key_0\": \"<string>\",\n    \"key_1\": \"<string>\",\n    \"key_2\": \"<string>\"\n  }\n}",
+                            "body": "{\n  \"message\": \"<string>\",\n  \"data\": {\n    \"description\": \"<string>\",\n    \"status\": \"A\",\n    \"user_id\": \"<double>\",\n    \"name\": \"<string>\",\n    \"updated_at\": \"<dateTime>\",\n    \"created_at\": \"<dateTime>\",\n    \"id\": \"<double>\"\n  },\n  \"error\": {\n    \"key_0\": \"<string>\",\n    \"key_1\": \"<string>\"\n  }\n}",
                             "cookie": [],
                             "_postman_previewlanguage": "json"
                         },
                         {
-                            "id": "4d2153eb-9db8-4df1-a181-642738495170",
+                            "id": "709a113b-b9b1-4b40-9683-49f690371c45",
                             "name": "Unauthorized",
                             "originalRequest": {
                                 "url": {
@@ -1676,7 +1676,7 @@
                             "_postman_previewlanguage": "json"
                         },
                         {
-                            "id": "08f1e808-1608-48b7-8947-1f83db0c2bca",
+                            "id": "2c29ca04-3653-48f4-ab53-e6c28cf14ce9",
                             "name": "Validation failed",
                             "originalRequest": {
                                 "url": {
@@ -1744,7 +1744,7 @@
             "description": "",
             "item": [
                 {
-                    "id": "888aa76c-eb2c-4d10-b729-323f950a8229",
+                    "id": "66f85416-8e20-456f-b0cd-e69159f63485",
                     "name": "Get All Roles",
                     "request": {
                         "name": "Get All Roles",
@@ -1782,7 +1782,7 @@
                     },
                     "response": [
                         {
-                            "id": "627f2df5-ff74-4ef3-892b-8866b9f7b5b5",
+                            "id": "dfdce9de-e1c3-47de-a7c1-9c3abd5cdb01",
                             "name": "Success",
                             "originalRequest": {
                                 "url": {
@@ -1820,12 +1820,12 @@
                                     "value": "application/json"
                                 }
                             ],
-                            "body": "{\n  \"message\": \"<string>\",\n  \"data\": [\n    {\n      \"description\": \"<string>\",\n      \"name\": \"<string>\",\n      \"code\": \"A\",\n      \"updated_at\": \"<dateTime>\",\n      \"created_at\": \"<dateTime>\",\n      \"id\": \"<double>\"\n    },\n    {\n      \"description\": \"<string>\",\n      \"name\": \"<string>\",\n      \"code\": \"G\",\n      \"updated_at\": \"<dateTime>\",\n      \"created_at\": \"<dateTime>\",\n      \"id\": \"<double>\"\n    }\n  ],\n  \"error\": {\n    \"key_0\": \"<string>\",\n    \"key_1\": \"<string>\"\n  }\n}",
+                            "body": "{\n  \"message\": \"<string>\",\n  \"data\": [\n    {\n      \"description\": \"<string>\",\n      \"name\": \"<string>\",\n      \"code\": \"U\",\n      \"updated_at\": \"<dateTime>\",\n      \"created_at\": \"<dateTime>\",\n      \"id\": \"<double>\"\n    },\n    {\n      \"description\": \"<string>\",\n      \"name\": \"<string>\",\n      \"code\": \"U\",\n      \"updated_at\": \"<dateTime>\",\n      \"created_at\": \"<dateTime>\",\n      \"id\": \"<double>\"\n    }\n  ],\n  \"error\": {\n    \"key_0\": \"<string>\",\n    \"key_1\": \"<string>\"\n  }\n}",
                             "cookie": [],
                             "_postman_previewlanguage": "json"
                         },
                         {
-                            "id": "81b02b1f-493f-4985-8890-e024a8f09eb8",
+                            "id": "51cc3ddd-8daa-40c9-9e29-9cbb6f9c1b51",
                             "name": "Unauthorized",
                             "originalRequest": {
                                 "url": {
@@ -1874,7 +1874,7 @@
                     }
                 },
                 {
-                    "id": "8a28f971-98ca-4a10-a9ce-0fb007762d00",
+                    "id": "a1690471-2cec-42d5-9ebd-e69f7ae78e20",
                     "name": "Create Role",
                     "request": {
                         "name": "Create Role",
@@ -1925,7 +1925,7 @@
                     },
                     "response": [
                         {
-                            "id": "422db823-bea4-4f1f-a71c-e0d00f4281ca",
+                            "id": "0dc40b00-b48d-42e8-a93c-51bf377ba4b5",
                             "name": "Created",
                             "originalRequest": {
                                 "url": {
@@ -1976,12 +1976,12 @@
                                     "value": "application/json"
                                 }
                             ],
-                            "body": "{\n  \"message\": \"<string>\",\n  \"data\": {\n    \"description\": \"<string>\",\n    \"name\": \"<string>\",\n    \"code\": \"G\",\n    \"updated_at\": \"<dateTime>\",\n    \"created_at\": \"<dateTime>\",\n    \"id\": \"<double>\"\n  },\n  \"error\": {\n    \"key_0\": \"<string>\"\n  }\n}",
+                            "body": "{\n  \"message\": \"<string>\",\n  \"data\": {\n    \"description\": \"<string>\",\n    \"name\": \"<string>\",\n    \"code\": \"U\",\n    \"updated_at\": \"<dateTime>\",\n    \"created_at\": \"<dateTime>\",\n    \"id\": \"<double>\"\n  },\n  \"error\": {\n    \"key_0\": \"<string>\",\n    \"key_1\": \"<string>\"\n  }\n}",
                             "cookie": [],
                             "_postman_previewlanguage": "json"
                         },
                         {
-                            "id": "72aee2ed-653a-4a82-9650-af7f88c81daf",
+                            "id": "e8da5d57-e805-42b4-9c12-36373e3e845f",
                             "name": "Unauthorized",
                             "originalRequest": {
                                 "url": {
@@ -2037,7 +2037,7 @@
                             "_postman_previewlanguage": "json"
                         },
                         {
-                            "id": "81e03f5c-22ab-45e2-abb9-99a395e260d0",
+                            "id": "fa27678b-624d-412d-98eb-8872b6610b56",
                             "name": "Role with this name already exists",
                             "originalRequest": {
                                 "url": {
@@ -2093,7 +2093,7 @@
                             "_postman_previewlanguage": "json"
                         },
                         {
-                            "id": "0aac134d-6943-4966-a2c6-f66c58424961",
+                            "id": "c68a838d-d7d9-4c04-bf22-77073ba84e31",
                             "name": "Validation failed",
                             "originalRequest": {
                                 "url": {
@@ -2159,7 +2159,7 @@
                     "description": "",
                     "item": [
                         {
-                            "id": "88e779d2-ef2f-4b07-92f8-2e0c039c4480",
+                            "id": "133558d0-06d9-461e-909d-1d9c83effa03",
                             "name": "Get Role",
                             "request": {
                                 "name": "Get Role",
@@ -2209,7 +2209,7 @@
                             },
                             "response": [
                                 {
-                                    "id": "72172caf-deba-4cb3-80c0-d1d18912c8ff",
+                                    "id": "7fa049b2-f0f6-4cd2-8d05-c47372781424",
                                     "name": "Success",
                                     "originalRequest": {
                                         "url": {
@@ -2259,12 +2259,12 @@
                                             "value": "application/json"
                                         }
                                     ],
-                                    "body": "{\n  \"message\": \"<string>\",\n  \"data\": {\n    \"description\": \"<string>\",\n    \"name\": \"<string>\",\n    \"code\": \"G\",\n    \"updated_at\": \"<dateTime>\",\n    \"created_at\": \"<dateTime>\",\n    \"id\": \"<double>\"\n  },\n  \"error\": {\n    \"key_0\": \"<string>\"\n  }\n}",
+                                    "body": "{\n  \"message\": \"<string>\",\n  \"data\": {\n    \"description\": \"<string>\",\n    \"name\": \"<string>\",\n    \"code\": \"U\",\n    \"updated_at\": \"<dateTime>\",\n    \"created_at\": \"<dateTime>\",\n    \"id\": \"<double>\"\n  },\n  \"error\": {\n    \"key_0\": \"<string>\",\n    \"key_1\": \"<string>\"\n  }\n}",
                                     "cookie": [],
                                     "_postman_previewlanguage": "json"
                                 },
                                 {
-                                    "id": "a1f47d2e-5d0b-4355-a960-a54c27614721",
+                                    "id": "099498f7-2125-47cb-bf49-1b67d349d294",
                                     "name": "Unauthorized",
                                     "originalRequest": {
                                         "url": {
@@ -2319,7 +2319,7 @@
                                     "_postman_previewlanguage": "json"
                                 },
                                 {
-                                    "id": "c73caa89-c9db-43d3-b997-d60bab35d62f",
+                                    "id": "930a80e1-ca87-4570-bf8f-a323e7c86a89",
                                     "name": "Role not found",
                                     "originalRequest": {
                                         "url": {
@@ -2380,7 +2380,7 @@
                             }
                         },
                         {
-                            "id": "aecddd38-0120-462e-a6b5-20656dcf6cb9",
+                            "id": "f79aeb24-4d50-49b7-8b01-8b33143a2210",
                             "name": "Update Role",
                             "request": {
                                 "name": "Update Role",
@@ -2443,7 +2443,7 @@
                             },
                             "response": [
                                 {
-                                    "id": "8b7edfa4-9ae1-461b-9fe4-f48e97300646",
+                                    "id": "c90dea77-28d3-4fea-b632-7442a230ace1",
                                     "name": "Success",
                                     "originalRequest": {
                                         "url": {
@@ -2506,12 +2506,12 @@
                                             "value": "application/json"
                                         }
                                     ],
-                                    "body": "{\n  \"message\": \"<string>\",\n  \"data\": {\n    \"description\": \"<string>\",\n    \"name\": \"<string>\",\n    \"code\": \"G\",\n    \"updated_at\": \"<dateTime>\",\n    \"created_at\": \"<dateTime>\",\n    \"id\": \"<double>\"\n  },\n  \"error\": {\n    \"key_0\": \"<string>\"\n  }\n}",
+                                    "body": "{\n  \"message\": \"<string>\",\n  \"data\": {\n    \"description\": \"<string>\",\n    \"name\": \"<string>\",\n    \"code\": \"U\",\n    \"updated_at\": \"<dateTime>\",\n    \"created_at\": \"<dateTime>\",\n    \"id\": \"<double>\"\n  },\n  \"error\": {\n    \"key_0\": \"<string>\",\n    \"key_1\": \"<string>\"\n  }\n}",
                                     "cookie": [],
                                     "_postman_previewlanguage": "json"
                                 },
                                 {
-                                    "id": "302611f2-88ba-455c-bd09-a7576df2f241",
+                                    "id": "22b9c6ef-9319-44d9-9643-246573ee7d97",
                                     "name": "Unauthorized",
                                     "originalRequest": {
                                         "url": {
@@ -2579,7 +2579,7 @@
                                     "_postman_previewlanguage": "json"
                                 },
                                 {
-                                    "id": "fc56bc70-330c-45a5-bc07-56a4f2ab4bf2",
+                                    "id": "a0b7000c-2b65-455b-adc2-559085c51a06",
                                     "name": "Role not found",
                                     "originalRequest": {
                                         "url": {
@@ -2647,7 +2647,7 @@
                                     "_postman_previewlanguage": "json"
                                 },
                                 {
-                                    "id": "6988be28-30bc-4145-979b-b8297b337879",
+                                    "id": "638db30e-f7ce-4f37-96ab-b61d9bd8689d",
                                     "name": "Validation failed",
                                     "originalRequest": {
                                         "url": {
@@ -2733,7 +2733,7 @@
                     "description": "",
                     "item": [
                         {
-                            "id": "7b07078a-b432-4ca9-b780-b4a91c71f899",
+                            "id": "a041fbf4-5009-4c98-8749-a4e8467b2a5a",
                             "name": "Get Top Selling Products",
                             "request": {
                                 "name": "Get Top Selling Products",
@@ -2774,7 +2774,7 @@
                             },
                             "response": [
                                 {
-                                    "id": "c04b942d-2c43-4d84-9ed1-e824ced87944",
+                                    "id": "d7e3a741-c386-41df-bea4-36600b62f807",
                                     "name": "Success",
                                     "originalRequest": {
                                         "url": {
@@ -2815,7 +2815,7 @@
                                             "value": "application/json"
                                         }
                                     ],
-                                    "body": "{\n  \"message\": \"<string>\",\n  \"data\": [\n    {\n      \"category\": \"<string>\",\n      \"name\": \"<string>\",\n      \"price\": \"<double>\",\n      \"shop_id\": \"<double>\",\n      \"sku\": \"<string>\",\n      \"status\": \"P\",\n      \"stock\": \"<double>\",\n      \"total_sales\": \"<double>\",\n      \"updated_at\": \"<dateTime>\",\n      \"created_at\": \"<dateTime>\",\n      \"id\": \"<double>\",\n      \"metadata\": \"<string>\",\n      \"description\": \"<string>\"\n    },\n    {\n      \"category\": \"<string>\",\n      \"name\": \"<string>\",\n      \"price\": \"<double>\",\n      \"shop_id\": \"<double>\",\n      \"sku\": \"<string>\",\n      \"status\": \"X\",\n      \"stock\": \"<double>\",\n      \"total_sales\": \"<double>\",\n      \"updated_at\": \"<dateTime>\",\n      \"created_at\": \"<dateTime>\",\n      \"id\": \"<double>\",\n      \"metadata\": \"<string>\",\n      \"description\": \"<string>\"\n    }\n  ],\n  \"error\": {\n    \"key_0\": \"<string>\"\n  }\n}",
+                                    "body": "{\n  \"message\": \"<string>\",\n  \"data\": [\n    {\n      \"category\": \"<string>\",\n      \"name\": \"<string>\",\n      \"price\": \"<double>\",\n      \"shop_id\": \"<double>\",\n      \"sku\": \"<string>\",\n      \"status\": \"A\",\n      \"stock\": \"<double>\",\n      \"total_sales\": \"<double>\",\n      \"updated_at\": \"<dateTime>\",\n      \"created_at\": \"<dateTime>\",\n      \"id\": \"<double>\",\n      \"metadata\": \"<string>\",\n      \"description\": \"<string>\"\n    },\n    {\n      \"category\": \"<string>\",\n      \"name\": \"<string>\",\n      \"price\": \"<double>\",\n      \"shop_id\": \"<double>\",\n      \"sku\": \"<string>\",\n      \"status\": \"O\",\n      \"stock\": \"<double>\",\n      \"total_sales\": \"<double>\",\n      \"updated_at\": \"<dateTime>\",\n      \"created_at\": \"<dateTime>\",\n      \"id\": \"<double>\",\n      \"metadata\": \"<string>\",\n      \"description\": \"<string>\"\n    }\n  ],\n  \"error\": {\n    \"key_0\": \"<string>\",\n    \"key_1\": \"<string>\"\n  }\n}",
                                     "cookie": [],
                                     "_postman_previewlanguage": "json"
                                 }
@@ -2834,7 +2834,7 @@
             "description": "",
             "item": [
                 {
-                    "id": "6e552fff-d194-44fe-a999-003d81bf7b3d",
+                    "id": "85a545c4-ebd5-4bbe-ad09-b1a31573f5d3",
                     "name": "Search Products",
                     "request": {
                         "name": "Search Products",
@@ -2910,7 +2910,7 @@
                     },
                     "response": [
                         {
-                            "id": "7f7b4c02-bb3c-4845-8e14-9033eb1ed043",
+                            "id": "f088cd84-8a58-4660-ad6e-8f351ec51008",
                             "name": "Success",
                             "originalRequest": {
                                 "url": {
@@ -2986,12 +2986,12 @@
                                     "value": "application/json"
                                 }
                             ],
-                            "body": "{\n  \"message\": \"<string>\",\n  \"data\": {\n    \"total\": \"<double>\",\n    \"items\": [\n      {\n        \"status\": \"O\",\n        \"stock\": \"<double>\",\n        \"price\": \"<double>\",\n        \"category\": \"<string>\",\n        \"sku\": \"<string>\",\n        \"name\": \"<string>\",\n        \"shop_id\": \"<double>\",\n        \"updated_at\": \"<dateTime>\",\n        \"created_at\": \"<dateTime>\",\n        \"id\": \"<double>\",\n        \"metadata\": \"<string>\",\n        \"description\": \"<string>\"\n      },\n      {\n        \"status\": \"A\",\n        \"stock\": \"<double>\",\n        \"price\": \"<double>\",\n        \"category\": \"<string>\",\n        \"sku\": \"<string>\",\n        \"name\": \"<string>\",\n        \"shop_id\": \"<double>\",\n        \"updated_at\": \"<dateTime>\",\n        \"created_at\": \"<dateTime>\",\n        \"id\": \"<double>\",\n        \"metadata\": \"<string>\",\n        \"description\": \"<string>\"\n      }\n    ]\n  },\n  \"error\": {\n    \"key_0\": \"<string>\",\n    \"key_1\": \"<string>\",\n    \"key_2\": \"<string>\"\n  }\n}",
+                            "body": "{\n  \"message\": \"<string>\",\n  \"data\": {\n    \"total\": \"<double>\",\n    \"items\": [\n      {\n        \"status\": \"O\",\n        \"stock\": \"<double>\",\n        \"price\": \"<double>\",\n        \"category\": \"<string>\",\n        \"sku\": \"<string>\",\n        \"name\": \"<string>\",\n        \"shop_id\": \"<double>\",\n        \"updated_at\": \"<dateTime>\",\n        \"created_at\": \"<dateTime>\",\n        \"id\": \"<double>\",\n        \"metadata\": \"<string>\",\n        \"description\": \"<string>\"\n      },\n      {\n        \"status\": \"X\",\n        \"stock\": \"<double>\",\n        \"price\": \"<double>\",\n        \"category\": \"<string>\",\n        \"sku\": \"<string>\",\n        \"name\": \"<string>\",\n        \"shop_id\": \"<double>\",\n        \"updated_at\": \"<dateTime>\",\n        \"created_at\": \"<dateTime>\",\n        \"id\": \"<double>\",\n        \"metadata\": \"<string>\",\n        \"description\": \"<string>\"\n      }\n    ]\n  },\n  \"error\": {\n    \"key_0\": \"<string>\"\n  }\n}",
                             "cookie": [],
                             "_postman_previewlanguage": "json"
                         },
                         {
-                            "id": "30b591c9-bfe8-4267-9716-d4c4a1c5bc76",
+                            "id": "a92a7286-1db8-48bf-824c-88788c33f85b",
                             "name": "Validation failed",
                             "originalRequest": {
                                 "url": {
@@ -3078,7 +3078,7 @@
                     }
                 },
                 {
-                    "id": "7a95156d-9428-443f-969f-513e659eee7c",
+                    "id": "4b823d0e-7eda-4917-b17f-98437121cf30",
                     "name": "Create Product",
                     "request": {
                         "name": "Create Product",
@@ -3109,7 +3109,7 @@
                         "method": "POST",
                         "body": {
                             "mode": "raw",
-                            "raw": "{\n  \"shop_id\": \"<double>\",\n  \"status\": \"A\",\n  \"stock\": \"<double>\",\n  \"price\": \"<double>\",\n  \"category\": \"<string>\",\n  \"sku\": \"<string>\",\n  \"name\": \"<string>\",\n  \"metadata\": \"<string>\",\n  \"description\": \"<string>\"\n}",
+                            "raw": "{\n  \"shop_id\": \"<double>\",\n  \"status\": \"X\",\n  \"stock\": \"<double>\",\n  \"price\": \"<double>\",\n  \"category\": \"<string>\",\n  \"sku\": \"<string>\",\n  \"name\": \"<string>\",\n  \"metadata\": \"<string>\",\n  \"description\": \"<string>\"\n}",
                             "options": {
                                 "raw": {
                                     "headerFamily": "json",
@@ -3129,7 +3129,7 @@
                     },
                     "response": [
                         {
-                            "id": "ed685171-a58a-4a0f-9187-ab102a9e97d2",
+                            "id": "d26702d4-4991-4f33-8faf-d2d193560964",
                             "name": "Created",
                             "originalRequest": {
                                 "url": {
@@ -3163,7 +3163,7 @@
                                 "method": "POST",
                                 "body": {
                                     "mode": "raw",
-                                    "raw": "{\n  \"shop_id\": \"<double>\",\n  \"status\": \"A\",\n  \"stock\": \"<double>\",\n  \"price\": \"<double>\",\n  \"category\": \"<string>\",\n  \"sku\": \"<string>\",\n  \"name\": \"<string>\",\n  \"metadata\": \"<string>\",\n  \"description\": \"<string>\"\n}",
+                                    "raw": "{\n  \"shop_id\": \"<double>\",\n  \"status\": \"X\",\n  \"stock\": \"<double>\",\n  \"price\": \"<double>\",\n  \"category\": \"<string>\",\n  \"sku\": \"<string>\",\n  \"name\": \"<string>\",\n  \"metadata\": \"<string>\",\n  \"description\": \"<string>\"\n}",
                                     "options": {
                                         "raw": {
                                             "headerFamily": "json",
@@ -3180,12 +3180,12 @@
                                     "value": "application/json"
                                 }
                             ],
-                            "body": "{\n  \"message\": \"<string>\",\n  \"data\": {\n    \"status\": \"A\",\n    \"stock\": \"<double>\",\n    \"price\": \"<double>\",\n    \"category\": \"<string>\",\n    \"sku\": \"<string>\",\n    \"name\": \"<string>\",\n    \"shop_id\": \"<double>\",\n    \"updated_at\": \"<dateTime>\",\n    \"created_at\": \"<dateTime>\",\n    \"id\": \"<double>\",\n    \"metadata\": \"<string>\",\n    \"description\": \"<string>\"\n  },\n  \"error\": {\n    \"key_0\": \"<string>\",\n    \"key_1\": \"<string>\",\n    \"key_2\": \"<string>\"\n  }\n}",
+                            "body": "{\n  \"message\": \"<string>\",\n  \"data\": {\n    \"status\": \"P\",\n    \"stock\": \"<double>\",\n    \"price\": \"<double>\",\n    \"category\": \"<string>\",\n    \"sku\": \"<string>\",\n    \"name\": \"<string>\",\n    \"shop_id\": \"<double>\",\n    \"updated_at\": \"<dateTime>\",\n    \"created_at\": \"<dateTime>\",\n    \"id\": \"<double>\",\n    \"metadata\": \"<string>\",\n    \"description\": \"<string>\"\n  },\n  \"error\": {\n    \"key_0\": \"<string>\",\n    \"key_1\": \"<string>\"\n  }\n}",
                             "cookie": [],
                             "_postman_previewlanguage": "json"
                         },
                         {
-                            "id": "7fbced06-e432-42ac-af76-56843710010c",
+                            "id": "e0e8c29d-ada2-40c2-8269-b4c6389a4422",
                             "name": "Unauthorized",
                             "originalRequest": {
                                 "url": {
@@ -3219,7 +3219,7 @@
                                 "method": "POST",
                                 "body": {
                                     "mode": "raw",
-                                    "raw": "{\n  \"shop_id\": \"<double>\",\n  \"status\": \"A\",\n  \"stock\": \"<double>\",\n  \"price\": \"<double>\",\n  \"category\": \"<string>\",\n  \"sku\": \"<string>\",\n  \"name\": \"<string>\",\n  \"metadata\": \"<string>\",\n  \"description\": \"<string>\"\n}",
+                                    "raw": "{\n  \"shop_id\": \"<double>\",\n  \"status\": \"X\",\n  \"stock\": \"<double>\",\n  \"price\": \"<double>\",\n  \"category\": \"<string>\",\n  \"sku\": \"<string>\",\n  \"name\": \"<string>\",\n  \"metadata\": \"<string>\",\n  \"description\": \"<string>\"\n}",
                                     "options": {
                                         "raw": {
                                             "headerFamily": "json",
@@ -3241,7 +3241,7 @@
                             "_postman_previewlanguage": "json"
                         },
                         {
-                            "id": "8904c1e9-ba45-4636-9349-b6de7d0e5c4b",
+                            "id": "cc9bb095-1d1a-4f6e-b298-c47b685c8498",
                             "name": "Validation failed",
                             "originalRequest": {
                                 "url": {
@@ -3275,7 +3275,7 @@
                                 "method": "POST",
                                 "body": {
                                     "mode": "raw",
-                                    "raw": "{\n  \"shop_id\": \"<double>\",\n  \"status\": \"A\",\n  \"stock\": \"<double>\",\n  \"price\": \"<double>\",\n  \"category\": \"<string>\",\n  \"sku\": \"<string>\",\n  \"name\": \"<string>\",\n  \"metadata\": \"<string>\",\n  \"description\": \"<string>\"\n}",
+                                    "raw": "{\n  \"shop_id\": \"<double>\",\n  \"status\": \"X\",\n  \"stock\": \"<double>\",\n  \"price\": \"<double>\",\n  \"category\": \"<string>\",\n  \"sku\": \"<string>\",\n  \"name\": \"<string>\",\n  \"metadata\": \"<string>\",\n  \"description\": \"<string>\"\n}",
                                     "options": {
                                         "raw": {
                                             "headerFamily": "json",
@@ -3307,7 +3307,7 @@
                     "description": "",
                     "item": [
                         {
-                            "id": "0322d6a0-d6ec-44bd-8980-83dc566c511c",
+                            "id": "6ae8a6ab-7bba-443e-b2e3-a62535386c81",
                             "name": "Get Product",
                             "request": {
                                 "name": "Get Product",
@@ -3349,7 +3349,7 @@
                             },
                             "response": [
                                 {
-                                    "id": "c8b77b36-4a56-4634-8d7b-79a66bf43256",
+                                    "id": "b98ad120-a180-4294-8497-e1324d6db4bf",
                                     "name": "Success",
                                     "originalRequest": {
                                         "url": {
@@ -3391,12 +3391,12 @@
                                             "value": "application/json"
                                         }
                                     ],
-                                    "body": "{\n  \"message\": \"<string>\",\n  \"data\": {\n    \"status\": \"A\",\n    \"stock\": \"<double>\",\n    \"price\": \"<double>\",\n    \"category\": \"<string>\",\n    \"sku\": \"<string>\",\n    \"name\": \"<string>\",\n    \"shop_id\": \"<double>\",\n    \"updated_at\": \"<dateTime>\",\n    \"created_at\": \"<dateTime>\",\n    \"id\": \"<double>\",\n    \"metadata\": \"<string>\",\n    \"description\": \"<string>\"\n  },\n  \"error\": {\n    \"key_0\": \"<string>\",\n    \"key_1\": \"<string>\",\n    \"key_2\": \"<string>\"\n  }\n}",
+                                    "body": "{\n  \"message\": \"<string>\",\n  \"data\": {\n    \"status\": \"P\",\n    \"stock\": \"<double>\",\n    \"price\": \"<double>\",\n    \"category\": \"<string>\",\n    \"sku\": \"<string>\",\n    \"name\": \"<string>\",\n    \"shop_id\": \"<double>\",\n    \"updated_at\": \"<dateTime>\",\n    \"created_at\": \"<dateTime>\",\n    \"id\": \"<double>\",\n    \"metadata\": \"<string>\",\n    \"description\": \"<string>\"\n  },\n  \"error\": {\n    \"key_0\": \"<string>\",\n    \"key_1\": \"<string>\"\n  }\n}",
                                     "cookie": [],
                                     "_postman_previewlanguage": "json"
                                 },
                                 {
-                                    "id": "9139106a-ad70-46fc-9346-7cbb9f5b5ee8",
+                                    "id": "ee05c0f4-969d-48f9-bad1-ac5c13af8d9d",
                                     "name": "Product not found",
                                     "originalRequest": {
                                         "url": {
@@ -3449,7 +3449,7 @@
                             }
                         },
                         {
-                            "id": "00f8c0a7-9397-4f20-839a-231bc59e0860",
+                            "id": "8401a8a4-f4a0-4750-8eb3-6c785a64d8bd",
                             "name": "Update Product",
                             "request": {
                                 "name": "Update Product",
@@ -3492,7 +3492,7 @@
                                 "method": "PUT",
                                 "body": {
                                     "mode": "raw",
-                                    "raw": "{\n  \"metadata\": \"<string>\",\n  \"status\": \"O\",\n  \"stock\": \"<double>\",\n  \"price\": \"<double>\",\n  \"description\": \"<string>\",\n  \"category\": \"<string>\",\n  \"sku\": \"<string>\",\n  \"name\": \"<string>\"\n}",
+                                    "raw": "{\n  \"metadata\": \"<string>\",\n  \"status\": \"P\",\n  \"stock\": \"<double>\",\n  \"price\": \"<double>\",\n  \"description\": \"<string>\",\n  \"category\": \"<string>\",\n  \"sku\": \"<string>\",\n  \"name\": \"<string>\"\n}",
                                     "options": {
                                         "raw": {
                                             "headerFamily": "json",
@@ -3512,7 +3512,7 @@
                             },
                             "response": [
                                 {
-                                    "id": "8e3143fe-914f-4c43-b045-74e239d5a415",
+                                    "id": "8a18e8ad-95a0-4145-b0aa-6063b1ca0ae7",
                                     "name": "Success",
                                     "originalRequest": {
                                         "url": {
@@ -3558,7 +3558,7 @@
                                         "method": "PUT",
                                         "body": {
                                             "mode": "raw",
-                                            "raw": "{\n  \"metadata\": \"<string>\",\n  \"status\": \"O\",\n  \"stock\": \"<double>\",\n  \"price\": \"<double>\",\n  \"description\": \"<string>\",\n  \"category\": \"<string>\",\n  \"sku\": \"<string>\",\n  \"name\": \"<string>\"\n}",
+                                            "raw": "{\n  \"metadata\": \"<string>\",\n  \"status\": \"P\",\n  \"stock\": \"<double>\",\n  \"price\": \"<double>\",\n  \"description\": \"<string>\",\n  \"category\": \"<string>\",\n  \"sku\": \"<string>\",\n  \"name\": \"<string>\"\n}",
                                             "options": {
                                                 "raw": {
                                                     "headerFamily": "json",
@@ -3575,12 +3575,12 @@
                                             "value": "application/json"
                                         }
                                     ],
-                                    "body": "{\n  \"message\": \"<string>\",\n  \"data\": {\n    \"status\": \"A\",\n    \"stock\": \"<double>\",\n    \"price\": \"<double>\",\n    \"category\": \"<string>\",\n    \"sku\": \"<string>\",\n    \"name\": \"<string>\",\n    \"shop_id\": \"<double>\",\n    \"updated_at\": \"<dateTime>\",\n    \"created_at\": \"<dateTime>\",\n    \"id\": \"<double>\",\n    \"metadata\": \"<string>\",\n    \"description\": \"<string>\"\n  },\n  \"error\": {\n    \"key_0\": \"<string>\",\n    \"key_1\": \"<string>\",\n    \"key_2\": \"<string>\"\n  }\n}",
+                                    "body": "{\n  \"message\": \"<string>\",\n  \"data\": {\n    \"status\": \"P\",\n    \"stock\": \"<double>\",\n    \"price\": \"<double>\",\n    \"category\": \"<string>\",\n    \"sku\": \"<string>\",\n    \"name\": \"<string>\",\n    \"shop_id\": \"<double>\",\n    \"updated_at\": \"<dateTime>\",\n    \"created_at\": \"<dateTime>\",\n    \"id\": \"<double>\",\n    \"metadata\": \"<string>\",\n    \"description\": \"<string>\"\n  },\n  \"error\": {\n    \"key_0\": \"<string>\",\n    \"key_1\": \"<string>\"\n  }\n}",
                                     "cookie": [],
                                     "_postman_previewlanguage": "json"
                                 },
                                 {
-                                    "id": "f8a9d05b-2e39-4e7a-a1e2-3673401b9ed8",
+                                    "id": "d5ebfeec-3059-413b-96b0-96e41dd87ab6",
                                     "name": "Unauthorized",
                                     "originalRequest": {
                                         "url": {
@@ -3626,7 +3626,7 @@
                                         "method": "PUT",
                                         "body": {
                                             "mode": "raw",
-                                            "raw": "{\n  \"metadata\": \"<string>\",\n  \"status\": \"O\",\n  \"stock\": \"<double>\",\n  \"price\": \"<double>\",\n  \"description\": \"<string>\",\n  \"category\": \"<string>\",\n  \"sku\": \"<string>\",\n  \"name\": \"<string>\"\n}",
+                                            "raw": "{\n  \"metadata\": \"<string>\",\n  \"status\": \"P\",\n  \"stock\": \"<double>\",\n  \"price\": \"<double>\",\n  \"description\": \"<string>\",\n  \"category\": \"<string>\",\n  \"sku\": \"<string>\",\n  \"name\": \"<string>\"\n}",
                                             "options": {
                                                 "raw": {
                                                     "headerFamily": "json",
@@ -3648,7 +3648,7 @@
                                     "_postman_previewlanguage": "json"
                                 },
                                 {
-                                    "id": "306cbc3f-61d3-4483-8782-0744b60f70f6",
+                                    "id": "9ec357f2-46b9-4d94-a739-4a72e857a31b",
                                     "name": "Product not found",
                                     "originalRequest": {
                                         "url": {
@@ -3694,7 +3694,7 @@
                                         "method": "PUT",
                                         "body": {
                                             "mode": "raw",
-                                            "raw": "{\n  \"metadata\": \"<string>\",\n  \"status\": \"O\",\n  \"stock\": \"<double>\",\n  \"price\": \"<double>\",\n  \"description\": \"<string>\",\n  \"category\": \"<string>\",\n  \"sku\": \"<string>\",\n  \"name\": \"<string>\"\n}",
+                                            "raw": "{\n  \"metadata\": \"<string>\",\n  \"status\": \"P\",\n  \"stock\": \"<double>\",\n  \"price\": \"<double>\",\n  \"description\": \"<string>\",\n  \"category\": \"<string>\",\n  \"sku\": \"<string>\",\n  \"name\": \"<string>\"\n}",
                                             "options": {
                                                 "raw": {
                                                     "headerFamily": "json",
@@ -3716,7 +3716,7 @@
                                     "_postman_previewlanguage": "json"
                                 },
                                 {
-                                    "id": "d2c930f8-ee8a-499d-9846-95d7dd888e6a",
+                                    "id": "403e0eea-7701-4ba3-90c6-c77ea2836799",
                                     "name": "Validation failed",
                                     "originalRequest": {
                                         "url": {
@@ -3762,7 +3762,7 @@
                                         "method": "PUT",
                                         "body": {
                                             "mode": "raw",
-                                            "raw": "{\n  \"metadata\": \"<string>\",\n  \"status\": \"O\",\n  \"stock\": \"<double>\",\n  \"price\": \"<double>\",\n  \"description\": \"<string>\",\n  \"category\": \"<string>\",\n  \"sku\": \"<string>\",\n  \"name\": \"<string>\"\n}",
+                                            "raw": "{\n  \"metadata\": \"<string>\",\n  \"status\": \"P\",\n  \"stock\": \"<double>\",\n  \"price\": \"<double>\",\n  \"description\": \"<string>\",\n  \"category\": \"<string>\",\n  \"sku\": \"<string>\",\n  \"name\": \"<string>\"\n}",
                                             "options": {
                                                 "raw": {
                                                     "headerFamily": "json",
@@ -3790,7 +3790,7 @@
                             }
                         },
                         {
-                            "id": "e076abf0-3266-4d00-9cc9-c0bafb1d99cd",
+                            "id": "22810501-4fc8-4204-b83e-02591a18c24f",
                             "name": "Delete Product",
                             "request": {
                                 "name": "Delete Product",
@@ -3840,7 +3840,7 @@
                             },
                             "response": [
                                 {
-                                    "id": "02a82a3b-0cfb-4dcd-94ca-b8a4ab5a132d",
+                                    "id": "f27cc3df-031b-4bc2-b636-9e103e86a0aa",
                                     "name": "Success",
                                     "originalRequest": {
                                         "url": {
@@ -3890,12 +3890,12 @@
                                             "value": "application/json"
                                         }
                                     ],
-                                    "body": "{\n  \"message\": \"<string>\",\n  \"data\": \"\",\n  \"error\": {\n    \"key_0\": \"<string>\",\n    \"key_1\": \"<string>\",\n    \"key_2\": \"<string>\"\n  }\n}",
+                                    "body": "{\n  \"message\": \"<string>\",\n  \"data\": \"\",\n  \"error\": {\n    \"key_0\": \"<string>\",\n    \"key_1\": \"<string>\"\n  }\n}",
                                     "cookie": [],
                                     "_postman_previewlanguage": "json"
                                 },
                                 {
-                                    "id": "bb625abe-d310-4e14-ac03-27320837d5e5",
+                                    "id": "be56e07c-f215-4c1b-b91b-4e647c163bc5",
                                     "name": "Unauthorized",
                                     "originalRequest": {
                                         "url": {
@@ -3950,7 +3950,7 @@
                                     "_postman_previewlanguage": "json"
                                 },
                                 {
-                                    "id": "742bcb6f-64a1-4f3f-b4a3-8c67ec9f2a50",
+                                    "id": "15814d34-8fb3-44f2-aa1f-c0029a06101c",
                                     "name": "Product not found",
                                     "originalRequest": {
                                         "url": {
@@ -4015,7 +4015,7 @@
                             "description": "",
                             "item": [
                                 {
-                                    "id": "10a9cdc3-cdf2-45b1-be40-0b6c932d33e0",
+                                    "id": "2b6aa163-cd25-4261-a15e-8ad911ec8412",
                                     "name": "Update Product Stock",
                                     "request": {
                                         "name": "Update Product Stock",
@@ -4059,7 +4059,7 @@
                                         "method": "PATCH",
                                         "body": {
                                             "mode": "raw",
-                                            "raw": "{\n  \"operation\": \"subtract\",\n  \"quantity\": \"<double>\"\n}",
+                                            "raw": "{\n  \"operation\": \"add\",\n  \"quantity\": \"<double>\"\n}",
                                             "options": {
                                                 "raw": {
                                                     "headerFamily": "json",
@@ -4079,7 +4079,7 @@
                                     },
                                     "response": [
                                         {
-                                            "id": "e9e4edaa-95a0-40d4-b7b0-f586bd98518a",
+                                            "id": "d03e4fda-2be2-4469-9baa-606763ae6806",
                                             "name": "Success",
                                             "originalRequest": {
                                                 "url": {
@@ -4126,7 +4126,7 @@
                                                 "method": "PATCH",
                                                 "body": {
                                                     "mode": "raw",
-                                                    "raw": "{\n  \"operation\": \"subtract\",\n  \"quantity\": \"<double>\"\n}",
+                                                    "raw": "{\n  \"operation\": \"add\",\n  \"quantity\": \"<double>\"\n}",
                                                     "options": {
                                                         "raw": {
                                                             "headerFamily": "json",
@@ -4143,12 +4143,12 @@
                                                     "value": "application/json"
                                                 }
                                             ],
-                                            "body": "{\n  \"message\": \"<string>\",\n  \"data\": {\n    \"status\": \"A\",\n    \"stock\": \"<double>\",\n    \"price\": \"<double>\",\n    \"category\": \"<string>\",\n    \"sku\": \"<string>\",\n    \"name\": \"<string>\",\n    \"shop_id\": \"<double>\",\n    \"updated_at\": \"<dateTime>\",\n    \"created_at\": \"<dateTime>\",\n    \"id\": \"<double>\",\n    \"metadata\": \"<string>\",\n    \"description\": \"<string>\"\n  },\n  \"error\": {\n    \"key_0\": \"<string>\",\n    \"key_1\": \"<string>\",\n    \"key_2\": \"<string>\"\n  }\n}",
+                                            "body": "{\n  \"message\": \"<string>\",\n  \"data\": {\n    \"status\": \"P\",\n    \"stock\": \"<double>\",\n    \"price\": \"<double>\",\n    \"category\": \"<string>\",\n    \"sku\": \"<string>\",\n    \"name\": \"<string>\",\n    \"shop_id\": \"<double>\",\n    \"updated_at\": \"<dateTime>\",\n    \"created_at\": \"<dateTime>\",\n    \"id\": \"<double>\",\n    \"metadata\": \"<string>\",\n    \"description\": \"<string>\"\n  },\n  \"error\": {\n    \"key_0\": \"<string>\",\n    \"key_1\": \"<string>\"\n  }\n}",
                                             "cookie": [],
                                             "_postman_previewlanguage": "json"
                                         },
                                         {
-                                            "id": "0f9602c0-d437-4727-aa9a-19479db41edd",
+                                            "id": "dc640c0d-eae6-4138-a378-49a29fc004b9",
                                             "name": "Unauthorized",
                                             "originalRequest": {
                                                 "url": {
@@ -4195,7 +4195,7 @@
                                                 "method": "PATCH",
                                                 "body": {
                                                     "mode": "raw",
-                                                    "raw": "{\n  \"operation\": \"subtract\",\n  \"quantity\": \"<double>\"\n}",
+                                                    "raw": "{\n  \"operation\": \"add\",\n  \"quantity\": \"<double>\"\n}",
                                                     "options": {
                                                         "raw": {
                                                             "headerFamily": "json",
@@ -4217,7 +4217,7 @@
                                             "_postman_previewlanguage": "json"
                                         },
                                         {
-                                            "id": "aad96814-5863-44e2-828d-7e9940e87704",
+                                            "id": "62c6e7f2-456c-4dfd-bf71-eed2f4f3789c",
                                             "name": "Product not found",
                                             "originalRequest": {
                                                 "url": {
@@ -4264,7 +4264,7 @@
                                                 "method": "PATCH",
                                                 "body": {
                                                     "mode": "raw",
-                                                    "raw": "{\n  \"operation\": \"subtract\",\n  \"quantity\": \"<double>\"\n}",
+                                                    "raw": "{\n  \"operation\": \"add\",\n  \"quantity\": \"<double>\"\n}",
                                                     "options": {
                                                         "raw": {
                                                             "headerFamily": "json",
@@ -4286,7 +4286,7 @@
                                             "_postman_previewlanguage": "json"
                                         },
                                         {
-                                            "id": "50683567-be67-4246-acea-56cb14b490a7",
+                                            "id": "4fe7ea27-3532-45c5-ad08-5489a12e9467",
                                             "name": "Validation failed",
                                             "originalRequest": {
                                                 "url": {
@@ -4333,7 +4333,7 @@
                                                 "method": "PATCH",
                                                 "body": {
                                                     "mode": "raw",
-                                                    "raw": "{\n  \"operation\": \"subtract\",\n  \"quantity\": \"<double>\"\n}",
+                                                    "raw": "{\n  \"operation\": \"add\",\n  \"quantity\": \"<double>\"\n}",
                                                     "options": {
                                                         "raw": {
                                                             "headerFamily": "json",
@@ -4371,7 +4371,7 @@
             "description": "",
             "item": [
                 {
-                    "id": "37d937ef-126d-4713-a339-8ed267b4d5d7",
+                    "id": "548fbad2-50da-47ba-8f99-683e05029746",
                     "name": "Search Orders",
                     "request": {
                         "name": "Search Orders",
@@ -4419,7 +4419,7 @@
                     },
                     "response": [
                         {
-                            "id": "056a4927-8c09-47f6-99b9-9022c0225a0b",
+                            "id": "2fa92ac7-2c0a-4a8d-ac1e-371b4cb693bf",
                             "name": "Success",
                             "originalRequest": {
                                 "url": {
@@ -4467,12 +4467,12 @@
                                     "value": "application/json"
                                 }
                             ],
-                            "body": "{\n  \"message\": \"<string>\",\n  \"data\": [\n    {\n      \"notes\": \"<string>\",\n      \"order_items\": [\n        {\n          \"order_id\": \"<double>\",\n          \"price\": \"<double>\",\n          \"product_id\": \"<double>\",\n          \"product_name\": \"<string>\",\n          \"product_sku\": \"<string>\",\n          \"quantity\": \"<double>\",\n          \"updated_at\": \"<dateTime>\",\n          \"created_at\": \"<dateTime>\",\n          \"id\": \"<double>\"\n        },\n        {\n          \"order_id\": \"<double>\",\n          \"price\": \"<double>\",\n          \"product_id\": \"<double>\",\n          \"product_name\": \"<string>\",\n          \"product_sku\": \"<string>\",\n          \"quantity\": \"<double>\",\n          \"updated_at\": \"<dateTime>\",\n          \"created_at\": \"<dateTime>\",\n          \"id\": \"<double>\"\n        }\n      ],\n      \"shop_id\": \"<double>\",\n      \"shop_name\": \"<string>\",\n      \"status\": \"N\",\n      \"user_id\": \"<double>\",\n      \"updated_at\": \"<dateTime>\",\n      \"created_at\": \"<dateTime>\",\n      \"id\": \"<double>\"\n    },\n    {\n      \"notes\": \"<string>\",\n      \"order_items\": [\n        {\n          \"order_id\": \"<double>\",\n          \"price\": \"<double>\",\n          \"product_id\": \"<double>\",\n          \"product_name\": \"<string>\",\n          \"product_sku\": \"<string>\",\n          \"quantity\": \"<double>\",\n          \"updated_at\": \"<dateTime>\",\n          \"created_at\": \"<dateTime>\",\n          \"id\": \"<double>\"\n        },\n        {\n          \"order_id\": \"<double>\",\n          \"price\": \"<double>\",\n          \"product_id\": \"<double>\",\n          \"product_name\": \"<string>\",\n          \"product_sku\": \"<string>\",\n          \"quantity\": \"<double>\",\n          \"updated_at\": \"<dateTime>\",\n          \"created_at\": \"<dateTime>\",\n          \"id\": \"<double>\"\n        }\n      ],\n      \"shop_id\": \"<double>\",\n      \"shop_name\": \"<string>\",\n      \"status\": \"P\",\n      \"user_id\": \"<double>\",\n      \"updated_at\": \"<dateTime>\",\n      \"created_at\": \"<dateTime>\",\n      \"id\": \"<double>\"\n    }\n  ],\n  \"error\": {\n    \"key_0\": \"<string>\",\n    \"key_1\": \"<string>\",\n    \"key_2\": \"<string>\"\n  }\n}",
+                            "body": "{\n  \"message\": \"<string>\",\n  \"data\": [\n    {\n      \"notes\": \"<string>\",\n      \"order_items\": [\n        {\n          \"order_id\": \"<double>\",\n          \"price\": \"<double>\",\n          \"product_id\": \"<double>\",\n          \"product_name\": \"<string>\",\n          \"product_sku\": \"<string>\",\n          \"quantity\": \"<double>\",\n          \"updated_at\": \"<dateTime>\",\n          \"created_at\": \"<dateTime>\",\n          \"id\": \"<double>\"\n        },\n        {\n          \"order_id\": \"<double>\",\n          \"price\": \"<double>\",\n          \"product_id\": \"<double>\",\n          \"product_name\": \"<string>\",\n          \"product_sku\": \"<string>\",\n          \"quantity\": \"<double>\",\n          \"updated_at\": \"<dateTime>\",\n          \"created_at\": \"<dateTime>\",\n          \"id\": \"<double>\"\n        }\n      ],\n      \"shop_id\": \"<double>\",\n      \"shop_name\": \"<string>\",\n      \"status\": \"O\",\n      \"user_id\": \"<double>\",\n      \"updated_at\": \"<dateTime>\",\n      \"created_at\": \"<dateTime>\",\n      \"id\": \"<double>\"\n    },\n    {\n      \"notes\": \"<string>\",\n      \"order_items\": [\n        {\n          \"order_id\": \"<double>\",\n          \"price\": \"<double>\",\n          \"product_id\": \"<double>\",\n          \"product_name\": \"<string>\",\n          \"product_sku\": \"<string>\",\n          \"quantity\": \"<double>\",\n          \"updated_at\": \"<dateTime>\",\n          \"created_at\": \"<dateTime>\",\n          \"id\": \"<double>\"\n        },\n        {\n          \"order_id\": \"<double>\",\n          \"price\": \"<double>\",\n          \"product_id\": \"<double>\",\n          \"product_name\": \"<string>\",\n          \"product_sku\": \"<string>\",\n          \"quantity\": \"<double>\",\n          \"updated_at\": \"<dateTime>\",\n          \"created_at\": \"<dateTime>\",\n          \"id\": \"<double>\"\n        }\n      ],\n      \"shop_id\": \"<double>\",\n      \"shop_name\": \"<string>\",\n      \"status\": \"N\",\n      \"user_id\": \"<double>\",\n      \"updated_at\": \"<dateTime>\",\n      \"created_at\": \"<dateTime>\",\n      \"id\": \"<double>\"\n    }\n  ],\n  \"error\": {\n    \"key_0\": \"<string>\",\n    \"key_1\": \"<string>\"\n  }\n}",
                             "cookie": [],
                             "_postman_previewlanguage": "json"
                         },
                         {
-                            "id": "59f64231-1ff1-4b35-bc41-aa40459a31e9",
+                            "id": "aad58878-5fb2-4dfe-b48f-ff8c202c20d4",
                             "name": "Unauthorized",
                             "originalRequest": {
                                 "url": {
@@ -4531,7 +4531,7 @@
                     }
                 },
                 {
-                    "id": "4cecb47e-d0c5-435b-9c52-92be64b8bdd2",
+                    "id": "05a99e07-94c7-4377-92b4-29077a5b6fd8",
                     "name": "Create Order",
                     "request": {
                         "name": "Create Order",
@@ -4582,7 +4582,7 @@
                     },
                     "response": [
                         {
-                            "id": "bcec1c7e-0025-43a5-870c-ee16ea72bbd5",
+                            "id": "0a59011e-9b16-476b-b390-13084b63a527",
                             "name": "Created",
                             "originalRequest": {
                                 "url": {
@@ -4633,12 +4633,12 @@
                                     "value": "application/json"
                                 }
                             ],
-                            "body": "{\n  \"message\": \"<string>\",\n  \"data\": {\n    \"notes\": \"<string>\",\n    \"order_items\": [\n      {\n        \"order_id\": \"<double>\",\n        \"price\": \"<double>\",\n        \"product_id\": \"<double>\",\n        \"product_name\": \"<string>\",\n        \"product_sku\": \"<string>\",\n        \"quantity\": \"<double>\",\n        \"updated_at\": \"<dateTime>\",\n        \"created_at\": \"<dateTime>\",\n        \"id\": \"<double>\"\n      },\n      {\n        \"order_id\": \"<double>\",\n        \"price\": \"<double>\",\n        \"product_id\": \"<double>\",\n        \"product_name\": \"<string>\",\n        \"product_sku\": \"<string>\",\n        \"quantity\": \"<double>\",\n        \"updated_at\": \"<dateTime>\",\n        \"created_at\": \"<dateTime>\",\n        \"id\": \"<double>\"\n      }\n    ],\n    \"shop_id\": \"<double>\",\n    \"shop_name\": \"<string>\",\n    \"status\": \"R\",\n    \"user_id\": \"<double>\",\n    \"updated_at\": \"<dateTime>\",\n    \"created_at\": \"<dateTime>\",\n    \"id\": \"<double>\"\n  },\n  \"error\": {\n    \"key_0\": \"<string>\",\n    \"key_1\": \"<string>\"\n  }\n}",
+                            "body": "{\n  \"message\": \"<string>\",\n  \"data\": {\n    \"notes\": \"<string>\",\n    \"order_items\": [\n      {\n        \"order_id\": \"<double>\",\n        \"price\": \"<double>\",\n        \"product_id\": \"<double>\",\n        \"product_name\": \"<string>\",\n        \"product_sku\": \"<string>\",\n        \"quantity\": \"<double>\",\n        \"updated_at\": \"<dateTime>\",\n        \"created_at\": \"<dateTime>\",\n        \"id\": \"<double>\"\n      },\n      {\n        \"order_id\": \"<double>\",\n        \"price\": \"<double>\",\n        \"product_id\": \"<double>\",\n        \"product_name\": \"<string>\",\n        \"product_sku\": \"<string>\",\n        \"quantity\": \"<double>\",\n        \"updated_at\": \"<dateTime>\",\n        \"created_at\": \"<dateTime>\",\n        \"id\": \"<double>\"\n      }\n    ],\n    \"shop_id\": \"<double>\",\n    \"shop_name\": \"<string>\",\n    \"status\": \"X\",\n    \"user_id\": \"<double>\",\n    \"updated_at\": \"<dateTime>\",\n    \"created_at\": \"<dateTime>\",\n    \"id\": \"<double>\"\n  },\n  \"error\": {\n    \"key_0\": \"<string>\",\n    \"key_1\": \"<string>\"\n  }\n}",
                             "cookie": [],
                             "_postman_previewlanguage": "json"
                         },
                         {
-                            "id": "3c9ab5b2-eb56-405a-84b7-e1a925b62bc4",
+                            "id": "e6d673df-face-453b-997a-a7af7414b769",
                             "name": "Unauthorized",
                             "originalRequest": {
                                 "url": {
@@ -4694,7 +4694,7 @@
                             "_postman_previewlanguage": "json"
                         },
                         {
-                            "id": "6ed89465-833e-4a2c-a115-e711421333db",
+                            "id": "70112b3d-8f79-4fd5-a88e-9a42fb5fb688",
                             "name": "Not found",
                             "originalRequest": {
                                 "url": {
@@ -4750,7 +4750,7 @@
                             "_postman_previewlanguage": "json"
                         },
                         {
-                            "id": "c3cdbeb2-0d68-49f7-8775-b5d536cea498",
+                            "id": "1047a793-2e6c-45d7-8d8f-52d9dfb71406",
                             "name": "Validation failed",
                             "originalRequest": {
                                 "url": {
@@ -4816,7 +4816,7 @@
                     "description": "",
                     "item": [
                         {
-                            "id": "204d9c10-bfdc-4921-9f79-2e8600de4c2e",
+                            "id": "4432d672-0efb-4fdb-8025-76dd578437c4",
                             "name": "Get Order",
                             "request": {
                                 "name": "Get Order",
@@ -4866,7 +4866,7 @@
                             },
                             "response": [
                                 {
-                                    "id": "14f0af2f-fce3-4615-a7a2-1f591a4a745a",
+                                    "id": "31b5a0bc-861b-42ac-9df5-5ef7f4ab6c95",
                                     "name": "Success",
                                     "originalRequest": {
                                         "url": {
@@ -4916,12 +4916,12 @@
                                             "value": "application/json"
                                         }
                                     ],
-                                    "body": "{\n  \"message\": \"<string>\",\n  \"data\": {\n    \"notes\": \"<string>\",\n    \"order_items\": [\n      {\n        \"order_id\": \"<double>\",\n        \"price\": \"<double>\",\n        \"product_id\": \"<double>\",\n        \"product_name\": \"<string>\",\n        \"product_sku\": \"<string>\",\n        \"quantity\": \"<double>\",\n        \"updated_at\": \"<dateTime>\",\n        \"created_at\": \"<dateTime>\",\n        \"id\": \"<double>\"\n      },\n      {\n        \"order_id\": \"<double>\",\n        \"price\": \"<double>\",\n        \"product_id\": \"<double>\",\n        \"product_name\": \"<string>\",\n        \"product_sku\": \"<string>\",\n        \"quantity\": \"<double>\",\n        \"updated_at\": \"<dateTime>\",\n        \"created_at\": \"<dateTime>\",\n        \"id\": \"<double>\"\n      }\n    ],\n    \"shop_id\": \"<double>\",\n    \"shop_name\": \"<string>\",\n    \"status\": \"R\",\n    \"user_id\": \"<double>\",\n    \"updated_at\": \"<dateTime>\",\n    \"created_at\": \"<dateTime>\",\n    \"id\": \"<double>\"\n  },\n  \"error\": {\n    \"key_0\": \"<string>\",\n    \"key_1\": \"<string>\"\n  }\n}",
+                                    "body": "{\n  \"message\": \"<string>\",\n  \"data\": {\n    \"notes\": \"<string>\",\n    \"order_items\": [\n      {\n        \"order_id\": \"<double>\",\n        \"price\": \"<double>\",\n        \"product_id\": \"<double>\",\n        \"product_name\": \"<string>\",\n        \"product_sku\": \"<string>\",\n        \"quantity\": \"<double>\",\n        \"updated_at\": \"<dateTime>\",\n        \"created_at\": \"<dateTime>\",\n        \"id\": \"<double>\"\n      },\n      {\n        \"order_id\": \"<double>\",\n        \"price\": \"<double>\",\n        \"product_id\": \"<double>\",\n        \"product_name\": \"<string>\",\n        \"product_sku\": \"<string>\",\n        \"quantity\": \"<double>\",\n        \"updated_at\": \"<dateTime>\",\n        \"created_at\": \"<dateTime>\",\n        \"id\": \"<double>\"\n      }\n    ],\n    \"shop_id\": \"<double>\",\n    \"shop_name\": \"<string>\",\n    \"status\": \"X\",\n    \"user_id\": \"<double>\",\n    \"updated_at\": \"<dateTime>\",\n    \"created_at\": \"<dateTime>\",\n    \"id\": \"<double>\"\n  },\n  \"error\": {\n    \"key_0\": \"<string>\",\n    \"key_1\": \"<string>\"\n  }\n}",
                                     "cookie": [],
                                     "_postman_previewlanguage": "json"
                                 },
                                 {
-                                    "id": "685729cb-98d9-43f9-9945-767b582c5282",
+                                    "id": "5b96ecc9-4b27-4c27-870d-3bd9cf691acb",
                                     "name": "Unauthorized",
                                     "originalRequest": {
                                         "url": {
@@ -4976,7 +4976,7 @@
                                     "_postman_previewlanguage": "json"
                                 },
                                 {
-                                    "id": "3bb1917d-0406-402c-a3cf-46deec923543",
+                                    "id": "5412088d-d18a-4d2b-a982-4af60387400d",
                                     "name": "Not found",
                                     "originalRequest": {
                                         "url": {
@@ -5037,7 +5037,7 @@
                             }
                         },
                         {
-                            "id": "7dd34350-1ed8-4561-b898-02caf9d69fc6",
+                            "id": "2db99e67-b96f-4afc-b187-c407e767e54a",
                             "name": "Update Order",
                             "request": {
                                 "name": "Update Order",
@@ -5100,7 +5100,7 @@
                             },
                             "response": [
                                 {
-                                    "id": "95ffee1a-efa1-4d70-a44e-3bd80dc25e7b",
+                                    "id": "f2968568-6443-4d12-888e-3fa780386272",
                                     "name": "Success",
                                     "originalRequest": {
                                         "url": {
@@ -5163,12 +5163,12 @@
                                             "value": "application/json"
                                         }
                                     ],
-                                    "body": "{\n  \"message\": \"<string>\",\n  \"data\": {\n    \"notes\": \"<string>\",\n    \"order_items\": [\n      {\n        \"order_id\": \"<double>\",\n        \"price\": \"<double>\",\n        \"product_id\": \"<double>\",\n        \"product_name\": \"<string>\",\n        \"product_sku\": \"<string>\",\n        \"quantity\": \"<double>\",\n        \"updated_at\": \"<dateTime>\",\n        \"created_at\": \"<dateTime>\",\n        \"id\": \"<double>\"\n      },\n      {\n        \"order_id\": \"<double>\",\n        \"price\": \"<double>\",\n        \"product_id\": \"<double>\",\n        \"product_name\": \"<string>\",\n        \"product_sku\": \"<string>\",\n        \"quantity\": \"<double>\",\n        \"updated_at\": \"<dateTime>\",\n        \"created_at\": \"<dateTime>\",\n        \"id\": \"<double>\"\n      }\n    ],\n    \"shop_id\": \"<double>\",\n    \"shop_name\": \"<string>\",\n    \"status\": \"R\",\n    \"user_id\": \"<double>\",\n    \"updated_at\": \"<dateTime>\",\n    \"created_at\": \"<dateTime>\",\n    \"id\": \"<double>\"\n  },\n  \"error\": {\n    \"key_0\": \"<string>\",\n    \"key_1\": \"<string>\"\n  }\n}",
+                                    "body": "{\n  \"message\": \"<string>\",\n  \"data\": {\n    \"notes\": \"<string>\",\n    \"order_items\": [\n      {\n        \"order_id\": \"<double>\",\n        \"price\": \"<double>\",\n        \"product_id\": \"<double>\",\n        \"product_name\": \"<string>\",\n        \"product_sku\": \"<string>\",\n        \"quantity\": \"<double>\",\n        \"updated_at\": \"<dateTime>\",\n        \"created_at\": \"<dateTime>\",\n        \"id\": \"<double>\"\n      },\n      {\n        \"order_id\": \"<double>\",\n        \"price\": \"<double>\",\n        \"product_id\": \"<double>\",\n        \"product_name\": \"<string>\",\n        \"product_sku\": \"<string>\",\n        \"quantity\": \"<double>\",\n        \"updated_at\": \"<dateTime>\",\n        \"created_at\": \"<dateTime>\",\n        \"id\": \"<double>\"\n      }\n    ],\n    \"shop_id\": \"<double>\",\n    \"shop_name\": \"<string>\",\n    \"status\": \"X\",\n    \"user_id\": \"<double>\",\n    \"updated_at\": \"<dateTime>\",\n    \"created_at\": \"<dateTime>\",\n    \"id\": \"<double>\"\n  },\n  \"error\": {\n    \"key_0\": \"<string>\",\n    \"key_1\": \"<string>\"\n  }\n}",
                                     "cookie": [],
                                     "_postman_previewlanguage": "json"
                                 },
                                 {
-                                    "id": "ef71c2b7-c7f7-4176-a79e-ca0b772c64d4",
+                                    "id": "454e897b-0ab2-4dd4-a0d3-897137d842c5",
                                     "name": "Unauthorized",
                                     "originalRequest": {
                                         "url": {
@@ -5236,7 +5236,7 @@
                                     "_postman_previewlanguage": "json"
                                 },
                                 {
-                                    "id": "e6cf52d0-7531-4f85-9410-5d9cc5486dce",
+                                    "id": "4848c501-f15c-41d2-91da-5eab213da731",
                                     "name": "Not found",
                                     "originalRequest": {
                                         "url": {
@@ -5304,7 +5304,7 @@
                                     "_postman_previewlanguage": "json"
                                 },
                                 {
-                                    "id": "806d00e0-da9b-4c20-a177-8d39283e1d19",
+                                    "id": "a1690461-f5e9-4135-a91c-b684c31a826e",
                                     "name": "Validation failed",
                                     "originalRequest": {
                                         "url": {
@@ -5378,7 +5378,7 @@
                             }
                         },
                         {
-                            "id": "ceb2b1f0-d591-475a-aa0c-7706b80f133a",
+                            "id": "9de6d115-4c0f-43df-a907-a8658cc9955f",
                             "name": "Delete Order",
                             "request": {
                                 "name": "Delete Order",
@@ -5428,7 +5428,7 @@
                             },
                             "response": [
                                 {
-                                    "id": "927894d5-7ed1-4099-817b-dd4d486039af",
+                                    "id": "e7e0eaac-7d85-47a4-8adf-9dda7a48b911",
                                     "name": "Success",
                                     "originalRequest": {
                                         "url": {
@@ -5478,12 +5478,12 @@
                                             "value": "application/json"
                                         }
                                     ],
-                                    "body": "{\n  \"message\": \"<string>\",\n  \"data\": \"\",\n  \"error\": {\n    \"key_0\": \"<string>\",\n    \"key_1\": \"<string>\",\n    \"key_2\": \"<string>\"\n  }\n}",
+                                    "body": "{\n  \"message\": \"<string>\",\n  \"data\": \"\",\n  \"error\": {\n    \"key_0\": \"<string>\",\n    \"key_1\": \"<string>\"\n  }\n}",
                                     "cookie": [],
                                     "_postman_previewlanguage": "json"
                                 },
                                 {
-                                    "id": "c713e421-c90c-4dea-a92c-a5aabfb9bbbf",
+                                    "id": "495a6323-1e22-43f2-b437-27012a74e408",
                                     "name": "Unauthorized",
                                     "originalRequest": {
                                         "url": {
@@ -5538,7 +5538,7 @@
                                     "_postman_previewlanguage": "json"
                                 },
                                 {
-                                    "id": "366899d4-38d5-4d76-99fc-1880732a2bcd",
+                                    "id": "acaf337f-e662-4912-a3f2-0b87c9dc99cb",
                                     "name": "Not found",
                                     "originalRequest": {
                                         "url": {
@@ -5609,7 +5609,7 @@
                             "description": "",
                             "item": [
                                 {
-                                    "id": "ab152fd7-ad15-4e71-b9ef-f9de13fd45d0",
+                                    "id": "497aa129-2f27-4a03-87db-ccee132f6971",
                                     "name": "Get Order Items",
                                     "request": {
                                         "name": "Get Order Items",
@@ -5660,7 +5660,7 @@
                                     },
                                     "response": [
                                         {
-                                            "id": "59b10419-4811-4454-9b6b-c8443bd9bbe7",
+                                            "id": "3081bc53-c1d5-4ec2-8de6-6d5cdbce1547",
                                             "name": "Success",
                                             "originalRequest": {
                                                 "url": {
@@ -5711,12 +5711,12 @@
                                                     "value": "application/json"
                                                 }
                                             ],
-                                            "body": "{\n  \"message\": \"<string>\",\n  \"data\": [\n    {\n      \"order_id\": \"<double>\",\n      \"price\": \"<double>\",\n      \"product_id\": \"<double>\",\n      \"product_name\": \"<string>\",\n      \"product_sku\": \"<string>\",\n      \"quantity\": \"<double>\",\n      \"updated_at\": \"<dateTime>\",\n      \"created_at\": \"<dateTime>\",\n      \"id\": \"<double>\"\n    },\n    {\n      \"order_id\": \"<double>\",\n      \"price\": \"<double>\",\n      \"product_id\": \"<double>\",\n      \"product_name\": \"<string>\",\n      \"product_sku\": \"<string>\",\n      \"quantity\": \"<double>\",\n      \"updated_at\": \"<dateTime>\",\n      \"created_at\": \"<dateTime>\",\n      \"id\": \"<double>\"\n    }\n  ],\n  \"error\": {\n    \"key_0\": \"<string>\",\n    \"key_1\": \"<string>\",\n    \"key_2\": \"<string>\"\n  }\n}",
+                                            "body": "{\n  \"message\": \"<string>\",\n  \"data\": [\n    {\n      \"order_id\": \"<double>\",\n      \"price\": \"<double>\",\n      \"product_id\": \"<double>\",\n      \"product_name\": \"<string>\",\n      \"product_sku\": \"<string>\",\n      \"quantity\": \"<double>\",\n      \"updated_at\": \"<dateTime>\",\n      \"created_at\": \"<dateTime>\",\n      \"id\": \"<double>\"\n    },\n    {\n      \"order_id\": \"<double>\",\n      \"price\": \"<double>\",\n      \"product_id\": \"<double>\",\n      \"product_name\": \"<string>\",\n      \"product_sku\": \"<string>\",\n      \"quantity\": \"<double>\",\n      \"updated_at\": \"<dateTime>\",\n      \"created_at\": \"<dateTime>\",\n      \"id\": \"<double>\"\n    }\n  ],\n  \"error\": {\n    \"key_0\": \"<string>\",\n    \"key_1\": \"<string>\"\n  }\n}",
                                             "cookie": [],
                                             "_postman_previewlanguage": "json"
                                         },
                                         {
-                                            "id": "a69f8932-0dcc-415c-8784-e7140cdd6c8b",
+                                            "id": "57b32cc6-4330-47fa-8800-a2054ae6f5af",
                                             "name": "Unauthorized",
                                             "originalRequest": {
                                                 "url": {
@@ -5778,7 +5778,7 @@
                                     }
                                 },
                                 {
-                                    "id": "7ba02848-0010-4faf-9ce8-b63496b62d65",
+                                    "id": "ca1d47ea-5680-4ea6-9737-544c2f180da7",
                                     "name": "Add Order Item",
                                     "request": {
                                         "name": "Add Order Item",
@@ -5842,7 +5842,7 @@
                                     },
                                     "response": [
                                         {
-                                            "id": "e5daf113-61c6-4272-9507-9577c5b1932c",
+                                            "id": "ae71e02a-2268-4c0d-9526-0841cedf6bb3",
                                             "name": "Created",
                                             "originalRequest": {
                                                 "url": {
@@ -5906,12 +5906,12 @@
                                                     "value": "application/json"
                                                 }
                                             ],
-                                            "body": "{\n  \"message\": \"<string>\",\n  \"data\": \"\",\n  \"error\": {\n    \"key_0\": \"<string>\",\n    \"key_1\": \"<string>\",\n    \"key_2\": \"<string>\"\n  }\n}",
+                                            "body": "{\n  \"message\": \"<string>\",\n  \"data\": \"\",\n  \"error\": {\n    \"key_0\": \"<string>\",\n    \"key_1\": \"<string>\"\n  }\n}",
                                             "cookie": [],
                                             "_postman_previewlanguage": "json"
                                         },
                                         {
-                                            "id": "8a1a97d9-e220-46f3-8983-d42ce477391f",
+                                            "id": "cc5bac91-5702-4373-8bc8-ebb461d4312c",
                                             "name": "Unauthorized",
                                             "originalRequest": {
                                                 "url": {
@@ -5980,7 +5980,7 @@
                                             "_postman_previewlanguage": "json"
                                         },
                                         {
-                                            "id": "82742d8e-74a3-4994-ae72-d1d304414442",
+                                            "id": "3071e370-f219-4ac2-a714-891a32d994d8",
                                             "name": "Not found",
                                             "originalRequest": {
                                                 "url": {
@@ -6049,7 +6049,7 @@
                                             "_postman_previewlanguage": "json"
                                         },
                                         {
-                                            "id": "0c548b1f-009a-480e-84ce-381ec0543b59",
+                                            "id": "887d89ec-e6e7-4aee-8f5d-b72281476580",
                                             "name": "Validation failed",
                                             "originalRequest": {
                                                 "url": {
@@ -6136,7 +6136,7 @@
                             "description": "",
                             "item": [
                                 {
-                                    "id": "86c4ec78-3040-4794-b678-00425b6f622d",
+                                    "id": "2001063e-8c9b-475f-a9fe-c7ba4ec74fbf",
                                     "name": "Remove Order Item",
                                     "request": {
                                         "name": "Remove Order Item",
@@ -6187,7 +6187,7 @@
                                     },
                                     "response": [
                                         {
-                                            "id": "0f8c0283-25c6-4aad-98f0-74ecdf15f597",
+                                            "id": "1d6a7bb9-aab5-48a8-b5b5-e95a428e40bf",
                                             "name": "Success",
                                             "originalRequest": {
                                                 "url": {
@@ -6238,12 +6238,12 @@
                                                     "value": "application/json"
                                                 }
                                             ],
-                                            "body": "{\n  \"message\": \"<string>\",\n  \"data\": \"\",\n  \"error\": {\n    \"key_0\": \"<string>\",\n    \"key_1\": \"<string>\",\n    \"key_2\": \"<string>\"\n  }\n}",
+                                            "body": "{\n  \"message\": \"<string>\",\n  \"data\": \"\",\n  \"error\": {\n    \"key_0\": \"<string>\",\n    \"key_1\": \"<string>\"\n  }\n}",
                                             "cookie": [],
                                             "_postman_previewlanguage": "json"
                                         },
                                         {
-                                            "id": "2692a45d-aed9-492f-8208-572ed33250df",
+                                            "id": "74f70d37-26fa-4f46-a16c-572ecba60bce",
                                             "name": "Unauthorized",
                                             "originalRequest": {
                                                 "url": {
@@ -6299,7 +6299,7 @@
                                             "_postman_previewlanguage": "json"
                                         },
                                         {
-                                            "id": "37701d6d-a802-42a4-873c-af0c31b55c7a",
+                                            "id": "0b4f48bd-d007-4d4f-8cb0-8feb1e69334c",
                                             "name": "Order item not found",
                                             "originalRequest": {
                                                 "url": {
@@ -6375,7 +6375,7 @@
                     "description": "",
                     "item": [
                         {
-                            "id": "d105d355-52b1-4ad1-b958-d818367ea5ea",
+                            "id": "518bdcde-a7ca-44a9-8949-1a6825b83d57",
                             "name": "Login",
                             "request": {
                                 "name": "Login",
@@ -6419,7 +6419,7 @@
                             },
                             "response": [
                                 {
-                                    "id": "51e4e111-7865-49d7-a843-588706725047",
+                                    "id": "8cf35744-5ed3-4cf3-ad93-0c3aa1805a63",
                                     "name": "Login successful",
                                     "originalRequest": {
                                         "url": {
@@ -6463,12 +6463,12 @@
                                             "value": "application/json"
                                         }
                                     ],
-                                    "body": "{\n  \"message\": \"<string>\",\n  \"data\": {\n    \"accessToken\": \"<string>\"\n  },\n  \"error\": {\n    \"key_0\": \"<string>\",\n    \"key_1\": \"<string>\"\n  }\n}",
+                                    "body": "{\n  \"message\": \"<string>\",\n  \"data\": {\n    \"accessToken\": \"<string>\"\n  },\n  \"error\": {\n    \"key_0\": \"<string>\"\n  }\n}",
                                     "cookie": [],
                                     "_postman_previewlanguage": "json"
                                 },
                                 {
-                                    "id": "3581cb37-c502-46a0-9b42-0f9dd5df4c39",
+                                    "id": "c555af45-9085-4553-b686-aa1500d3585e",
                                     "name": "Invalid credentials",
                                     "originalRequest": {
                                         "url": {
@@ -6517,7 +6517,7 @@
                                     "_postman_previewlanguage": "json"
                                 },
                                 {
-                                    "id": "3411de44-9c50-488f-a211-107787187e07",
+                                    "id": "fd5c55be-905c-40fe-a984-f854bed81583",
                                     "name": "User not found",
                                     "originalRequest": {
                                         "url": {
@@ -6566,7 +6566,7 @@
                                     "_postman_previewlanguage": "json"
                                 },
                                 {
-                                    "id": "dfb4eaed-23f1-4f31-8c0d-099036df218c",
+                                    "id": "a2d8c8f8-cee6-42a7-b1be-f3e0d7480887",
                                     "name": "Validation failed",
                                     "originalRequest": {
                                         "url": {
@@ -6627,7 +6627,7 @@
                     "description": "",
                     "item": [
                         {
-                            "id": "90fb1610-c947-4be2-a96c-ece57fd0224c",
+                            "id": "faf042a4-4386-4eff-9b02-0bf01565ff97",
                             "name": "Refresh Token",
                             "request": {
                                 "name": "Refresh Token",
@@ -6674,7 +6674,7 @@
                             },
                             "response": [
                                 {
-                                    "id": "11498281-b1c2-4718-8d40-960e6114e26d",
+                                    "id": "5a5dff22-0654-4950-acf8-2913f3e3208c",
                                     "name": "Success",
                                     "originalRequest": {
                                         "url": {
@@ -6713,12 +6713,12 @@
                                             "value": "application/json"
                                         }
                                     ],
-                                    "body": "{\n  \"message\": \"<string>\",\n  \"data\": {\n    \"accessToken\": \"<string>\"\n  },\n  \"error\": {\n    \"key_0\": \"<string>\",\n    \"key_1\": \"<string>\"\n  }\n}",
+                                    "body": "{\n  \"message\": \"<string>\",\n  \"data\": {\n    \"accessToken\": \"<string>\"\n  },\n  \"error\": {\n    \"key_0\": \"<string>\"\n  }\n}",
                                     "cookie": [],
                                     "_postman_previewlanguage": "json"
                                 },
                                 {
-                                    "id": "a0095ef4-dd33-426d-b50c-4f6e2f25f2a1",
+                                    "id": "90370f41-1d93-4298-b085-b6f6aa6ee096",
                                     "name": "User not authenticated",
                                     "originalRequest": {
                                         "url": {
@@ -6774,7 +6774,7 @@
                     "description": "",
                     "item": [
                         {
-                            "id": "94809e60-1648-4081-9874-f0c671094ce9",
+                            "id": "d02345d0-6cca-4dc6-80a8-bcee33379e5c",
                             "name": "Logout",
                             "request": {
                                 "name": "Logout",
@@ -6805,7 +6805,7 @@
                             },
                             "response": [
                                 {
-                                    "id": "acf700c3-7413-40b4-897c-6062ff1110b5",
+                                    "id": "be031969-991e-4b0e-8575-4fdec3c3d500",
                                     "name": "Success",
                                     "originalRequest": {
                                         "url": {
@@ -6836,7 +6836,7 @@
                                             "value": "application/json"
                                         }
                                     ],
-                                    "body": "{\n  \"message\": \"<string>\",\n  \"data\": \"\",\n  \"error\": {\n    \"key_0\": \"<string>\",\n    \"key_1\": \"<string>\",\n    \"key_2\": \"<string>\"\n  }\n}",
+                                    "body": "{\n  \"message\": \"<string>\",\n  \"data\": \"\",\n  \"error\": {\n    \"key_0\": \"<string>\",\n    \"key_1\": \"<string>\"\n  }\n}",
                                     "cookie": [],
                                     "_postman_previewlanguage": "json"
                                 }
@@ -6853,7 +6853,7 @@
                     "description": "",
                     "item": [
                         {
-                            "id": "bc46714a-d8e0-417e-a142-7e469570db91",
+                            "id": "1e5e478d-8db7-421f-a9bf-84e8b931daf5",
                             "name": "Register",
                             "request": {
                                 "name": "Register",
@@ -6897,7 +6897,7 @@
                             },
                             "response": [
                                 {
-                                    "id": "f4b58aa2-41e1-466a-b550-0a20913e86bd",
+                                    "id": "26adb14d-c046-48d4-9507-e8a2805e5815",
                                     "name": "Created",
                                     "originalRequest": {
                                         "url": {
@@ -6941,12 +6941,12 @@
                                             "value": "application/json"
                                         }
                                     ],
-                                    "body": "{\n  \"message\": \"<string>\",\n  \"data\": {\n    \"accessToken\": \"<string>\",\n    \"user\": {\n      \"name\": \"<string>\",\n      \"email\": \"<string>\",\n      \"role\": \"G\",\n      \"status\": \"X\",\n      \"dob\": \"<dateTime>\",\n      \"phone_number\": \"<string>\",\n      \"address\": \"<string>\",\n      \"id\": \"<double>\",\n      \"created_at\": \"<dateTime>\",\n      \"updated_at\": \"<dateTime>\"\n    }\n  },\n  \"error\": {\n    \"key_0\": \"<string>\",\n    \"key_1\": \"<string>\"\n  }\n}",
+                                    "body": "{\n  \"message\": \"<string>\",\n  \"data\": {\n    \"accessToken\": \"<string>\",\n    \"user\": {\n      \"name\": \"<string>\",\n      \"email\": \"<string>\",\n      \"role\": \"U\",\n      \"status\": \"S\",\n      \"dob\": \"<dateTime>\",\n      \"phone_number\": \"<string>\",\n      \"address\": \"<string>\",\n      \"id\": \"<double>\",\n      \"created_at\": \"<dateTime>\",\n      \"updated_at\": \"<dateTime>\"\n    }\n  },\n  \"error\": {\n    \"key_0\": \"<string>\"\n  }\n}",
                                     "cookie": [],
                                     "_postman_previewlanguage": "json"
                                 },
                                 {
-                                    "id": "515ec162-0c82-4c8f-bdf8-bb7e89463364",
+                                    "id": "4198ca5a-5dd8-4903-99da-a338d2505684",
                                     "name": "Conflict",
                                     "originalRequest": {
                                         "url": {
@@ -7013,7 +7013,7 @@
         }
     ],
     "info": {
-        "_postman_id": "cc17e942-1f6b-4288-931a-5381064766b8",
+        "_postman_id": "f4ff5b5e-2e1a-40ed-990a-98a7f28d49da",
         "name": "courifly-services",
         "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
         "description": {
